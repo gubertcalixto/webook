@@ -11,10 +11,40 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
-    "lib": [
-      "es2018",
-      "dom"
-    ]
+    "lib": ["es2018", "dom"],
+    "paths": {
+      "@tcc-giphy": ["dist/tcc-giphy", "projects/tcc-giphy/src/lib"],
+      "@tcc-giphy/*": ["dist/tcc-giphy/*", "projects/tcc-giphy/src/lib/*"],
+      "@tcc-pexels": ["dist/tcc-pexels", "projects/tcc-pexels/src/lib"],
+      "@tcc-pexels/*": ["dist/tcc-pexels/*", "projects/tcc-pexels/src/lib/*"],
+      "@tcc-pixabay": ["dist/tcc-pixabay", "projects/tcc-pixabay/src/lib"],
+      "@tcc-pixabay/*": [
+        "dist/tcc-pixabay/*",
+        "projects/tcc-pixabay/src/lib/*"
+      ],
+      "@tcc-shared": ["dist/tcc-shared", "projects/tcc-shared/src/lib"],
+      "@tcc-shared/*": ["dist/tcc-shared/*", "projects/tcc-shared/src/lib/*"],
+      "@tcc-editor": ["dist/tcc-editor", "projects/tcc-editor/src/lib"],
+      "@tcc-editor/*": ["dist/tcc-editor/*", "projects/tcc-editor/src/lib/*"],
+      "@shared": ["src/app/shared"],
+      "@shared/*": ["src/app/shared/*"],
+      "@tcc-editor-base-components": [
+        "dist/tcc-editor-base-components",
+        "projects/tcc-editor-base-components/src/lib"
+      ],
+      "@tcc-editor-base-components/*": [
+        "dist/tcc-editor-base-components/*",
+        "projects/tcc-editor-base-components/src/lib/*"
+      ],
+      "@tcc-editor-base": [
+        "dist/tcc-editor-base",
+        "projects/tcc-editor-base/src/lib/"
+      ],
+      "@tcc-editor-base/*": [
+        "dist/tcc-editor-base/*",
+        "projects/tcc-editor-base/src/lib/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

@@ -1,0 +1,9 @@
+<h3>Example Pixabay ({{result?.totalHits || 0}})</h3>
+<div *ngIf="result" class="result-container">
+    <ng-container *ngFor="let item of result.hits">
+        <img class="result-item" [title]="item.user" [src]="item.previewURL">
+    </ng-container>
+</div>
+<div *ngIf="!result">
+    <nz-empty></nz-empty>
+</div>

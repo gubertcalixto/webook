@@ -24,7 +24,12 @@
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "node_modules/angular2-draggable/css/resizable.min.css",
+              "src/theme.less",
+              "src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -83,7 +88,12 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "node_modules/angular2-draggable/css/resizable.min.css",
+              "src/theme.less",
+              "src/styles.scss"
+            ],
             "scripts": []
           }
         },
@@ -479,5 +489,8 @@
       }
     }
   },
-  "defaultProject": "webook-app"
+  "defaultProject": "webook-app",
+  "cli": {
+    "analytics": "e249bad7-4b77-4d61-89a8-af8432c654da"
+  }
 }

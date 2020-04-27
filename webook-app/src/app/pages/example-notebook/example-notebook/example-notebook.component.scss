@@ -1,0 +1,35 @@
+$page-size: 35vw;
+$page-transtion-time: 750ms;
+notebook {
+  display: flex;
+  position: relative;
+  height: 75vh;
+  width: $page-size;
+  transition: width 750ms;
+  &.opened{
+    width: #{$page-size * 2};
+  }
+
+  > book-cover, book-page{
+    box-shadow: 10px 5px 5px rgba(0,0,0,.2);
+  }
+  > book-back{
+    box-shadow: -10px 5px 5px rgba(0,0,0,.2);
+  }
+
+  > *{
+    display: flex;
+    height: 100%;
+    width: 100%;
+    flex: 1 1 100%;
+    &.pages-both-sides-container{
+      > book-page {
+        display: flex;
+        flex: 1 1 50%;
+        box-shadow: inset 0 0 1px rgba(0,0,0,.25)
+      }
+    }
+  }
+}
+
+

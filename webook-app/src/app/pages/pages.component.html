@@ -1,0 +1,44 @@
+<!-- <notebook></notebook> -->
+<nz-layout class="app-layout">
+    <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed"
+        [nzTrigger]="null">
+        <div class="sidebar-logo">
+            <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+                <i fa="bars" class="trigger"></i>
+            </span>
+            <a *ngIf="!isCollapsed" routerLink="/">
+                <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
+                <h1>Scrapbook Test</h1>
+            </a>
+        </div>
+        <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+            <li *ngFor="let navigationGroup of navigationGroups" nz-submenu nzOpen [nzTitle]="navigationGroup.title"
+                [nzIcon]="navigationGroup.icon">
+                <ul>
+                    <li *ngFor="let navigationItem of navigationGroup.children" nz-menu-item nzMatchRouter>
+                        <a [routerLink]="navigationItem.link">{{navigationItem.label}}</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nz-sider>
+    <nz-layout class="content-layout">
+        <nz-content>
+            <nz-header *ngIf="navigationService.hasSearch">
+                <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                    <input [(ngModel)]="searchInput" nz-input placeholder="Pesquisar..." />
+                </nz-input-group>
+                <ng-template #suffixIconButton>
+                    <nz-button-group>
+                        <button nz-button nzType="primary" nzSearch (click)="searchEmit()"><i fa="search"></i></button>
+                        <button *ngIf="searchInput" nz-button nzType="default" (click)="searchInput = undefined"><i
+                                fa="times"></i></button>
+                    </nz-button-group>
+                </ng-template>
+            </nz-header>
+            <div class="inner-content">
+                <router-outlet></router-outlet>
+            </div>
+        </nz-content>
+    </nz-layout>
+</nz-layout>
