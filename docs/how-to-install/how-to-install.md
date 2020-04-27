@@ -1,5 +1,5 @@
 ## Como Instalar
-1. Instalação do NodeJS\
+1. Instalação do NodeJS
 	- Abra o CMD e digite ``` node -v```;
 	- Caso seja diferente de 12.16.2, desinstale, caso não exista, apenas continue para o próximo passo;
 	![Node Version](./node_version.png)
