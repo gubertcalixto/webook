@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { NzEmptyModule } from 'ng-zorro-antd';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { TCC_GIPHY_API_KEY, TccGiphyModule } from 'projects/tcc-giphy/src/public-api';
 import { authKeys } from 'src/app/configs/auth_keys';
 
