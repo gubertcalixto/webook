@@ -1,0 +1,23 @@
+<ng-template #toolboxHeaderTemplate>
+  <button nz-button nzType="danger" (click)="editMode = !editMode"><i [fa]="editMode ? 'lock' : 'lock-open'"></i>
+  </button>
+</ng-template>
+
+<nz-layout>
+  <!--<nz-header>header 1</nz-header>-->
+  <!--<nz-sider nzCollapsible [nzCollapsed]="true" [nzTrigger]="null"><h1>sider L</h1></nz-sider>-->
+  <nz-content>
+    <div id="editor-container">
+      <tcc-editor-toolbox class="toolbox-area vertical left" (addElement)="addElementToEditor($event)" [headerTemplate]="toolboxHeaderTemplate"></tcc-editor-toolbox>
+      <div #editor id="editor" [ngClass]="{'editing': editMode}">
+        <tcc-editor-element-projection *ngFor="let el of editorElements; let i= index" [item]="el" class="elements"
+                                       [ngDraggable]="editMode" [bounds]="editor" [inBounds]="true" [ngResizable]="editMode" [rzContainment]="editor"
+                                       [ngClass]="{'active': i === activeEditorElementIndex}" (click)="setEditorElementAsActive(i)">
+        </tcc-editor-element-projection>
+      </div>
+    </div>
+  </nz-content>
+  <!--<nz-sider nzCollapsible [nzCollapsed]="true" [nzTrigger]="null"><h1>sider R</h1></nz-sider>-->
+  <!--<nz-footer>footer 1</nz-footer>-->
+  <!--<nz-footer>footer 2</nz-footer>-->
+</nz-layout>

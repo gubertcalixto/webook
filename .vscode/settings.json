@@ -1,0 +1,24 @@
+{
+  "material-icon-theme.activeIconPack": "angular",
+  "workbench.iconTheme": "material-icon-theme",
+  "files.autoSave": "onFocusChange",
+  "editor.formatOnSave": true,
+  "typescriptHero.imports.organizeOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.tslint": true
+  },
+  "prettier.disableLanguages": ["markdown"],
+  "prettier.printWidth": 160,
+  "prettier.semi": true,
+  "prettier.singleQuote": true,
+  "prettier.quoteProps": "preserve",
+  "prettier.trailingComma": "es5",
+  "prettier.bracketSpacing": true,
+  "prettier.arrowParens": "always",
+  "html.suggest.html5": true,
+  "html.format.indentInnerHtml": true,
+  "html.format.wrapLineLength": 140,
+  "html.format.wrapAttributes": "force",
+  "html.autoClosingTags": true
+}

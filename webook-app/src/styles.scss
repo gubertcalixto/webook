@@ -1,0 +1,33 @@
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Lobster", "Quicksand" -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "Roboto", sans-serif, "Times New Roman";
+}
+
+// #region fixes-in-ant
+button.ant-btn.ant-btn-link {
+  &:focus,
+  &:hover {
+    > span {
+      text-decoration: underline;
+    }
+  }
+}
+.ant-input-group > .ant-input:last-child,
+.ant-input-group-addon:last-child {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+// #endregion fixes-in-ant
+
+.clickable {
+  cursor: pointer;
+}
+.bg-white {
+  background-color: #ffffff;
+}
+.p-12 {
+  padding: 12px;
+}
