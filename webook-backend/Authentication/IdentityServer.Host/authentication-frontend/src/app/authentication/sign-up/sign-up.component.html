@@ -1,0 +1,57 @@
+<div nz-row nzJustify="space-between" nzAlign="middle">
+  <div id="sign-up-background-container" nz-col nzXs="0" nzSm="0" nzMd="12" nzLg="14" nzXl="16">
+    <div id="sign-up-background"></div>
+  </div>
+  <div id="sign-up-content" nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="10" nzXl="8">
+    <app-logo></app-logo>
+    <h2 nz-title>Create an Account</h2>
+    <app-authentication-social-media (authSocialMediaSelected)="onAuthSocialMediaSelected($event)"></app-authentication-social-media>
+    <nz-divider nzText="or"></nz-divider>
+    <form nz-form [formGroup]="form">
+      <nz-form-item nzGutter="16">
+        <nz-form-control nzErrorTip="First Name field is required!" nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+          <ng-template #firstNamePrefixTemplate>
+            <i fa="user"></i>
+          </ng-template>
+          <nz-input-group [nzPrefix]="firstNamePrefixTemplate">
+            <input nz-input id="sign-up-first-name" formControlName="firstName" placeholder="First Name *"/>
+          </nz-input-group>
+        </nz-form-control>
+        <nz-form-control nzErrorTip="Last Name field is required!" nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+          <nz-input-group>
+            <input nz-input id="sign-up-last-name" formControlName="lastName" placeholder="Last Name *"/>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Email field is required and must be in email format!">
+          <ng-template #emailPrefixTemplate>
+            <i fa="envelope"></i>
+          </ng-template>
+          <nz-input-group [nzPrefix]="emailPrefixTemplate">
+            <input nz-input id="sign-up-email" formControlName="email" type="email" placeholder="Email *"/>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Password field is required!">
+          <nz-input-group [nzPrefix]="passwordPrefixTemplate" [nzSuffix]="passwordSuffixTemplate">
+            <input nz-input id="sign-up-password" formControlName="password" [type]="passwordVisible ? 'text' : 'password'"
+                   placeholder="Password *"/>
+          </nz-input-group>
+          <ng-template #passwordPrefixTemplate>
+            <i fa="lock"></i>
+          </ng-template>
+          <ng-template #passwordSuffixTemplate>
+            <i [fa]="passwordVisible ? 'eye-slash' : 'eye'" class="clickable" nz-tooltip
+               [nzTooltipTitle]="(passwordVisible ? 'Hide' : 'Show') + ' password'" (click)="passwordVisible = !passwordVisible"></i>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <div id="sign-up-footer">
+        <button nz-button type="submit" id="sign-up-form-button" nzType="primary" [disabled]="form.pristine || form.invalid" (click)="submitForm()">Create Account</button>
+        <span>or <button id="sign-up-sign-in-redirect" nz-button nzType="link" (click)="redirectToSignIn()">Sign In</button></span>
+      </div>
+    </form>
+  </div>
+</div>

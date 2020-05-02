@@ -1,0 +1,49 @@
+body,
+.swagger-ui .scheme-container,
+.swagger-ui .topbar .download-url-wrapper .select-label select{
+    background: #232323;
+}
+.swagger-ui .topbar,
+.swagger-ui textarea,
+.swagger-ui input[type=email],
+.swagger-ui input[type=file],
+.swagger-ui input[type=password],
+.swagger-ui input[type=search],
+.swagger-ui input[type=text],
+.swagger-ui textarea{
+    background: #3c3c3c;
+}
+
+.swagger-ui .topbar .download-url-wrapper .select-label select{
+    border: none;
+}
+
+.swagger-ui .info .title,
+
+.swagger-ui .opblock .opblock-summary-operation-id,
+.swagger-ui .opblock .opblock-summary-path,
+.swagger-ui .opblock-tag,
+.swagger-ui .topbar .download-url-wrapper .select-label select,
+.swagger-ui .topbar .download-url-wrapper .select-label span,
+.swagger-ui table thead tr td,
+.swagger-ui table thead tr th,
+.swagger-ui .opblock-description-wrapper p,
+.swagger-ui .opblock-external-docs-wrapper p,
+.swagger-ui .opblock-title_normal p,
+.swagger-ui .response-col_status,
+.swagger-ui .tab li,
+.swagger-ui .parameter__name,
+.swagger-ui .parameter__type,
+.swagger-ui label,
+.swagger-ui textarea,
+.swagger-ui input[type=email],
+.swagger-ui input[type=file],
+.swagger-ui input[type=password],
+.swagger-ui input[type=search],
+.swagger-ui input[type=text],
+.swagger-ui textarea{
+    color: #e8e8e8;
+}
+.swagger-ui .expand-operation svg{
+    fill: #e8e8e8;
+}

@@ -1,0 +1,48 @@
+app-login {
+  $border-spacing: 4px 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  > div.ant-row {
+    height: 100%;
+    padding:$border-spacing;
+
+    #sign-in-content {
+      overflow: auto;
+      height: 100%;
+      padding-right: 8px;
+
+      .forgot-password-container {
+        display: flex;
+        justify-content: flex-end;
+
+        > button {
+          padding-right: 0;
+        }
+      }
+
+      #sign-in-footer {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: center;
+
+        #sign-in-create-account-redirect {
+          padding: 0;
+        }
+      }
+    }
+
+    #sign-in-background-container {
+      height: 100%;
+
+      #sign-in-background {
+        height: 100%;
+        background: url("~/assets/sign-in/sign-in-background.svg") center center no-repeat;
+        background-size: 90% 80%;
+      }
+    }
+  }
+}
+

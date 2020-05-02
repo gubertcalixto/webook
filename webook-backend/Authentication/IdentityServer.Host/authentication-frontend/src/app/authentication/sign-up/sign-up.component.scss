@@ -1,0 +1,43 @@
+app-sign-up {
+  $border-spacing: 4px 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  > div.ant-row {
+    height: 100%;
+    padding:$border-spacing;
+
+    #sign-up-content {
+      overflow: auto;
+      height: 100%;
+      padding-right: 8px;
+      text-align: right;
+
+      form {
+        text-align: left;
+
+        #sign-up-footer {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          justify-content: center;
+
+          #sign-up-sign-in-redirect {
+            padding: 0;
+          }
+        }
+      }
+    }
+
+    #sign-up-background-container {
+      height: 100%;
+
+      #sign-up-background {
+        height: 100%;
+        background: url("~/assets/sign-up/sign-up-background.svg") center center no-repeat;
+        background-size: 90% 80%;
+      }
+    }
+  }
+}
