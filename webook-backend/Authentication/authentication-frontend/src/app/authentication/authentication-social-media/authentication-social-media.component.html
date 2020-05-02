@@ -1,0 +1,7 @@
+<div class="auth-social-media" nz-row nzJustify="center" nzAlign="middle">
+  <div *ngFor="let item of socialMedia" class="auth-social-media-item" nz-col nzXs="24" [nzSm]="24 / socialMedia.length" [nzMd]="24 / socialMedia.length" [nzLg]="24 / socialMedia.length" [nzXl]="24 / socialMedia.length">
+    <button nz-button nzShape="circle" nzSize="large" nz-tooltip [nzTooltipTitle]="item.tooltip" nzTooltipPlacement="bottomCenter" (click)="loginOutside(item.name)" [style.color]="item.color" [style.border-color]="item.color">
+      <i [fa]="item.icon" faStyle="fab"></i>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+.auth-social-media {
+  > .auth-social-media-item {
+    text-align: center;
+    > button{
+      &:focus{
+        border-width: 2px;
+      }
+    }
+  }
+}
+
+@media all and (max-width: 576px){
+    $auth-social-media-margin: 8px;
+    .auth-social-media {
+      > .auth-social-media-item {
+        &:not(:first-child){
+          margin-top: #{$auth-social-media-margin / 2};
+        }
+        &:not(:last-child){
+          margin-bottom: #{$auth-social-media-margin / 2};
+        }
+      }
+    }
+}
