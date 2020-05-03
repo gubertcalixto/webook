@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Reflection;
+using IdentityServer.IdentityControllers.Profile;
 using IdentityServer.IdentityServerConfig;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
 using IdentityServer4.EntityFramework.DbContexts;
@@ -16,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace IdentityServer
 {
@@ -59,8 +61,9 @@ namespace IdentityServer
                 
                     // enables automatic token cleanup
                     options.EnableTokenCleanup = true;
+                    options.TokenCleanupInterval = 30;
                 })
-                // TODO Remove
+                // TODO Check if is needed
                 .AddDeveloperSigningCredential();
             
             services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
@@ -97,7 +100,7 @@ namespace IdentityServer
             
             AuthenticationFrontendSetup(app);
             InitializeDatabase(app);
-            
+
             app.UseIdentityServer();
             app.UseAuthentication();
         }
@@ -144,11 +147,10 @@ namespace IdentityServer
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+                serviceScope.ServiceProvider.GetRequiredService<UserContext>().Database.Migrate();
 
                 var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-                var userContext = serviceScope.ServiceProvider.GetRequiredService<UserContext>();
-                userContext.Database.Migrate();
-                
+
                 context.Database.Migrate();
                 if (!context.Clients.Any())
                 {

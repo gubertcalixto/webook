@@ -4,16 +4,12 @@ namespace IdentityServer.IdentityServerConfig
 {
     public class IdentityDefaultUrls
     {
+        // TODO: Set production URLs
+        public static string AuthenticationUrl => "http://localhost:5000/";
+        public static string LoginAppUrl => AuthenticationUrl + "app/";
+
         public static ICollection<string> AllowedCorsOrigins => new []{"http://localhost:4200/*"};
-        // TODO: Set production URL
-        public static ICollection<string> AllowedCorsOriginsProduction => new []{"TODO"};
-        
         public static ICollection<string> AllowedPostLogoutRedirectUris => new []{"http://localhost:4200/*"};
-        // TODO: Set production URL
-        public static ICollection<string> AllowedPostLogoutRedirectUrisProduction => new []{"TODO"};
-        
         public static ICollection<string> AllowedRedirectUris => new []{"http://localhost:4200/*"};
-        // TODO: Set production URL
-        public static ICollection<string> AllowedRedirectUrisProduction => new []{"TODO"};
     }
 }
