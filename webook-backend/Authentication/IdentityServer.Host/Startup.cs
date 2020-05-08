@@ -56,6 +56,7 @@ namespace IdentityServer
                 
                     // enables automatic token cleanup
                     options.EnableTokenCleanup = true;
+                    options.TokenCleanupInterval = 30;
                 })
                 // TODO Remove
                 .AddDeveloperSigningCredential();
