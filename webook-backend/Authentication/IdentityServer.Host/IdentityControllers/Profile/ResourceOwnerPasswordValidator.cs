@@ -1,15 +1,16 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer.Domain.Entities;
 using IdentityServer.Domain.Utils;
+using IdentityServer.IdentityServerConfig;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
 using IdentityServer4.Validation;
 using Microsoft.EntityFrameworkCore;
 
-namespace IdentityServer.IdentityServerConfig
+namespace IdentityServer.IdentityControllers.Profile
 {
-    public class ResourceOwnerPasswordValidator : IResourceOwnerPasswordValidator
+    public class ResourceOwnerPasswordValidator : IResourceOwnerPasswordValidator 
     {
         private readonly DbSet<ApplicationUser> _userRepository;
 
@@ -17,29 +18,40 @@ namespace IdentityServer.IdentityServerConfig
         {
             _userRepository = userContext.ApplicationUsers;
         }
-        
+
         public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
             try
             {
                 var user = await _userRepository
-                    .FirstOrDefaultAsync(us => us.Login == context.UserName || us.Email == context.UserName);
+                    .FirstOrDefaultAsync(us => 
+                        us.Email == context.UserName ||
+                        us.Login == context.UserName
+                    );
                 if (user == null)
                 {
-                    context.Result = GetGrantErrorResult(LogInStatus.IncorrectUserOrPassword);
+                    context.Result = new GrantValidationResult
+                    {
+                        IsError = true,
+                        Error = LogInStatus.IncorrectUserOrPassword.ToString()
+                    };
                     return;
                 }
                 
                 if (!user.IsActive)
                 {
-                    context.Result = GetGrantErrorResult(LogInStatus.UserInactive);
+                    context.Result = new GrantValidationResult 
+                    {
+                        IsError = true,
+                        Error = LogInStatus.UserInactive.ToString()
+                    };
                     return;
                 }
                 
                 var userPasswordHashed = PasswordManager.PasswordToHashBase64(context.Password, user.PasswordSalt);
                 
                 if (user.PasswordHash != userPasswordHashed) {
-                    context.Result =  GetGrantErrorResult(LogInStatus.IncorrectUserOrPassword);
+                    context.Result = new GrantValidationResult { IsError = true, Error = LogInStatus.IncorrectUserOrPassword.ToString()};                
                     return;
                 } 
 
@@ -47,13 +59,8 @@ namespace IdentityServer.IdentityServerConfig
             }
             catch (Exception)
             {
-                context.Result =  GetGrantErrorResult(LogInStatus.UnknownError);
+                context.Result = new GrantValidationResult { IsError = true, Error = LogInStatus.UnknownError.ToString() };
             }
-        }
-
-        private static GrantValidationResult GetGrantErrorResult(LogInStatus status)
-        {
-            return new GrantValidationResult { IsError = true, Error = status.ToString() };
         }
     }
 }

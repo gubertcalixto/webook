@@ -1,7 +1,11 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Reflection;
+using IdentityServer.IdentityControllers.Profile;
 using IdentityServer.IdentityServerConfig;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace IdentityServer
 {
@@ -58,7 +63,7 @@ namespace IdentityServer
                     options.EnableTokenCleanup = true;
                     options.TokenCleanupInterval = 30;
                 })
-                // TODO Remove
+                // TODO Check if is needed
                 .AddDeveloperSigningCredential();
             
             services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
@@ -94,7 +99,8 @@ namespace IdentityServer
                 app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax });
             
             AuthenticationFrontendSetup(app);
-            
+            InitializeDatabase(app);
+
             app.UseIdentityServer();
             app.UseAuthentication();
         }
@@ -134,6 +140,36 @@ namespace IdentityServer
                     });
                 }
             });
+        }
+        
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+                serviceScope.ServiceProvider.GetRequiredService<UserContext>().Database.Migrate();
+
+                var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+
+                context.Database.Migrate();
+                if (!context.Clients.Any())
+                {
+                    foreach (var client in IdentitySeedData.GetClients())
+                    {
+                        context.Clients.Add(client.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+
+                if (!context.IdentityResources.Any())
+                {
+                    foreach (var resource in IdentitySeedData.GetIdentityResources())
+                    {
+                        context.IdentityResources.Add(resource.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+            }
         }
     }
 }
