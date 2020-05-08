@@ -1,0 +1,6 @@
+{
+  "ngVersion": "7.1.3",
+  "serviceSuffix": "ServiceProxy",
+  "serviceFileSuffix": "ServiceProxy",
+  "providedInRoot": "false"
+}

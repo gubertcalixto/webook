@@ -81,6 +81,11 @@ namespace IdentityServer
                 //     options.ClientId = "<insert here>";
                 //     options.ClientSecret = "<insert here>";
                 // });
+                services.AddMvc();
+                services.AddSwaggerGen(c =>
+                {
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityServer API", Version = "v1" });
+                });
 
             // In production, the Angular files will be served from this directory
             if(!_environment.IsDevelopment())
@@ -98,9 +103,29 @@ namespace IdentityServer
             if (env.IsDevelopment())
                 app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax });
             
-            AuthenticationFrontendSetup(app);
+            // AuthenticationFrontendSetup(app);
             InitializeDatabase(app);
 
+            if (_environment.IsDevelopment())
+            {
+                app.UseCors(opts =>
+                {
+                    opts.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                });
+            }
+            else
+            {
+                // TODO: Setup Production
+                app.UseCors();
+            }
+            
+            app.UseSwagger();
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityServer API v.1.0.0"); });
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
             app.UseIdentityServer();
             app.UseAuthentication();
         }

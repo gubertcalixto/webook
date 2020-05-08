@@ -1,4 +1,4 @@
-import {Directive, HostBinding, Input} from '@angular/core';
+import { Directive, HostBinding, Input } from '@angular/core';
 
 @Directive({
   // tslint:disable-next-line:directive-selector
@@ -37,6 +37,9 @@ export class FaIconsDirective {
   @HostBinding('class') public internalClass: string;
 
   private getFinalClass(): void {
+    if (!this.fa) {
+      return;
+    }
     this.internalClass =
       (this.classAttribute ? this.classAttribute.trim() + ' ' : '') +
       this.faStyle.trim() + ' ' +

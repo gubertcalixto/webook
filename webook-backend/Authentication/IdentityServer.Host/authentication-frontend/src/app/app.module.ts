@@ -1,12 +1,13 @@
-import {BrowserModule, Title} from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NavigationEnd, Router } from '@angular/router';
+import { NZ_I18N, pt_BR } from 'ng-zorro-antd/i18n';
+import { filter, map } from 'rxjs/operators';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {CommonModule} from '@angular/common';
-import {NavigationEnd, Router} from '@angular/router';
-import { NZ_I18N, pt_BR } from 'ng-zorro-antd/i18n';
-import {filter, map} from 'rxjs/operators';
 
 @NgModule({
   declarations: [
@@ -15,10 +16,11 @@ import {filter, map} from 'rxjs/operators';
   imports: [
     CommonModule,
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule
   ],
   providers: [
-    {provide: NZ_I18N, useValue: pt_BR}
+    { provide: NZ_I18N, useValue: pt_BR }
   ],
   bootstrap: [AppComponent]
 })

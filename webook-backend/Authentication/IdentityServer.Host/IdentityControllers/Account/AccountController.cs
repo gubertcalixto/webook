@@ -6,6 +6,7 @@ using System.Web;
 using IdentityServer.Domain.Entities;
 using IdentityServer.IdentityControllers.Account.Dtos.Login;
 using IdentityServer.IdentityControllers.Account.Dtos.Logout;
+using IdentityServer.IdentityControllers.Account.Dtos.Register;
 using IdentityServer.IdentityServerConfig;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
 using IdentityServer4.Events;
@@ -34,6 +35,24 @@ namespace IdentityServer.IdentityControllers.Account
             _interaction = interaction;
             _usersValidator = usersValidator;
             _userRepository = userContext.ApplicationUsers;
+        }
+        
+        [HttpPost]
+        public async Task<RegisterOutput> Register([FromBody] RegisterInput input)
+        {
+            var doesUserExists = await _userRepository.AnyAsync(u => u.Email == input.Email);
+            if (doesUserExists)
+            {
+                return new RegisterOutput
+                {
+                    Result = RegisterOutputResult.UserAlreadyExists
+                };
+            }
+
+            var output = new RegisterOutput();
+            // TODO Map user
+            // TODO Create user
+            return output;
         }
 
         [HttpGet]
