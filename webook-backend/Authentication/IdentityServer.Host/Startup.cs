@@ -1,9 +1,11 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Reflection;
+using AutoMapper;
 using IdentityServer.IdentityControllers.Profile;
 using IdentityServer.IdentityServerConfig;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
+using IdentityServer.Mapper;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Services;
@@ -73,23 +75,38 @@ namespace IdentityServer
             services.AddUserDbContext();
 
             services.AddAuthentication();
-                // TODO Add Google Authentication
-                // .AddGoogle("Google", options =>
-                // {
-                //     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                //
-                //     options.ClientId = "<insert here>";
-                //     options.ClientSecret = "<insert here>";
-                // });
-                services.AddMvc();
-                services.AddSwaggerGen(c =>
-                {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityServer API", Version = "v1" });
-                });
+            // TODO Add Google Authentication
+            // .AddGoogle("Google", options =>
+            // {
+            //     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+            //
+            //     options.ClientId = "<insert here>";
+            //     options.ClientSecret = "<insert here>";
+            // });
+            services.AddMvc();
+
+            services.AddAutoMapper(typeof(Startup))
+                .AddSingleton(CreatMapperConfig());
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityServer API", Version = "v1" });
+            });
 
             // In production, the Angular files will be served from this directory
             if(!_environment.IsDevelopment())
                 services.AddSpaStaticFiles(configuration => { configuration.RootPath = "authentication-frontend/dist"; });
+        }
+
+        private static IMapper CreatMapperConfig()
+        {
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new AuthProfile());
+            });
+
+            var mapper = mappingConfig.CreateMapper();
+            return mapper;
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -103,7 +120,7 @@ namespace IdentityServer
             if (env.IsDevelopment())
                 app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax });
             
-            // AuthenticationFrontendSetup(app);
+            AuthenticationFrontendSetup(app);
             InitializeDatabase(app);
 
             if (_environment.IsDevelopment())
@@ -134,14 +151,14 @@ namespace IdentityServer
         {
             app.UseStaticFiles();
             
-            app.Map(new PathString("/app"), client =>
+            if (!_environment.IsDevelopment())
             {
-                if (!_environment.IsDevelopment())
+                app.Map(new PathString("/login"), client =>
                 {
                     var clientAppDist = new StaticFileOptions
                     {
                         FileProvider = new PhysicalFileProvider(
-                            Path.Combine(Directory.GetCurrentDirectory(), @"LoginApp", "dist")
+                            Path.Combine(Directory.GetCurrentDirectory(), @"authentication-frontend", "dist")
                         )
                     };
 
@@ -149,22 +166,22 @@ namespace IdentityServer
                     client.UseSpa(spa =>
                     {
                         spa.Options.DefaultPage = "/index.html";
-                        spa.Options.SourcePath = "LoginApp";
+                        spa.Options.SourcePath = "authentication-frontend";
                         spa.Options.DefaultPageStaticFileOptions = clientAppDist;
                     });
-                }
-                else
-                {
-                    app.UseSpa(spa =>
-                    {
-                        spa.Options.SourcePath = "authentication-frontend";
-                        if (_environment.IsDevelopment())
-                        {
-                            spa.UseAngularCliServer(npmScript: "start");
-                        }
-                    });
-                }
-            });
+                });
+            }
+            // else
+            // {
+            //     app.UseSpa(spa =>
+            //     {
+            //         spa.Options.SourcePath = "authentication-frontend";
+            //         if (_environment.IsDevelopment())
+            //         {
+            //             spa.UseAngularCliServer(npmScript: "start");
+            //         }
+            //     });
+            // }
         }
         
         private void InitializeDatabase(IApplicationBuilder app)

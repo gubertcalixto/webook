@@ -20,6 +20,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   public errorDuringLogin: boolean;
   public loginFailed: boolean;
   public userInactive: boolean;
+  public userBlocked: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -41,6 +42,7 @@ export class SignInComponent implements OnInit, OnDestroy {
       }
     }));
   }
+
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
   }
@@ -75,6 +77,7 @@ export class SignInComponent implements OnInit, OnDestroy {
     this.errorDuringLogin = false;
     this.userInactive = false;
     this.loginFailed = false;
+    this.userBlocked = false;
 
     const login = this.form.get('userName').value;
     const password = this.form.get('password').value;
@@ -87,6 +90,9 @@ export class SignInComponent implements OnInit, OnDestroy {
           break;
         case LogInStatus.UserInactive:
           this.userInactive = true;
+          break;
+        case LogInStatus.UserBlocked:
+          this.userBlocked = true;
           break;
         case LogInStatus.Validated:
           window.location.href = redirectUrl ?

@@ -5,6 +5,7 @@
         Validated = 0,
         IncorrectUserOrPassword = 1,
         UserInactive = 2,
-        UnknownError = 3
+        UserBlocked = 3,
+        UnknownError = 4
     }
 }

@@ -5,7 +5,7 @@
     <app-authentication-social-media (authSocialMediaSelected)="onAuthSocialMediaSelected($event)">
     </app-authentication-social-media>
     <nz-divider nzText="or use your email"></nz-divider>
-    <form nz-form [formGroup]="form">
+    <form nz-form [formGroup]="form" (submit)="submitForm()">
       <nz-form-item>
         <nz-form-control nzErrorTip="Username field is required!">
           <nz-input-group [nzPrefix]="userPrefixTemplate">
@@ -31,13 +31,25 @@
               [nzTooltipTitle]="(passwordVisible ? 'Hide' : 'Show') + ' password'"></i>
           </ng-template>
         </nz-form-control>
+        <nz-form-item *ngIf="loginFailed" nz-col nzSpan="24" class="ant-typography-rtl">
+          <span nz-typography nzType="danger">Username or password is incorrect, try again</span>
+        </nz-form-item>
+        <nz-form-item *ngIf="userInactive" nz-col nzSpan="24" class="ant-typography-rtl">
+          <span nz-typography nzType="danger">User is inactive</span>
+        </nz-form-item>
+        <nz-form-item *ngIf="userBlocked" nz-col nzSpan="24" class="ant-typography-rtl">
+          <span nz-typography nzType="danger">User is blocked, try again later</span>
+        </nz-form-item>
+        <nz-form-item *ngIf="errorDuringLogin" nz-col nzSpan="24" class="ant-typography-rtl">
+          <span nz-typography nzType="danger">Somethin went wrong, try later</span>
+        </nz-form-item>
         <div nz-col nzSpan="24" class="forgot-password-container">
           <button nz-button nzType="link" (click)="forgotPassword()">Forgot password?</button>
         </div>
       </nz-form-item>
       <div id="sign-in-footer">
         <button type="submit" nz-button id="sign-in-form-button" nzType="primary"
-          [disabled]="form.pristine || form.invalid" (click)="submitForm()">
+          [disabled]="form.pristine || form.invalid">
           Log in
         </button>
         <span>or <button id="sign-in-create-account-redirect" nz-button nzType="link"

@@ -15,5 +15,6 @@ export enum LogInStatus {
     Validated,
     IncorrectUserOrPassword,
     UserInactive,
+    UserBlocked,
     UnknownError
 }

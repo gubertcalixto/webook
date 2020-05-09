@@ -3,12 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "gen:client": "cd ./src/ && node ./assets/client/client-gen.js",
-    "start": "ng serve --port=51402 &REM",
+    "start": "ng serve --port=4201 &REM",
     "build": "ng build --prod",
+    "build:dev": "ng build --prod --deployUrl=http://localhost:5000/app/",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "gen:client": "cd ./src/ && node ./assets/client/client-gen.js"
   },
   "private": true,
   "dependencies": {
@@ -24,6 +25,7 @@
     "ng-zorro-antd": "^9.1.0",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
+    "uuid": "^8.0.0",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {

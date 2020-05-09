@@ -1,6 +1,11 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { v4 as UUID } from 'uuid';
+
+import { RegisterOutputResult } from '../client';
+import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -8,19 +13,31 @@ import {Router} from '@angular/router';
   styleUrls: ['./sign-up.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class SignUpComponent implements OnInit {
-  form: FormGroup;
-  passwordVisible: boolean;
+export class SignUpComponent implements OnInit, OnDestroy {
+  private subs: Subscription[] = [];
+  public form: FormGroup;
+  public passwordVisible: boolean;
+  public userAlreadyExists: boolean;
+  public registerFailed: boolean;
 
-  constructor(private fb: FormBuilder, private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private authenticationService: AuthenticationService
+  ) { }
 
   ngOnInit(): void {
     this.form = this.fb.group({
       firstName: [null, [Validators.required]],
       lastName: [null, [Validators.required]],
       email: [null, [Validators.required, Validators.email, Validators.minLength(3)]],
-      password: [null, [Validators.required]]
+      login: [null, [Validators.required, Validators.minLength(4)]],
+      password: [null, [Validators.required, Validators.minLength(4)]]
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(s => s.unsubscribe());
   }
 
   public onAuthSocialMediaSelected(socialMedia: string): void {
@@ -49,8 +66,33 @@ export class SignUpComponent implements OnInit {
     if (this.form.pristine || this.form.invalid) {
       return;
     }
-    // TODO: submitForm
-    console.log('submitForm called');
+    this.registerFailed = false;
+    this.userAlreadyExists = false;
+
+    const id = UUID();
+    const login = this.form.get('login').value;
+    const firstName = this.form.get('firstName').value;
+    const lastName = this.form.get('lastName').value;
+    const email = this.form.get('email').value;
+    const password = this.form.get('password').value;
+    this.subs.push(
+      this.authenticationService.signUp(id, login, firstName, lastName, email, password)
+        .subscribe(res => {
+          switch (res.result) {
+            case RegisterOutputResult.Success:
+              this.redirectToSignIn();
+              break;
+            case RegisterOutputResult.UserAlreadyExists:
+              this.userAlreadyExists = true;
+              this.form.markAsPristine();
+              break;
+            case RegisterOutputResult.Failed:
+            default:
+              this.registerFailed = true;
+              break;
+          }
+        }, () => this.registerFailed = true)
+    );
   }
 
   public redirectToSignIn(): void {

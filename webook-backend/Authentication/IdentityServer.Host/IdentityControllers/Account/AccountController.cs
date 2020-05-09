@@ -3,7 +3,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using AutoMapper;
 using IdentityServer.Domain.Entities;
+using IdentityServer.Domain.Utils;
 using IdentityServer.IdentityControllers.Account.Dtos.Login;
 using IdentityServer.IdentityControllers.Account.Dtos.Logout;
 using IdentityServer.IdentityControllers.Account.Dtos.Register;
@@ -27,32 +29,50 @@ namespace IdentityServer.IdentityControllers.Account
         private readonly IResourceOwnerPasswordValidator _usersValidator;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IEventService _events;
-        private readonly DbSet<ApplicationUser> _userRepository;
+        private readonly IMapper _mapper;
+        private UserContext _userContext;
+        private DbSet<ApplicationUser> UserRepository => _userContext.ApplicationUsers;
 
-        public AccountController(UserContext userContext, IEventService events, IIdentityServerInteractionService interaction, IResourceOwnerPasswordValidator usersValidator)
+        public AccountController(UserContext userContext, IEventService events, IIdentityServerInteractionService interaction, IResourceOwnerPasswordValidator usersValidator, IMapper mapper)
         {
             _events = events;
             _interaction = interaction;
             _usersValidator = usersValidator;
-            _userRepository = userContext.ApplicationUsers;
+            _mapper = mapper;
+            _userContext = userContext;
         }
         
         [HttpPost]
         public async Task<RegisterOutput> Register([FromBody] RegisterInput input)
         {
-            var doesUserExists = await _userRepository.AnyAsync(u => u.Email == input.Email);
+            var doesUserExists = await DoesUserExists(input);
             if (doesUserExists)
-            {
-                return new RegisterOutput
-                {
-                    Result = RegisterOutputResult.UserAlreadyExists
-                };
-            }
+                return new RegisterOutput { Result = RegisterOutputResult.UserAlreadyExists};
 
+            return await TryInsertUser(input);
+        }
+
+        private async Task<RegisterOutput> TryInsertUser(RegisterInput input)
+        {
             var output = new RegisterOutput();
-            // TODO Map user
-            // TODO Create user
+            var userToAdd = _mapper.Map<ApplicationUser>(input);
+            PasswordManager.CreatePasswordSaltAndHash(input.Password, out var passwordSalt, out var passwordHash);
+            userToAdd.PasswordSalt = passwordSalt;
+            userToAdd.PasswordHash = passwordHash;
+            var userSaved = await UserRepository.AddAsync(userToAdd);
+            await _userContext.SaveChangesAsync();
+            output.Result = RegisterOutputResult.Success;
+            output.UserId = userSaved.Entity.Id;
             return output;
+        }
+
+        private async Task<bool> DoesUserExists(RegisterInput input)
+        {
+            var doesUserExists = await UserRepository.AnyAsync(u =>
+                u.IsDeleted == false &&
+                (u.Email == input.Email || u.Login == input.Login)
+            );
+            return doesUserExists;
         }
 
         [HttpGet]
@@ -79,7 +99,7 @@ namespace IdentityServer.IdentityControllers.Account
                 // issue authentication cookie with subject ID and username
                 var userId = userContext.Result.Subject.Claims.FirstOrDefault(x => x.Type == "sub");
                 
-                var user = _userRepository.FirstOrDefault(us => us.Id == Guid.Parse(userId.Value));
+                var user = UserRepository.FirstOrDefault(us => us.Id == Guid.Parse(userId.Value));
                 
                 if (user != null)
                 {
@@ -93,8 +113,6 @@ namespace IdentityServer.IdentityControllers.Account
                     await HttpContext.SignInAsync(userId != null ? userId.Value : "", model.Login, (AuthenticationProperties) null, claims);
                 }
 
-                // TODO: block user
-
                 return await Task.FromResult(new IdentityLoginOutput { LoginResult = LogInStatus.Validated });
             }
 
@@ -104,6 +122,7 @@ namespace IdentityServer.IdentityControllers.Account
                 case LogInStatus.IncorrectUserOrPassword:
                 case LogInStatus.UserInactive:
                 case LogInStatus.UnknownError:
+                case LogInStatus.UserBlocked:
                     return await Task.FromResult(new IdentityLoginOutput { LoginResult = Enum.Parse<LogInStatus>(userContext.Result.Error) });
                 default:
                 {
