@@ -1,0 +1,9 @@
+{
+  "clients": [
+    {
+      "name": "login",
+      "baseUrl": "http://localhost:5000/swagger/v1/swagger.json",
+      "outPath": "app/authentication/client"
+    }
+  ]
+}

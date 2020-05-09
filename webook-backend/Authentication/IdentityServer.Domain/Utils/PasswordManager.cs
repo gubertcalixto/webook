@@ -6,6 +6,12 @@ namespace IdentityServer.Domain.Utils
 {
     public static class PasswordManager
     {
+        public static void CreatePasswordSaltAndHash(string password, out string passwordSalt, out string passwordHash)
+        {
+            passwordSalt = PasswordSaltInBase64();
+            passwordHash = PasswordToHashBase64(password, passwordSalt);
+        }
+
         public static string PasswordSaltInBase64()
         {
             var salt = new byte[32];

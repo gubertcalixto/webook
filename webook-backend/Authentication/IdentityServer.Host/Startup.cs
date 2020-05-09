@@ -1,7 +1,13 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Reflection;
+using AutoMapper;
+using IdentityServer.IdentityControllers.Profile;
 using IdentityServer.IdentityServerConfig;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
+using IdentityServer.Mapper;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace IdentityServer
 {
@@ -56,8 +63,9 @@ namespace IdentityServer
                 
                     // enables automatic token cleanup
                     options.EnableTokenCleanup = true;
+                    options.TokenCleanupInterval = 30;
                 })
-                // TODO Remove
+                // TODO Check if is needed
                 .AddDeveloperSigningCredential();
             
             services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
@@ -67,18 +75,38 @@ namespace IdentityServer
             services.AddUserDbContext();
 
             services.AddAuthentication();
-                // TODO Add Google Authentication
-                // .AddGoogle("Google", options =>
-                // {
-                //     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                //
-                //     options.ClientId = "<insert here>";
-                //     options.ClientSecret = "<insert here>";
-                // });
+            // TODO Add Google Authentication
+            // .AddGoogle("Google", options =>
+            // {
+            //     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+            //
+            //     options.ClientId = "<insert here>";
+            //     options.ClientSecret = "<insert here>";
+            // });
+            services.AddMvc();
+
+            services.AddAutoMapper(typeof(Startup))
+                .AddSingleton(CreatMapperConfig());
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityServer API", Version = "v1" });
+            });
 
             // In production, the Angular files will be served from this directory
             if(!_environment.IsDevelopment())
                 services.AddSpaStaticFiles(configuration => { configuration.RootPath = "authentication-frontend/dist"; });
+        }
+
+        private static IMapper CreatMapperConfig()
+        {
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new AuthProfile());
+            });
+
+            var mapper = mappingConfig.CreateMapper();
+            return mapper;
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -93,7 +121,28 @@ namespace IdentityServer
                 app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax });
             
             AuthenticationFrontendSetup(app);
+            InitializeDatabase(app);
+
+            if (_environment.IsDevelopment())
+            {
+                app.UseCors(opts =>
+                {
+                    opts.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                });
+            }
+            else
+            {
+                // TODO: Setup Production
+                app.UseCors();
+            }
             
+            app.UseSwagger();
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityServer API v.1.0.0"); });
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
             app.UseIdentityServer();
             app.UseAuthentication();
         }
@@ -102,14 +151,14 @@ namespace IdentityServer
         {
             app.UseStaticFiles();
             
-            app.Map(new PathString("/app"), client =>
+            if (!_environment.IsDevelopment())
             {
-                if (!_environment.IsDevelopment())
+                app.Map(new PathString("/login"), client =>
                 {
                     var clientAppDist = new StaticFileOptions
                     {
                         FileProvider = new PhysicalFileProvider(
-                            Path.Combine(Directory.GetCurrentDirectory(), @"LoginApp", "dist")
+                            Path.Combine(Directory.GetCurrentDirectory(), @"authentication-frontend", "dist")
                         )
                     };
 
@@ -117,22 +166,52 @@ namespace IdentityServer
                     client.UseSpa(spa =>
                     {
                         spa.Options.DefaultPage = "/index.html";
-                        spa.Options.SourcePath = "LoginApp";
+                        spa.Options.SourcePath = "authentication-frontend";
                         spa.Options.DefaultPageStaticFileOptions = clientAppDist;
                     });
-                }
-                else
+                });
+            }
+            // else
+            // {
+            //     app.UseSpa(spa =>
+            //     {
+            //         spa.Options.SourcePath = "authentication-frontend";
+            //         if (_environment.IsDevelopment())
+            //         {
+            //             spa.UseAngularCliServer(npmScript: "start");
+            //         }
+            //     });
+            // }
+        }
+        
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+                serviceScope.ServiceProvider.GetRequiredService<UserContext>().Database.Migrate();
+
+                var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+
+                context.Database.Migrate();
+                if (!context.Clients.Any())
                 {
-                    app.UseSpa(spa =>
+                    foreach (var client in IdentitySeedData.GetClients())
                     {
-                        spa.Options.SourcePath = "authentication-frontend";
-                        if (_environment.IsDevelopment())
-                        {
-                            spa.UseAngularCliServer(npmScript: "start");
-                        }
-                    });
+                        context.Clients.Add(client.ToEntity());
+                    }
+                    context.SaveChanges();
                 }
-            });
+
+                if (!context.IdentityResources.Any())
+                {
+                    foreach (var resource in IdentitySeedData.GetIdentityResources())
+                    {
+                        context.IdentityResources.Add(resource.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+            }
         }
     }
 }
