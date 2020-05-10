@@ -10,6 +10,7 @@ import { NZ_I18N, pt_BR } from 'ng-zorro-antd/i18n';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AppOAuthModule } from './oauth/oauth.module';
 
 registerLocaleData(pt);
 @NgModule({
@@ -22,6 +23,7 @@ registerLocaleData(pt);
     BrowserAnimationsModule,
     HttpClientModule,
     KeyboardShortcutsModule.forRoot(),
+    AppOAuthModule,
     AppRoutingModule
   ],
   providers: [

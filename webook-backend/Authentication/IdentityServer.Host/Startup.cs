@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
+using IdentityServer.Domain.Entities;
 using IdentityServer.IdentityControllers.Profile;
+using IdentityServer.IdentityControllers.RedirectUrls;
 using IdentityServer.IdentityServerConfig;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
 using IdentityServer.Mapper;
@@ -13,6 +15,7 @@ using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -28,16 +31,31 @@ namespace IdentityServer
         private readonly IWebHostEnvironment _environment;
         private readonly IConfiguration _configuration;
 
-        public Startup(IWebHostEnvironment environment, IConfiguration configuration)
-        {
-            _configuration = configuration;
-            _environment = environment;
-        }
-        
         public void ConfigureServices(IServiceCollection services)
         {
             var migrationsAssembly = typeof(UserContext).GetTypeInfo().Assembly.GetName().Name;
             var connectionString = _configuration.GetConnectionString("DefaultConnection");
+
+            services
+                .AddUserDbContext()
+                .AddAutoMapper(typeof(Startup))
+                .AddAuthorization()
+                .AddIdentityCore<ApplicationUser>(o =>
+                {
+                    o.Stores.MaxLengthForKeys = 128;
+                }).AddDefaultTokenProviders()
+                .AddUserStore<ApplicationUserStore>();
+
+            services.AddAuthentication();
+            // TODO Add Google Authentication
+            // .AddGoogle("Google", options =>
+            // {
+            //     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+            //
+            //     options.ClientId = "<insert here>";
+            //     options.ClientSecret = "<insert here>";
+            // });
+                
             services.AddIdentityServer(opt =>
                 {
                     if (!_environment.IsDevelopment()) return;
@@ -61,31 +79,40 @@ namespace IdentityServer
                         builder.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
                     };
                 
-                    // enables automatic token cleanup
                     options.EnableTokenCleanup = true;
                     options.TokenCleanupInterval = 30;
                 })
                 // TODO Check if is needed
                 .AddDeveloperSigningCredential();
             
-            services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
-            services.AddTransient<IProfileService, IdentityClaimsProfileService>();
-            
-            // Db Setup
-            services.AddUserDbContext();
-
-            services.AddAuthentication();
-            // TODO Add Google Authentication
-            // .AddGoogle("Google", options =>
-            // {
-            //     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-            //
-            //     options.ClientId = "<insert here>";
-            //     options.ClientSecret = "<insert here>";
-            // });
             services.AddMvc();
-
-            services.AddAutoMapper(typeof(Startup))
+            
+            services.AddCors(options =>
+            {
+                // this defines a CORS policy called "default"
+                options.AddPolicy("default", policy =>
+                {
+                    if (_environment.IsDevelopment())
+                    {
+                        policy
+                            .WithOrigins(IdentityDefaultUrls.FrontendAppOrigin, IdentityDefaultUrls.LoginAppOrigin)
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    }
+                    else
+                    {
+                        // TODO: Setup Production
+                        policy.WithOrigins("http://localhost:4200");
+                    }
+                    
+                });
+                options.DefaultPolicyName = "default";
+            });
+            
+            services
+                .AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>()
+                .AddTransient<IProfileService, IdentityClaimsProfileService>()
+                .AddTransient<IRedirectUriValidator, RedirectUriValidator>()
                 .AddSingleton(CreatMapperConfig());
 
             services.AddSwaggerGen(c =>
@@ -98,15 +125,10 @@ namespace IdentityServer
                 services.AddSpaStaticFiles(configuration => { configuration.RootPath = "authentication-frontend/dist"; });
         }
 
-        private static IMapper CreatMapperConfig()
+        public Startup(IWebHostEnvironment environment, IConfiguration configuration)
         {
-            var mappingConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new AuthProfile());
-            });
-
-            var mapper = mappingConfig.CreateMapper();
-            return mapper;
+            _configuration = configuration;
+            _environment = environment;
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -120,31 +142,32 @@ namespace IdentityServer
             if (env.IsDevelopment())
                 app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax });
             
+            app.UseIdentityServer();
+            
             AuthenticationFrontendSetup(app);
             InitializeDatabase(app);
 
-            if (_environment.IsDevelopment())
-            {
-                app.UseCors(opts =>
-                {
-                    opts.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
-                });
-            }
-            else
-            {
-                // TODO: Setup Production
-                app.UseCors();
-            }
+            app.UseCors("default");
             
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityServer API v.1.0.0"); });
             app.UseRouting();
+            app.UseAuthentication();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-            app.UseIdentityServer();
-            app.UseAuthentication();
+        }
+
+        private static IMapper CreatMapperConfig()
+        {
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new AuthProfile());
+            });
+
+            var mapper = mappingConfig.CreateMapper();
+            return mapper;
         }
 
         private void AuthenticationFrontendSetup(IApplicationBuilder app)
@@ -184,7 +207,7 @@ namespace IdentityServer
             // }
         }
         
-        private void InitializeDatabase(IApplicationBuilder app)
+        private static void InitializeDatabase(IApplicationBuilder app)
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
