@@ -38,14 +38,14 @@ namespace IdentityServer.IdentityControllers.Profile
         {
             var userId = context.Subject.Claims.First(x => x.Type == IdentityClaims.Sub);
 
-            if (!string.IsNullOrEmpty(userId?.Value) && Guid.Parse(userId.Value) != Guid.Empty)
-            {
-                var user = _userRepository.FirstOrDefault(us => us.Id == Guid.Parse(userId.Value));
+            if (string.IsNullOrEmpty(userId?.Value) || Guid.Parse(userId.Value) == Guid.Empty)
+                return Task.CompletedTask;
+            
+            var user = _userRepository.FirstOrDefault(us => us.Id == Guid.Parse(userId.Value));
 
-                if (user?.IsActive != null && user.IsActive)
-                {
-                    context.IsActive = user.IsActive;
-                }
+            if (user?.IsActive != null && user.IsActive)
+            {
+                context.IsActive = user.IsActive;
             }
             return Task.CompletedTask;
         }

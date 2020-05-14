@@ -2,7 +2,7 @@ import { AuthConfig } from 'angular-oauth2-oidc';
 
 export const oAuthConfig: AuthConfig = {
   issuer: 'http://localhost:5000',
-  redirectUri: window.location.origin,
+  redirectUri: window.location.href,
   clientId: 'webook-frontend',
   scope: 'openid profile',
   requireHttps: false,
