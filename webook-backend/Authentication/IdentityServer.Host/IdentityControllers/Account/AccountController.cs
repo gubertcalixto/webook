@@ -30,7 +30,7 @@ namespace IdentityServer.IdentityControllers.Account
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IEventService _events;
         private readonly IMapper _mapper;
-        private UserContext _userContext;
+        private readonly UserContext _userContext;
         private DbSet<ApplicationUser> UserRepository => _userContext.ApplicationUsers;
 
         public AccountController(UserContext userContext, IEventService events, IIdentityServerInteractionService interaction, IResourceOwnerPasswordValidator usersValidator, IMapper mapper)
@@ -78,7 +78,8 @@ namespace IdentityServer.IdentityControllers.Account
         [HttpGet]
         public RedirectResult Login(string returnUrl)
         {
-            return Redirect(IdentityDefaultUrls.LoginAppUrl + "login?returnUrl=" + HttpUtility.UrlEncode("" + returnUrl) );
+            var url = IdentityDefaultUrls.LoginAppUrl + "?returnUrl=" + HttpUtility.UrlEncode("" + returnUrl);
+            return Redirect(url);
         }
 
         [HttpPost]
@@ -105,7 +106,6 @@ namespace IdentityServer.IdentityControllers.Account
                 {
                     var claims = new[]
                     {
-                        new Claim(IdentityClaims.UserId, user.Id.ToString()),
                         new Claim(IdentityClaims.Name, user.UserName),
                         new Claim(IdentityClaims.Email, user.Email)
                     };

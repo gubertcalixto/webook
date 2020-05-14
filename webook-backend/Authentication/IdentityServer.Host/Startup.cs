@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
+using IdentityServer.Domain.Entities;
 using IdentityServer.IdentityControllers.Profile;
+using IdentityServer.IdentityControllers.RedirectUrls;
 using IdentityServer.IdentityServerConfig;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
 using IdentityServer.Mapper;
@@ -13,6 +15,7 @@ using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -28,25 +31,43 @@ namespace IdentityServer
         private readonly IWebHostEnvironment _environment;
         private readonly IConfiguration _configuration;
 
-        public Startup(IWebHostEnvironment environment, IConfiguration configuration)
-        {
-            _configuration = configuration;
-            _environment = environment;
-        }
-        
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
+            services
+                .AddAutoMapper(typeof(Startup))
+                .AddUserDbContext()
+                .AddAuthorization()
+                .AddIdentityCore<ApplicationUser>(o =>
+                {
+                    o.Stores.MaxLengthForKeys = 128;
+                })
+                .AddDefaultTokenProviders()
+                .AddUserStore<ApplicationUserStore>();
+
+            services.AddAuthentication();
+            // TODO Add Google Authentication
+            // .AddGoogle("Google", options =>
+            // {
+            //     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+            //
+            //     options.ClientId = "<insert here>";
+            //     options.ClientSecret = "<insert here>";
+            // });
+                
             var migrationsAssembly = typeof(UserContext).GetTypeInfo().Assembly.GetName().Name;
             var connectionString = _configuration.GetConnectionString("DefaultConnection");
             services.AddIdentityServer(opt =>
                 {
-                    if (!_environment.IsDevelopment()) return;
-                    opt.Events.RaiseErrorEvents = true;
-                    opt.Events.RaiseInformationEvents = true;
-                    opt.Events.RaiseFailureEvents = true;
-                    opt.Events.RaiseSuccessEvents = true;
+                    if (_environment.IsDevelopment()){
+                        opt.Events.RaiseErrorEvents = true;
+                        opt.Events.RaiseInformationEvents = true;
+                        opt.Events.RaiseFailureEvents = true;
+                        opt.Events.RaiseSuccessEvents = true;
+                    }
                 })
                 .AddProfileService<IdentityClaimsProfileService>()
+                .AddRedirectUriValidator<RedirectUriValidator>()
                 .AddConfigurationStore(options =>
                 {
                     options.ResolveDbContextOptions = (provider, builder) =>
@@ -61,41 +82,57 @@ namespace IdentityServer
                         builder.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
                     };
                 
-                    // enables automatic token cleanup
                     options.EnableTokenCleanup = true;
                     options.TokenCleanupInterval = 30;
                 })
-                // TODO Check if is needed
+                // TODO Production Configuration
                 .AddDeveloperSigningCredential();
-            
-            services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
-            services.AddTransient<IProfileService, IdentityClaimsProfileService>();
-            
-            // Db Setup
-            services.AddUserDbContext();
 
-            services.AddAuthentication();
-            // TODO Add Google Authentication
-            // .AddGoogle("Google", options =>
-            // {
-            //     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-            //
-            //     options.ClientId = "<insert here>";
-            //     options.ClientSecret = "<insert here>";
-            // });
-            services.AddMvc();
-
-            services.AddAutoMapper(typeof(Startup))
+                 services
+                .AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>()
+                .AddTransient<IProfileService, IdentityClaimsProfileService>()
+                .AddTransient<IRedirectUriValidator, RedirectUriValidator>()
                 .AddSingleton(CreatMapperConfig());
+                
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityServer API", Version = "v1" });
-            });
+            // services.AddSwaggerGen(c =>
+            // {
+            //     c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityServer API", Version = "v1" });
+            // });
 
             // In production, the Angular files will be served from this directory
             if(!_environment.IsDevelopment())
                 services.AddSpaStaticFiles(configuration => { configuration.RootPath = "authentication-frontend/dist"; });
+        }
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (_environment.IsDevelopment()){
+                app.UseDeveloperExceptionPage();
+                // https://stackoverflow.com/questions/51912757/identity-server-is-keep-showing-showing-login-user-is-not-authenticated-in-c
+                app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax });
+            }
+            
+            AuthenticationFrontendSetup(app);
+            InitializeDatabase(app);
+
+            // app.UseSwagger();
+            // app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityServer API v.1.0.0"); });
+            
+            app.UseRouting();
+            app.UseCors();
+            app.UseIdentityServer();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
+
+        public Startup(IWebHostEnvironment environment, IConfiguration configuration)
+        {
+            _configuration = configuration;
+            _environment = environment;
         }
 
         private static IMapper CreatMapperConfig()
@@ -109,82 +146,30 @@ namespace IdentityServer
             return mapper;
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (_environment.IsDevelopment())
-                app.UseDeveloperExceptionPage();
-            else
-                app.UseExceptionHandler("/error");
-
-            // https://stackoverflow.com/questions/51912757/identity-server-is-keep-showing-showing-login-user-is-not-authenticated-in-c
-            if (env.IsDevelopment())
-                app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax });
-            
-            AuthenticationFrontendSetup(app);
-            InitializeDatabase(app);
-
-            if (_environment.IsDevelopment())
-            {
-                app.UseCors(opts =>
-                {
-                    opts.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
-                });
-            }
-            else
-            {
-                // TODO: Setup Production
-                app.UseCors();
-            }
-            
-            app.UseSwagger();
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityServer API v.1.0.0"); });
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-            app.UseIdentityServer();
-            app.UseAuthentication();
-        }
-
-        private void AuthenticationFrontendSetup(IApplicationBuilder app)
+        private static void AuthenticationFrontendSetup(IApplicationBuilder app)
         {
             app.UseStaticFiles();
             
-            if (!_environment.IsDevelopment())
+            app.Map(new PathString("/login"), client =>
             {
-                app.Map(new PathString("/login"), client =>
+                var frontendLoginOptions = new StaticFileOptions
                 {
-                    var clientAppDist = new StaticFileOptions
-                    {
-                        FileProvider = new PhysicalFileProvider(
-                            Path.Combine(Directory.GetCurrentDirectory(), @"authentication-frontend", "dist")
-                        )
-                    };
+                    FileProvider = new PhysicalFileProvider(
+                        Path.Combine(Directory.GetCurrentDirectory(), @"authentication-frontend", "dist")
+                    )
+                };
 
-                    client.UseSpaStaticFiles(clientAppDist);
-                    client.UseSpa(spa =>
-                    {
-                        spa.Options.DefaultPage = "/index.html";
-                        spa.Options.SourcePath = "authentication-frontend";
-                        spa.Options.DefaultPageStaticFileOptions = clientAppDist;
-                    });
+                client.UseSpaStaticFiles(frontendLoginOptions);
+                client.UseSpa(spa =>
+                {
+                    spa.Options.DefaultPage = "/index.html";
+                    spa.Options.SourcePath = "authentication-frontend";
+                    spa.Options.DefaultPageStaticFileOptions = frontendLoginOptions;
                 });
-            }
-            // else
-            // {
-            //     app.UseSpa(spa =>
-            //     {
-            //         spa.Options.SourcePath = "authentication-frontend";
-            //         if (_environment.IsDevelopment())
-            //         {
-            //             spa.UseAngularCliServer(npmScript: "start");
-            //         }
-            //     });
-            // }
+            });
         }
         
-        private void InitializeDatabase(IApplicationBuilder app)
+        private static void InitializeDatabase(IApplicationBuilder app)
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {

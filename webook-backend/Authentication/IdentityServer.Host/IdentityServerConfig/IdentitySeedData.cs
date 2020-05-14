@@ -22,7 +22,7 @@ namespace IdentityServer.IdentityServerConfig
             {
                 new Client
                 {
-                    ClientId = "application-oauth",
+                    ClientId = "webook-frontend",
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowedScopes =
                     {
