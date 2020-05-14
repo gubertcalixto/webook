@@ -25,12 +25,14 @@ export class OauthManagerService {
 
   constructor(private oauthService: OAuthService) { }
 
-  public async init(): Promise<boolean> {
+  public async init(forceLogin = true): Promise<boolean> {
     this.oauthService.configure(oAuthConfig);
     this.oauthService.tokenValidationHandler = new JwksValidationHandler();
 
     try {
-      const success = await this.oauthService.loadDiscoveryDocumentAndTryLogin();
+      const success = forceLogin ?
+        await this.oauthService.loadDiscoveryDocumentAndLogin() :
+        await this.oauthService.loadDiscoveryDocumentAndTryLogin();
       this.finishedLoadingSubject.next(success);
       this.oauthService.setupAutomaticSilentRefresh();
       this.finishedLoading = success;
@@ -40,14 +42,6 @@ export class OauthManagerService {
       this.loginFailed = true;
       return Promise.resolve(false);
     }
-  }
-
-  public initAndForceLogin(): void {
-    this.init().then(res => {
-      if (!res) {
-        this.login();
-      }
-    });
   }
 
   public login(): void {
