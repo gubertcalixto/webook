@@ -106,7 +106,6 @@ namespace IdentityServer.IdentityControllers.Account
                 {
                     var claims = new[]
                     {
-                        new Claim(IdentityClaims.UserId, user.Id.ToString()),
                         new Claim(IdentityClaims.Name, user.UserName),
                         new Claim(IdentityClaims.Email, user.Email)
                     };
