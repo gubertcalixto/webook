@@ -67,7 +67,6 @@ namespace IdentityServer
                     }
                 })
                 .AddProfileService<IdentityClaimsProfileService>()
-                .AddRedirectUriValidator<RedirectUriValidator>()
                 .AddConfigurationStore(options =>
                 {
                     options.ResolveDbContextOptions = (provider, builder) =>

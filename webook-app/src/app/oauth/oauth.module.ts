@@ -22,6 +22,6 @@ export function storageFactory(): OAuthStorage {
 })
 export class AppOAuthModule {
   constructor(authManagerService: OauthManagerService) {
-    authManagerService.startFlow();
+    authManagerService.init();
   }
 }

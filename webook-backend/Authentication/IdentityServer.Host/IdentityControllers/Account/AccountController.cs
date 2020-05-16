@@ -106,11 +106,12 @@ namespace IdentityServer.IdentityControllers.Account
                 {
                     var claims = new[]
                     {
-                        new Claim(IdentityClaims.Name, user.UserName),
-                        new Claim(IdentityClaims.Email, user.Email)
+                        new Claim(IdentityClaims.Email, user.Email),
+                        new Claim(IdentityClaims.FirstName, user.FirstName),
+                        new Claim(IdentityClaims.LastName, user.SecondName)
                     };
 
-                    await HttpContext.SignInAsync(userId != null ? userId.Value : "", model.Login, (AuthenticationProperties) null, claims);
+                    await HttpContext.SignInAsync(userId != null ? userId.Value : "", user.UserName, (AuthenticationProperties) null, claims);
                 }
 
                 return await Task.FromResult(new IdentityLoginOutput { LoginResult = LogInStatus.Validated });

@@ -2,8 +2,9 @@
 {
     public static class IdentityClaims
     {
-        public static string Name => nameof(Name);
-        public static string Email => nameof(Email);
-        public static string Sub => "sub";    
+        public static string Email => nameof(Email).ToLower();
+        public static string FirstName => "first_name";
+        public static string LastName => "last_name";
+        public static string Sub => nameof(Sub).ToLower();    
     }
 }
