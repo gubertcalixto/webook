@@ -57,8 +57,9 @@
     ],
     "no-console": [
       true,
-      "debug",
+      "log",
       "info",
+      "debug",
       "time",
       "timeEnd",
       "trace"
