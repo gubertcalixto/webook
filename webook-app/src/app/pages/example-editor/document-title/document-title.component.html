@@ -1,0 +1,12 @@
+<nz-input-group [hidden]="!isEditingTitle" [nzSuffix]="documentTitleIconSuffix">
+  <input #documentTitleInput type="text" nz-input placeholder="Title" [value]="documentTitle"
+    (keyup.enter)="updateDocumentTitle()" (keyup.esc)="toggleEditing(false)" />
+  <ng-template #documentTitleIconSuffix>
+    <button nz-button nzType="link" (click)="updateDocumentTitle()"><i fa="check"></i></button>
+    <button nz-button nzType="link" nzDanger (click)="toggleEditing(false)"><i fa="times"></i></button>
+  </ng-template>
+</nz-input-group>
+<h2 nz-typography *ngIf="!isEditingTitle" (click)="toggleEditing()">{{documentTitle}}</h2>
+<ng-template #suffixIconSearch>
+  <i nz-icon nzType="search"></i>
+</ng-template>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-example-editor',
@@ -6,10 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./example-editor.component.scss']
 })
 export class ExampleEditorComponent implements OnInit {
+  public documentTitle = 'Document 1';
+  public pageSelectionOpen = false;
+  public pageSelectionExpanded = false;
+  constructor(private router: Router) { }
 
-  constructor() { }
-
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
+  public redirectBack(): void {
+    console.log('backToStart');
+    // this.router.navigateByUrl('/');
+  }
 }
