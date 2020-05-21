@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
@@ -8,15 +9,17 @@ using IdentityServer.IdentityControllers.RedirectUrls;
 using IdentityServer.IdentityServerConfig;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
 using IdentityServer.Mapper;
+using IdentityServer4;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,16 +47,20 @@ namespace IdentityServer
                 })
                 .AddDefaultTokenProviders()
                 .AddUserStore<ApplicationUserStore>();
-
+            
             services.AddAuthentication();
-            // TODO Add Google Authentication
-            // .AddGoogle("Google", options =>
-            // {
-            //     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-            //
-            //     options.ClientId = "<insert here>";
-            //     options.ClientSecret = "<insert here>";
-            // });
+                // TODO Add Google Authentication
+                // .AddAuthentication(options =>
+                // {
+                //     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                // })
+                // .AddGoogle("Google", options =>
+                // {
+                //     var googleAuthSection = _configuration.GetSection("Authentication:Google");
+                //     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                //     options.ClientId = googleAuthSection[ExternalLoginConfiguration.Google.ClientId];
+                //     options.ClientSecret = googleAuthSection[ExternalLoginConfiguration.Google.ClientSecret];
+                // });
                 
             var migrationsAssembly = typeof(UserContext).GetTypeInfo().Assembly.GetName().Name;
             var connectionString = _configuration.GetConnectionString("DefaultConnection");
@@ -87,17 +94,17 @@ namespace IdentityServer
                 // TODO Production Configuration
                 .AddDeveloperSigningCredential();
 
-                 services
+            services
                 .AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>()
                 .AddTransient<IProfileService, IdentityClaimsProfileService>()
                 .AddTransient<IRedirectUriValidator, RedirectUriValidator>()
                 .AddSingleton(CreatMapperConfig());
                 
-
-            // services.AddSwaggerGen(c =>
-            // {
-            //     c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityServer API", Version = "v1" });
-            // });
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityServer API", Version = "v1" });
+            });
 
             // In production, the Angular files will be served from this directory
             if(!_environment.IsDevelopment())
@@ -115,8 +122,8 @@ namespace IdentityServer
             AuthenticationFrontendSetup(app);
             InitializeDatabase(app);
 
-            // app.UseSwagger();
-            // app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityServer API v.1.0.0"); });
+            app.UseSwagger();
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityServer API v.1.0.0"); });
             
             app.UseRouting();
             app.UseCors();
