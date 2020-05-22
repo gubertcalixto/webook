@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -6,14 +6,14 @@ import { Router } from '@angular/router';
   templateUrl: './example-editor.component.html',
   styleUrls: ['./example-editor.component.scss']
 })
-export class ExampleEditorComponent implements OnInit {
+export class ExampleEditorComponent {
   public documentTitle = 'Document 1';
   public pageSelectionOpen = false;
-  public pageSelectionExpanded = false;
-  constructor(private router: Router) { }
+  public pageIndex = 1;
+  public pageTotalCount = 5;
+  public pageSelectionExpanded = true;
 
-  ngOnInit(): void {
-  }
+  constructor(private router: Router) { }
 
   public redirectBack(): void {
     console.log('backToStart');

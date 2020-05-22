@@ -6,7 +6,9 @@
 </ng-template>
 <nz-page-header (nzBack)="redirectBack()" [nzTitle]="headerTitle" [nzBackIcon]="headerBack" class="site-page-header">
   <nz-page-header-extra>
-    <wb-page-navigation [(pageSelectionExpanded)]="pageSelectionExpanded"></wb-page-navigation>
+    <wb-page-navigation [(pageIndex)]="pageIndex" [totalCount]="pageTotalCount"
+      [(pageSelectionExpanded)]="pageSelectionExpanded">
+    </wb-page-navigation>
   </nz-page-header-extra>
   <nz-page-header-extra>
     <button nz-button nzType="link"><i fa="undo-alt"></i></button>
@@ -14,7 +16,8 @@
     <button nz-button nzType="primary" nzShape="round">Download</button>
   </nz-page-header-extra>
   <nz-page-header-content *ngIf="pageSelectionExpanded">
-    <h3 nz-typography>Escolha sua página Aqui</h3>
+    <wb-page-expanded-navigation [(pageIndex)]="pageIndex" [totalCount]="pageTotalCount"
+      (pageSelected)="pageSelectionExpanded = false"></wb-page-expanded-navigation>
   </nz-page-header-content>
 </nz-page-header>
 

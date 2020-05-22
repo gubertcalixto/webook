@@ -6,10 +6,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./page-navigation.component.scss']
 })
 export class PageNavigationComponent {
-  @Input() public currentPage = 1;
+  @Input() public pageIndex = 1;
   @Input() public pageSelectionExpanded = false;
-  @Input() public maxPageSize: number;
-  @Output() public currentPageChange = new EventEmitter<number>();
+  @Input() public totalCount: number;
+  @Output() public pageIndexChange = new EventEmitter<number>();
   @Output() public pageSelectionExpandedChange = new EventEmitter<boolean>();
 
   public togglePageSelectionExpanded(state?: boolean, event?: MouseEvent): void {
@@ -25,18 +25,18 @@ export class PageNavigationComponent {
   }
 
   public goToNextPage(): void {
-    this.pageChange(this.currentPage + 1);
+    this.pageChange(this.pageIndex + 1);
   }
 
   public goToPreviousPage(): void {
-    this.pageChange(this.currentPage - 1);
+    this.pageChange(this.pageIndex - 1);
   }
 
   public pageChange(pageNumber: number): void {
-    if (pageNumber <= 0 || pageNumber > this.maxPageSize) {
+    if (pageNumber <= 0 || pageNumber > this.totalCount) {
       return;
     }
-    this.currentPage = pageNumber;
-    this.currentPageChange.emit(pageNumber);
+    this.pageIndex = pageNumber;
+    this.pageIndexChange.emit(pageNumber);
   }
 }
