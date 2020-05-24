@@ -1,0 +1,72 @@
+wb-not-found {
+  position: relative;
+
+  > div.ant-row {
+    height: 100%;
+
+    #background-video {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      z-index: -1;
+    }
+
+    #background-video-attribute {
+      position: fixed;
+      bottom: 2%;
+      right: 2%;
+      margin: 0;
+      padding: 0;
+      font-size: 16px;
+
+      > a {
+        text-shadow: 1px 1px 1px #000;
+      }
+    }
+
+    > #not-found-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
+      overflow: auto;
+      background-color: rgba(255, 255, 255, 0.8);
+      app-logo {
+        flex: initial;
+      }
+      #not-found-message {
+        flex: auto;
+        width: 100%;
+        text-align: center;
+        > h1 {
+          font-size: 64px;
+          margin: 0;
+        }
+        > h1,
+        > p {
+          cursor: context-menu;
+        }
+        > button {
+          margin-top: 16px;
+          margin-bottom: 16px;
+        }
+      }
+    }
+  }
+}
+
+@media all and (max-width: 767px) {
+  app-not-found {
+    #background-video,
+    #background-video-attribute {
+      display: none;
+    }
+  }
+}

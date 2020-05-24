@@ -1,0 +1,11 @@
+app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+
+  router-outlet + * {
+    height: 100%;
+    overflow: auto;
+  }
+}

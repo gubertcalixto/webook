@@ -1,0 +1,61 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2015",
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "paths": {
+      "@oath": [
+        "src/app/setup/oauth"
+      ],
+      "@oath/*": [
+        "src/app/setup/oauth/*"
+      ],
+      "@oath-guards": [
+        "src/app/setup/oauth/consts/guards"
+      ],
+      "@oath-guards/*": [
+        "src/app/setup/oauth/consts/guards/*"
+      ],
+      "@webook-shared": [
+        "projects/webook-shared/src/lib"
+      ],
+      "@webook-shared/*": [
+        "projects/webook-shared/src/lib/*"
+      ],
+      "@webook-editor": [
+        "projects/webook-editor/src/lib"
+      ],
+      "@webook-editor/*": [
+        "projects/webook-editor/src/lib/*"
+      ],
+      "@webook-editor-base": [
+        "projects/webook-editor-base/src/lib"
+      ],
+      "@webook-editor-base/*": [
+        "projects/webook-editor-base/src/lib/*"
+      ],
+      "@webook-editor-base-components": [
+        "projects/webook-editor-base-components/src/lib"
+      ],
+      "@webook-editor-base-components/*": [
+        "projects/webook-editor-base-components/src/lib/*"
+      ]
+    }
+  },
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
+  }
+}
