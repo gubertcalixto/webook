@@ -1,5 +1,5 @@
 import { Injectable, Type } from '@angular/core';
-import { EDITOR_BASE_COMPONENTS } from '@webook-editor-base-components/webook-editor-base-components.tokens';
+import { EDITOR_BASE_COMPONENTS } from '@wb-editor-base-components/webook-editor-base-components.tokens';
 
 @Injectable()
 export class WebookEditorService {

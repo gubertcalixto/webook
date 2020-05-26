@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { WebookEditorBaseComponentsModule } from '@webook-editor-base-components/webook-editor-base-components.module';
-import { FaIconsModule } from '@webook-shared/components';
+import { FaIconsModule } from '@shared/components';
+import { WebookEditorBaseComponentsModule } from '@wb-editor-base-components/webook-editor-base-components.module';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 

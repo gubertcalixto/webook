@@ -1,6 +1,6 @@
 import { AfterContentInit, Component, ComponentFactoryResolver, Input, OnDestroy, ViewChild } from '@angular/core';
-import { WebookEditorBaseElement } from '@webook-editor-base/webook-editor-base-element';
-import { WebookEditorElement } from '@webook-editor-base/webook-editor-element';
+import { WebookEditorBaseElement } from '@wb-editor-base/webook-editor-base-element';
+import { WebookEditorElement } from '@wb-editor-base/webook-editor-element';
 import { Subscription } from 'rxjs';
 
 import { WebookEditorElementProjectionDirective } from './webook-editor-element-projection.directive';

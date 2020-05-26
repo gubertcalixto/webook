@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { WebookEditorModule } from '@webook-editor/webook-editor.module';
-import { FaIconsModule } from '@webook-shared/components';
+import { FaIconsModule } from '@shared/components';
+import { WebookEditorModule } from '@wb-editor/webook-editor.module';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzInputModule } from 'ng-zorro-antd/input';

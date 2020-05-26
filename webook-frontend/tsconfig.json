@@ -16,42 +16,24 @@
       "dom"
     ],
     "paths": {
-      "@oath": [
-        "src/app/setup/oauth"
-      ],
       "@oath/*": [
         "src/app/setup/oauth/*"
-      ],
-      "@oath-guards": [
-        "src/app/setup/oauth/consts/guards"
       ],
       "@oath-guards/*": [
         "src/app/setup/oauth/consts/guards/*"
       ],
-      "@webook-shared": [
-        "projects/webook-shared/src/lib"
-      ],
-      "@webook-shared/*": [
+      "@shared/*": [
         "projects/webook-shared/src/lib/*"
       ],
-      "@webook-editor": [
-        "projects/webook-editor/src/lib"
-      ],
-      "@webook-editor/*": [
+      "@wb-editor/*": [
         "projects/webook-editor/src/lib/*"
       ],
-      "@webook-editor-base": [
-        "projects/webook-editor-base/src/lib"
-      ],
-      "@webook-editor-base/*": [
+      "@wb-editor-base/*": [
         "projects/webook-editor-base/src/lib/*"
       ],
-      "@webook-editor-base-components": [
-        "projects/webook-editor-base-components/src/lib"
-      ],
-      "@webook-editor-base-components/*": [
+      "@wb-editor-base-components/*": [
         "projects/webook-editor-base-components/src/lib/*"
-      ]
+      ],
     }
   },
   "angularCompilerOptions": {

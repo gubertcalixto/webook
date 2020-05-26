@@ -14,6 +14,7 @@ export class OauthManagerService {
   public internalUserInfo: UserInfo;
 
   public finishedLoadingSubject = new BehaviorSubject<boolean>(false);
+  public hasLoginProccessInited = false;
   public finishedLoading = false;
   public get isLogged() { return !this.loginFailed && this.oauthService.hasValidAccessToken(); }
   public get userInfo() { return this.internalUserInfo; }
@@ -26,6 +27,7 @@ export class OauthManagerService {
   constructor(private oauthService: OAuthService) { }
 
   public async init(forceLogin = true): Promise<boolean> {
+    this.hasLoginProccessInited = true;
     this.oauthService.configure(oAuthConfig);
     this.oauthService.tokenValidationHandler = new JwksValidationHandler();
 
@@ -66,6 +68,9 @@ export class OauthManagerService {
   public hasValidToken(): Observable<boolean> | boolean {
     if (this.finishedLoading) {
       return this.isLogged;
+    }
+    if (!this.hasLoginProccessInited) {
+      return this.hasLoginProccessInited;
     }
     return this.finishedLoadingSubject
       .pipe(

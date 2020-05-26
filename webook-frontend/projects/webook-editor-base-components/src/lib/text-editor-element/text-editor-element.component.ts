@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
-import { WebookEditorBaseElement } from '@webook-editor-base/webook-editor-base-element';
+import { WebookEditorBaseElement } from '@wb-editor-base/webook-editor-base-element';
 
 @Component({
   selector: 'wb-text-editor-element',

@@ -6,7 +6,6 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./home-page/home-page.module').then(m => m.HomePageModule),
-    canLoad: [MustBeLoggedAuthGuard],
     canActivate: [MustBeLoggedAuthGuard],
     data: { title: 'Home' }
   },
@@ -38,7 +37,6 @@ const routes: Routes = [
   {
     path: 'user/preferences',
     loadChildren: () => import('./user/user-preferences/user-preferences.module').then(m => m.UserPreferencesModule),
-    canLoad: [MustBeLoggedAuthGuard],
     canActivate: [MustBeLoggedAuthGuard],
     data: { title: 'Preferências de Usuário' }
   },
