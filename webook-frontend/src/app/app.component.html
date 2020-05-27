@@ -1,1 +1,49 @@
-<router-outlet></router-outlet>
+<nz-layout>
+  <nz-sider [ngClass]="{collapsed: isCollapsed}" nzBreakpoint="md" (nzCollapsedChange)="isCollapsed = $event">
+    <nz-layout class="sider-container">
+      <nz-header *ngIf="!isCollapsed">
+        <div nz-row class="sider-header-container">
+          <div nz-col nzFlex="1">
+            <a routerLink="/home">
+              <h1 nz-typography>Webook</h1>
+            </a>
+          </div>
+          <div nz-col nzFlex="2" class="ant-typography-rtl notification-action">
+            <button nz-button nzType="link" (click)="notificationClicked()" [nzGhost]="true">
+              <nz-badge [nzDot]="hasNotification">
+                <i fa="bell"></i>
+              </nz-badge>
+            </button>
+          </div>
+        </div>
+      </nz-header>
+      <nz-content>
+        <div *ngIf="isCollapsed" nz-row class="sider-logo-collapsed-container">
+          <a routerLink="/home">
+            <h1 nz-typography>Wb</h1>
+          </a>
+        </div>
+        <ul nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed" [nzMode]="isCollapsed ? 'vertical' : 'inline'">
+          <li nz-menu-item>
+            <i fa="home"></i>
+            <span *ngIf="!isCollapsed">Home</span>
+          </li>
+          <li nz-menu-item>
+            <i fa="book"></i>
+            <span *ngIf="!isCollapsed">Scraps</span>
+          </li>
+          <li nz-menu-item>
+            <i fa="search"></i>
+            <span *ngIf="!isCollapsed">Explore</span>
+          </li>
+        </ul>
+      </nz-content>
+    </nz-layout>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>Header</nz-header>
+    <nz-content>
+      <router-outlet></router-outlet>
+    </nz-content>
+  </nz-layout>
+</nz-layout>

@@ -6,4 +6,17 @@ import { Component, ViewEncapsulation } from '@angular/core';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent { }
+export class AppComponent {
+  public isCollapsed = false;
+  public hasNotification = true;
+
+  public toogleSidenavCollapse(): void {
+    this.isCollapsed = !this.isCollapsed;
+  }
+
+  public notificationClicked(): void {
+    if (this.hasNotification) {
+      this.hasNotification = false;
+    }
+  }
+}

@@ -4,6 +4,65 @@ wb-root {
   height: 100%;
   overflow: auto;
 
+  nz-sider {
+    $sider-bg: #cacaca;
+    nz-layout.sider-container {
+      height: inherit;
+      nz-header {
+        padding: 0 12px;
+        .sider-header-container {
+          .notification-action {
+            > button:hover,
+            > button:focus {
+              color: #808080;
+            }
+          }
+        }
+      }
+      nz-content {
+        display: flex;
+        flex-direction: column;
+        flex: auto;
+        ul.ant-menu {
+          height: 100%;
+          overflow-x: hidden;
+          overflow-y: auto;
+          background-color: $sider-bg;
+          .ant-menu-submenu > .ant-menu {
+            background-color: $sider-bg;
+          }
+          li[nz-menu-item],
+          div[nz-submenu-title] {
+            $submenu-icon-gap: 12px;
+            font-size: 125%;
+            span {
+              padding-left: $submenu-icon-gap;
+            }
+          }
+          li[nz-menu-item]:first-child {
+            margin-top: 0;
+          }
+        }
+      }
+    }
+
+    &.collapsed {
+      $sider-collapsed-width: 80px;
+      min-width: $sider-collapsed-width !important;
+      width: $sider-collapsed-width !important;
+      max-width: $sider-collapsed-width !important;
+      .sider-logo-collapsed-container {
+        display: flex;
+        align-items: center;
+        place-content: space-evenly;
+        background-color: $sider-bg;
+        h1 {
+          margin: 0.1em 0;
+        }
+      }
+    }
+  }
+
   router-outlet + * {
     height: 100%;
     overflow: auto;
