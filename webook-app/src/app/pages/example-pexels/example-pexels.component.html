@@ -1,9 +1,0 @@
-<h3>Example Pexels ({{result?.total_results || 0}})</h3>
-<div *ngIf="result" class="result-container">
-    <ng-container *ngFor="let item of result.photos">
-        <img class="result-item" [title]="item.photographer" [src]="item.src?.small">
-    </ng-container>
-</div>
-<div *ngIf="!result">
-    <nz-empty></nz-empty>
-</div>
