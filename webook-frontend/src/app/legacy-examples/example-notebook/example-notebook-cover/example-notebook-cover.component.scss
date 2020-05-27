@@ -1,0 +1,15 @@
+:host {
+  align-items: flex-start;
+  justify-content: flex-start;
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 5px;
+    bottom: 0;
+    width: 3px;
+    background: rgba(0, 0, 0, 0.06);
+  }
+}

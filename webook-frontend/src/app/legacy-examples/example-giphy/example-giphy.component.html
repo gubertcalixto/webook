@@ -1,0 +1,10 @@
+<h3>Example Giphy ({{result?.pagination?.total_count || 0}})</h3>
+<div *ngIf="result" class="result-container">
+    <ng-container *ngFor="let item of result.data">
+        <img class="result-item" [title]="item.user?.display_name + ' | ' + item.title"
+            [src]="item.images?.fixed_width?.url">
+    </ng-container>
+</div>
+<div *ngIf="!result">
+    <nz-empty></nz-empty>
+</div>

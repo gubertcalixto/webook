@@ -1,0 +1,10 @@
+<span *ngIf="!editing" (dblclick)="toggleEditMode()">{{text}}</span>
+<ng-container *ngIf="editing">
+  <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+    <input #inputToSave type="text" nz-input placeholder="input search text" (keyup.enter)="saveEdit()" (keyup.esc)="toggleEditMode()" />
+  </nz-input-group>
+  <ng-template #suffixIconButton>
+    <button nz-button nzType="primary" (click)="saveEdit()"><i fa="save"></i></button>
+    <button nz-button nzType="danger" (click)="toggleEditMode()"><i fa="times"></i></button>
+  </ng-template>
+</ng-container>
