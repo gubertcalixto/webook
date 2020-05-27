@@ -1,4 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
+import { TitleResolverService } from '@shared/utils';
 
 @Component({
   selector: 'wb-root',
@@ -7,16 +8,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  public isCollapsed = false;
-  public hasNotification = true;
-
-  public toogleSidenavCollapse(): void {
-    this.isCollapsed = !this.isCollapsed;
-  }
-
-  public notificationClicked(): void {
-    if (this.hasNotification) {
-      this.hasNotification = false;
-    }
+  constructor(titleResolverService: TitleResolverService) {
+    titleResolverService.startTitleResolver();
   }
 }

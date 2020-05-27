@@ -1,0 +1,72 @@
+wb-navigation-container {
+  nz-sider {
+    $sider-bg: #cacaca;
+    nz-layout.sider-container {
+      height: inherit;
+      nz-content {
+        display: flex;
+        flex-direction: column;
+        flex: auto;
+        .logo {
+          background-color: $sider-bg;
+          h1 {
+            padding-left: 12px;
+            margin: 0;
+          }
+        }
+        ul.sidenav-menu {
+          height: 100%;
+          overflow-x: hidden;
+          overflow-y: auto;
+          background-color: $sider-bg;
+          border-right: none;
+          .ant-menu-submenu > .ant-menu {
+            background-color: $sider-bg;
+          }
+          li[nz-menu-item],
+          div[nz-submenu-title] {
+            $submenu-icon-gap: 12px;
+            font-size: 125%;
+            span {
+              padding-left: $submenu-icon-gap;
+            }
+          }
+          li[nz-menu-item]:first-child {
+            margin-top: 0;
+          }
+        }
+      }
+    }
+
+    &.collapsed {
+      nz-layout.sider-container {
+        $sider-collapsed-width: 80px;
+        min-width: $sider-collapsed-width !important;
+        width: $sider-collapsed-width !important;
+        max-width: $sider-collapsed-width !important;
+        .logo {
+          text-align: center;
+          h1 {
+            padding-left: 0;
+          }
+        }
+      }
+    }
+  }
+  nz-content {
+    nz-page-header {
+      .avatar-btn {
+        background: none;
+        border: none;
+        outline: none;
+        nz-avatar.ant-avatar {
+          margin: 0;
+        }
+      }
+    }
+  }
+}
+.avatar-popover-menu {
+  border: none;
+  text-align: end;
+}
