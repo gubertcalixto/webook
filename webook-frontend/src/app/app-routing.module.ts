@@ -7,12 +7,12 @@ const routes: Routes = [
     path: 'home',
     loadChildren: () => import('./home-page/home-page.module').then(m => m.HomePageModule),
     canActivate: [MustBeLoggedAuthGuard],
-    data: { title: 'Home' }
+    data: { title: 'Home', hasNavigation: true }
   },
   {
     path: 'welcome',
     loadChildren: () => import('./welcome-page/welcome-page.module').then(m => m.WelcomePageModule),
-    data: { title: 'Seja Bem Vindo', hasNavigation: true }
+    data: { title: 'Seja Bem Vindo' }
   },
   {
     path: 'create-document',
@@ -47,7 +47,7 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'home'
+    redirectTo: '/home'
   },
   {
     path: '**',

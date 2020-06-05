@@ -1,5 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { OauthManagerService } from '@oath/services/oauth-manager.service';
+import { UserService } from '@oath/services/user.service';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -13,7 +15,11 @@ export class NavigationContainerComponent {
   public hasNotification = true;
   public routeHasNavigation = false;
 
-  constructor(private router: Router) {
+  constructor(
+    public oAuthManagerService: OauthManagerService,
+    public userService: UserService,
+    private router: Router
+  ) {
     this.startNavigationResolver();
   }
 
@@ -45,7 +51,11 @@ export class NavigationContainerComponent {
     }
   }
 
+  public login(): void {
+    this.oAuthManagerService.login();
+  }
+
   public logout(): void {
-    // TODO logout process
+    this.oAuthManagerService.logOut();
   }
 }

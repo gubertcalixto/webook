@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { OAuthService, UserInfo } from 'angular-oauth2-oidc';
 import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { oAuthConfig } from '../consts/oauth.settings';
 
@@ -32,12 +32,16 @@ export class OauthManagerService {
     this.oauthService.tokenValidationHandler = new JwksValidationHandler();
 
     try {
-      const success = forceLogin ?
-        await this.oauthService.loadDiscoveryDocumentAndLogin() :
-        await this.oauthService.loadDiscoveryDocumentAndTryLogin();
-      this.finishedLoadingSubject.next(success);
+      let success: boolean;
+      if (forceLogin) {
+        success = await this.oauthService.loadDiscoveryDocumentAndLogin();
+      } else {
+        success = await this.oauthService.loadDiscoveryDocumentAndTryLogin() ||
+          (this.oauthService.hasValidAccessToken() && this.oauthService.hasValidIdToken());
+      }
       this.oauthService.setupAutomaticSilentRefresh();
-      this.finishedLoading = success;
+      this.finishedLoading = true;
+      this.finishedLoadingSubject.next(true);
       return success;
     }
     catch (e) {
@@ -56,6 +60,9 @@ export class OauthManagerService {
         resolve(this.userInfo);
       });
     }
+    if (!(await this.hasValidToken().toPromise())) {
+      return null;
+    }
     const result = await this.oauthService.loadUserProfile();
     this.internalUserInfo = result;
     return result;
@@ -65,19 +72,16 @@ export class OauthManagerService {
     this.oauthService.logOut();
   }
 
-  public hasValidToken(): Observable<boolean> | boolean {
+  public hasValidToken(): Observable<boolean> {
     if (this.finishedLoading) {
-      return this.isLogged;
+      return of(this.isLogged);
     }
     if (!this.hasLoginProccessInited) {
-      return this.hasLoginProccessInited;
+      return of(this.hasLoginProccessInited);
     }
     return this.finishedLoadingSubject
-      .pipe(
-        filter(res => Boolean(res)),
-        map(() => {
-          return !this.loginFailed && this.oauthService.hasValidAccessToken();
-        })
-      );
+      .pipe(map(() => {
+        return !this.loginFailed && this.oauthService.hasValidAccessToken();
+      }));
   }
 }

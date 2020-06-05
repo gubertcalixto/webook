@@ -15,6 +15,12 @@ namespace IdentityServer.IdentityServerConfig
                 new IdentityResources.Email()
             };
         }
+        
+        public static IEnumerable<ApiResource> GetIdentityApis =>
+            new List<ApiResource>
+            {
+                new ApiResource("webook-backend", "Webook Backend")
+            };
 
         public static IEnumerable<Client> GetClients()
         {
@@ -27,7 +33,8 @@ namespace IdentityServer.IdentityServerConfig
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "webook-backend"
                     },
                     AllowedCorsOrigins = IdentityDefaultUrls.AllowedCorsOrigins,
                     AllowAccessTokensViaBrowser = true,

@@ -1,1 +1,26 @@
-<p>user-profile works!</p>
+<ng-container *ngIf="user">
+  <nz-row class="profile-header" [nzGutter]="16">
+    <nz-col class="avatar-container" nzFlex="auto">
+      <nz-avatar [nzSize]="96" [nzText]="userService.getUserInitials(user.firstName, user.lastName)"></nz-avatar>
+    </nz-col>
+    <nz-col nzXs="24" nzSm="24" nzMd="16">
+      <nz-row>
+        <h1 class="profile-user-name" nz-typography>{{user.userName}}</h1>
+      </nz-row>
+      <nz-row>
+        <h4 class="profile-user-location" nz-typography>Brasil</h4>
+      </nz-row>
+      <nz-row class="profile-user-stats">
+        <nz-col nzXs="12" nzSm="12" nzMd="10" nzLg="8">
+          <nz-statistic [nzValue]="13" nzSuffix="Documentos"></nz-statistic>
+        </nz-col>
+        <nz-col nzXs="12" nzSm="12" nzMd="10" nzLg="8">
+          <nz-statistic [nzValue]="93" nzSuffix="Seguidores"></nz-statistic>
+        </nz-col>
+      </nz-row>
+    </nz-col>
+    <nz-col nzXs="0" nzSm="0" nzMd="0" nzLg="4">
+      <button nz-button nzType="primary" [disabled]="!userId" (click)="follow()">Seguir</button>
+    </nz-col>
+  </nz-row>
+</ng-container>
