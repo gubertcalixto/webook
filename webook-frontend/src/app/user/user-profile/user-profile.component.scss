@@ -1,0 +1,16 @@
+wb-user-profile {
+  .profile-header {
+    padding: 0 16px;
+    .avatar-container {
+      display: flex;
+      align-items: center;
+      place-content: center;
+    }
+    .profile-user-name {
+      margin-bottom: 0;
+    }
+    .profile-user-stats {
+      place-content: space-evenly;
+    }
+  }
+}

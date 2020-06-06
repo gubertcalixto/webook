@@ -1,4 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
+import { TitleResolverService } from '@shared/utils';
 
 @Component({
   selector: 'wb-root',
@@ -6,4 +7,8 @@ import { Component, ViewEncapsulation } from '@angular/core';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent { }
+export class AppComponent {
+  constructor(titleResolverService: TitleResolverService) {
+    titleResolverService.startTitleResolver();
+  }
+}

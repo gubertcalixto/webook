@@ -1,0 +1,63 @@
+<nz-layout>
+  <nz-sider *ngIf="routeHasNavigation && oAuthManagerService.isLogged" [ngClass]="{collapsed: isCollapsed}"
+    nzBreakpoint="md" (nzCollapsedChange)="isCollapsed = $event">
+    <nz-layout class="sider-container">
+      <nz-content>
+        <a routerLink="/home" class="logo">
+          <h1 nz-typography>{{isCollapsed ? 'Wb' : 'Webook'}}</h1>
+        </a>
+        <ul class="sidenav-menu" nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed"
+          [nzMode]="isCollapsed ? 'vertical' : 'inline'">
+          <li nz-menu-item routerLink="/home" [nzMatchRouter]="true">
+            <i fa="home"></i>
+            <span *ngIf="!isCollapsed">Home</span>
+          </li>
+          <li nz-menu-item routerLink="/scrapbooks" [nzMatchRouter]="true">
+            <i fa="book"></i>
+            <span *ngIf="!isCollapsed">Scraps</span>
+          </li>
+          <li nz-menu-item routerLink="/search" [nzMatchRouter]="true">
+            <i fa="search"></i>
+            <span *ngIf="!isCollapsed">Explorar</span>
+          </li>
+        </ul>
+      </nz-content>
+    </nz-layout>
+  </nz-sider>
+  <nz-layout>
+    <nz-content>
+      <nz-page-header *ngIf="routeHasNavigation">
+        <nz-page-header-extra>
+          <ng-container *ngIf="oAuthManagerService.isLogged">
+            <button nz-button nzType="link" (click)="notificationClicked()">
+              <nz-badge [nzDot]="hasNotification">
+                <i fa="bell"></i>
+              </nz-badge>
+            </button>
+            <button class="avatar-btn" nz-popover [nzPopoverTitle]="avatarMenuHeaderTemplate"
+              [nzPopoverContent]="avatarMenuContentTemplate" nzPopoverPlacement="bottomRight">
+              <nz-avatar nzSize="large" [nzText]="userService.getUserInitials()"></nz-avatar>
+            </button>
+            <ng-template #avatarMenuHeaderTemplate>
+              <h4 nz-typography>Olá, {{userService?.user?.userName}}</h4>
+            </ng-template>
+            <ng-template #avatarMenuContentTemplate>
+              <ul nz-menu class="avatar-popover-menu">
+                <li nz-menu-item routerLink="/user/profile" [nzMatchRouter]="true">Meu Perfil</li>
+                <li nz-menu-item routerLink="/user/preferences" [nzMatchRouter]="true">Preferências</li>
+                <div nz-menu-divider></div>
+                <li nz-menu-item (click)="logout()">Sair</li>
+              </ul>
+            </ng-template>
+          </ng-container>
+          <ng-container *ngIf="!oAuthManagerService.isLogged">
+            <nz-button-group>
+              <button nz-button nzType="primary" (click)="login()">Cadastrar / Logar</button>
+            </nz-button-group>
+          </ng-container>
+        </nz-page-header-extra>
+      </nz-page-header>
+      <router-outlet></router-outlet>
+    </nz-content>
+  </nz-layout>
+</nz-layout>

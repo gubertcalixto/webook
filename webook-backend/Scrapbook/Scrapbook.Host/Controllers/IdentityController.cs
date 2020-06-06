@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +13,15 @@ namespace Scrapbook.Host.Controllers
         public IActionResult Get()
         {
             return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+        }
+        
+        [HttpGet]
+        [Route("/teste")]
+        [AllowAnonymous]
+        public IActionResult Gettwo()
+        {
+            Console.WriteLine("asd");
+            return Ok();
         }
     }
 }

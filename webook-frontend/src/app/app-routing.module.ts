@@ -7,7 +7,7 @@ const routes: Routes = [
     path: 'home',
     loadChildren: () => import('./home-page/home-page.module').then(m => m.HomePageModule),
     canActivate: [MustBeLoggedAuthGuard],
-    data: { title: 'Home' }
+    data: { title: 'Home', hasNavigation: true }
   },
   {
     path: 'welcome',
@@ -27,18 +27,18 @@ const routes: Routes = [
   {
     path: 'search',
     loadChildren: () => import('./search/search.module').then(m => m.SearchModule),
-    data: { title: 'Pesquisa' }
+    data: { title: 'Pesquisa', hasNavigation: true }
   },
   {
     path: 'user/profile',
     loadChildren: () => import('./user/user-profile/user-profile.module').then(m => m.UserProfileModule),
-    data: { title: 'Perfil' }
+    data: { title: 'Perfil', hasNavigation: true }
   },
   {
     path: 'user/preferences',
     loadChildren: () => import('./user/user-preferences/user-preferences.module').then(m => m.UserPreferencesModule),
     canActivate: [MustBeLoggedAuthGuard],
-    data: { title: 'Preferências de Usuário' }
+    data: { title: 'Preferências de Usuário', hasNavigation: true }
   },
   {
     path: 'not-found',
@@ -47,7 +47,7 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'home'
+    redirectTo: '/home'
   },
   {
     path: '**',

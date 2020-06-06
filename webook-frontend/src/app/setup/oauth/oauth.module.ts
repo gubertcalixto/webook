@@ -4,6 +4,7 @@ import { OAuthModule, OAuthStorage } from 'angular-oauth2-oidc';
 import { environment } from 'src/environments/environment';
 
 import { MustBeLoggedAuthGuard } from './consts/guards/must-be-logged.guard';
+import { MustBeUnLoggedAuthGuard } from './consts/guards/must-be-unlogged.guard';
 import { OauthManagerService } from './services/oauth-manager.service';
 
 export function storageFactory(): OAuthStorage {
@@ -18,6 +19,7 @@ export function storageFactory(): OAuthStorage {
   ],
   providers: [
     MustBeLoggedAuthGuard,
+    MustBeUnLoggedAuthGuard,
     { provide: OAuthStorage, useFactory: storageFactory }
   ]
 })

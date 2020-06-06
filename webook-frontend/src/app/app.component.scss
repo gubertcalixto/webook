@@ -4,6 +4,12 @@ wb-root {
   height: 100%;
   overflow: auto;
 
+  wb-navigation-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
   router-outlet + * {
     height: 100%;
     overflow: auto;

@@ -12,11 +12,16 @@ export class UserService {
   private internalUser: OAuthUser;
   private internalUserSubject = new BehaviorSubject<OAuthUser>(undefined);
 
-  public get user() { return this.internalUser; }
   public get userSubject() { return this.internalUserSubject; }
+  public get user() { return this.internalUser; }
 
   constructor(private authManagerService: OauthManagerService) {
     this.getUserInfoAfterLogin();
+  }
+
+  public getUserInitials(firstName?: string, lastName?: string) {
+    return (firstName || this.user?.firstName)?.substr(0, 1)?.toUpperCase() +
+      (lastName || this.user?.lastName)?.substr(0, 1)?.toUpperCase();
   }
 
   private getUserInfoAfterLogin(): void {
@@ -35,7 +40,7 @@ export class UserService {
       this.internalUser = new OAuthUser({
         userId: userInfo.sub,
         email: userInfo.email,
-        userName: userInfo.userName,
+        userName: userInfo.name || userInfo.userName,
         firstName: userInfo.first_name,
         lastName: userInfo.last_name
       });

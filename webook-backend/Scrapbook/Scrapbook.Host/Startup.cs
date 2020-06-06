@@ -33,8 +33,20 @@ namespace Scrapbook.Host
                     options.Authority = "http://localhost:5000";
                     options.RequireHttpsMetadata = false;
 
-                    options.Audience = "scrapbook-backend";
+                    options.Audience = "webook-backend";
+                    options.IncludeErrorDetails = true;
                 });
+            
+            services.AddCors(options =>
+            {
+                // this defines a CORS policy called "default"
+                options.AddPolicy("default", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
             
             services.AddSwaggerGen(c =>
                 c.SwaggerDoc(SwaggerVersion, new OpenApiInfo {Title = SwaggerTitle, Version = SwaggerVersion}));
@@ -52,10 +64,10 @@ namespace Scrapbook.Host
             {
                 c.SwaggerEndpoint("/swagger/" + SwaggerVersion + "/swagger.json", SwaggerTitle);
                 c.InjectStylesheet("swagger-ui/custom.css");
-                c.RoutePrefix = string.Empty;
             });
 
             app.UseRouting();
+            app.UseCors("default");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

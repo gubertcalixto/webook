@@ -8,6 +8,7 @@ import { NZ_I18N, pt_BR } from 'ng-zorro-antd/i18n';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { NavigationContainerModule } from './navigation-container/navigation-container.module';
 import { AppOAuthModule } from './setup/oauth/oauth.module';
 
 @NgModule({
@@ -19,8 +20,11 @@ import { AppOAuthModule } from './setup/oauth/oauth.module';
     BrowserAnimationsModule,
     CommonModule,
     HttpClientModule,
-    KeyboardShortcutsModule.forRoot(),
     AppOAuthModule,
+    NavigationContainerModule,
+
+    KeyboardShortcutsModule.forRoot(),
+
     AppRoutingModule
   ],
   providers: [
