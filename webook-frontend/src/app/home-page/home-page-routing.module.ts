@@ -8,7 +8,6 @@ const routes: Routes = [
   {
     path: '',
     component: HomePageComponent,
-    canActivate: [MustBeLoggedAuthGuard]
   },
   {
     path: '**',

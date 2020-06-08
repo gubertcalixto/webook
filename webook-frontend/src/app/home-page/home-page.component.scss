@@ -1,0 +1,54 @@
+wb-home-page {
+  .create-document {
+    .ant-layout-header {
+      div[nz-row] {
+        height: inherit;
+        div[nz-col] {
+          height: inherit;
+          &.actions {
+            display: flex;
+            align-items: center;
+            place-content: flex-end;
+            button {
+              display: flex;
+              align-items: center;
+              place-content: space-evenly;
+              i {
+                margin-left: 8px;
+              }
+            }
+          }
+        }
+      }
+    }
+    nz-content {
+      $max-model-number-size: 5;
+      padding: 2vw #{100% / $max-model-number-size / 2} 0;
+      > nz-space {
+        width: 100%;
+        overflow-x: auto;
+        > nz-space-item {
+          display: flex;
+          flex: auto;
+          max-width: #{100% / $max-model-number-size};
+          button {
+            width: 100%;
+            .document-creation-model {
+              .model-thumbnail {
+                display: flex;
+                align-items: center;
+                place-content: center;
+                height: 15vh;
+                font-size: 200%;
+                color: #000;
+              }
+              i.model-thumbnail {
+                text-shadow: 2px 2px 2px #808080;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

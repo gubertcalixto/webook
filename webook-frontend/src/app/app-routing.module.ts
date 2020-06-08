@@ -6,7 +6,6 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./home-page/home-page.module').then(m => m.HomePageModule),
-    canActivate: [MustBeLoggedAuthGuard],
     data: { title: 'Home', hasNavigation: true }
   },
   {
