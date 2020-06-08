@@ -1,4 +1,4 @@
-﻿namespace Scrapbook.Domain.Entities.Editor.Document
+﻿namespace Scrapbook.Domain.Enums.Editor
 {
     public enum EditorDocumentAccess
     {

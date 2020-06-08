@@ -1,4 +1,4 @@
-﻿namespace Scrapbook.Domain.Entities.User
+﻿namespace Scrapbook.Domain.Enums.User
 {
     public enum SystemAvailableLanguage
     {

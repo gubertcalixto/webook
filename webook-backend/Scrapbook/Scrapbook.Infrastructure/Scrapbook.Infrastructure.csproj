@@ -13,4 +13,13 @@
       <ProjectReference Include="..\Scrapbook.Domain\Scrapbook.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Migrations\20200606221759_Initial.cs" />
+      <Compile Remove="Migrations\20200606221759_Initial.Designer.cs" />
+    </ItemGroup>
+
 </Project>
