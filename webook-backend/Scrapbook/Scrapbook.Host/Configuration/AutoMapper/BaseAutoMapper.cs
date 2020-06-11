@@ -1,9 +1,14 @@
 using AutoMapper;
+using Scrapbook.Domain.Entities.Editor.Document;
+using Scrapbook.Host.Controllers.Document.Dtos;
 
 namespace Scrapbook.Host.Configuration.AutoMapper
 {
     public class BaseAutoMapper: Profile
     {
-        // CreateMap<source, destination>();
+        public BaseAutoMapper()
+        {
+            CreateMap<DocumentCreateOrUpdateInput, EditorDocument>();
+        }
     }
 }

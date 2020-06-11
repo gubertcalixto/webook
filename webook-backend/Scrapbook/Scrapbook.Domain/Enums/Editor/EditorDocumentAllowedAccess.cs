@@ -1,6 +1,6 @@
 ﻿namespace Scrapbook.Domain.Enums.Editor
 {
-    public enum EditorDocumentAccess
+    public enum EditorDocumentAllowedAccess
     {
         Private,
         Public,
