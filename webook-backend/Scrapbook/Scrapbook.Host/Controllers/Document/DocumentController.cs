@@ -43,6 +43,24 @@ namespace Scrapbook.Host.Controllers.Document
             await Context.SaveChangesAsync();
             return item.Entity;
         }
+        
+        [HttpPost("/document/{id}/title")]
+        public async Task<string> UpdateTitle(DocumentUpdateTitleInput input, Guid id)
+        {
+            var document = await Get(id);
+            if (document == null)
+            {
+                Response.StatusCode = (int) HttpStatusCode.NotFound;
+                return null;
+            }
+            if (await HasSameTitleDocument(input.Title))
+                return document.Title;
+            
+            document.Title = input.Title;
+            Repository.Update(document);
+            await Context.SaveChangesAsync();
+            return document.Title;
+        }
 
         [HttpGet("/document/{id}")]
         public new async Task<EditorDocument> Get(Guid id)
@@ -77,13 +95,11 @@ namespace Scrapbook.Host.Controllers.Document
         [HttpDelete("/document/{id}")]
         public new async Task Delete(Guid id)
         {
-            await base.Delete(id);
-        }
-
-        [HttpGet("/documents")]
-        public new async Task<List<EditorDocument>> GetAll()
-        {
-            return await Repository.Where(r => r.UserId == JwtReader.GetUserId()).ToListAsync();
+            var document = await Repository
+                .Where(d => d.UserId == JwtReader.GetUserId())
+                .FirstOrDefaultAsync(d => d.Id == id);
+            if(document != null)
+                await base.Delete(document);
         }
 
         private async Task<bool> HasSameTitleDocument(string itemTitle)

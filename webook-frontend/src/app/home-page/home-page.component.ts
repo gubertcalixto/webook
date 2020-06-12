@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { EditorDocument } from '../client/webook';
 import { NavigationService } from '../navigation/navigation.service';
-import { HomePageService } from './home-page.service';
+import { DocumentService } from '../services/document.service';
 import { DocumentCreationModel } from './tokens/classes/document-creation-model.class';
 import { documentCreationModels } from './tokens/consts/document-creation-models.const';
 
@@ -32,7 +32,7 @@ export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   constructor(
-    private homepageService: HomePageService,
+    private homepageService: DocumentService,
     private navigationService: NavigationService,
     private router: Router
   ) { }

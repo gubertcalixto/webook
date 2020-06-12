@@ -15,6 +15,7 @@ namespace Scrapbook.Host.Configuration.AutoMapper
         private void CreateDocumentMap()
         {
             CreateMap<DocumentCreateOrUpdateInput, EditorDocument>();
+            CreateMap<EditorDocument, MyEditorDocument>();
         }
     }
 }

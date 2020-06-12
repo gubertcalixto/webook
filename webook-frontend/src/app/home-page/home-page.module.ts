@@ -7,18 +7,15 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
-import { UrlConsts } from 'src/environments/url-consts';
 
-import { ApiModule, BASE_PATH } from '../client/webook';
+import { DocumentService } from '../services/document.service';
 import { HomePageRoutingModule } from './home-page-routing.module';
 import { HomePageComponent } from './home-page.component';
-import { HomePageService } from './home-page.service';
 
 @NgModule({
   declarations: [HomePageComponent],
   imports: [
     CommonModule,
-    ApiModule,
 
     FaIconsModule,
     NzButtonModule,
@@ -31,11 +28,7 @@ import { HomePageService } from './home-page.service';
     HomePageRoutingModule
   ],
   providers: [
-    HomePageService,
-    {
-      provide: BASE_PATH,
-      useValue: UrlConsts.webookBackend
-    }
+    DocumentService
   ]
 })
 export class HomePageModule { }
