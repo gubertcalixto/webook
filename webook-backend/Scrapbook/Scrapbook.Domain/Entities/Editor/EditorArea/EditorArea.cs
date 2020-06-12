@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Scrapbook.Domain.Shared;
 
 namespace Scrapbook.Domain.Entities.Editor.EditorArea
 {
-    public class EditorArea
+    public class EditorArea: Entity
     {
         public string Name { get; set; }
-        public Guid EditorAreaId { get; set; }
-        public EditorAreaTemplate EditorAreaTemplate { get; set; }
     }
 }

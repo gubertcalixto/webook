@@ -6,7 +6,6 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./home-page/home-page.module').then(m => m.HomePageModule),
-    canActivate: [MustBeLoggedAuthGuard],
     data: { title: 'Home', hasNavigation: true }
   },
   {
@@ -15,7 +14,7 @@ const routes: Routes = [
     data: { title: 'Seja Bem Vindo' }
   },
   {
-    path: 'create-document',
+    path: 'document',
     loadChildren: () => import('./editor/editor-document/editor-document.module').then(m => m.EditorDocumentModule),
     data: { title: 'Editor' }
   },

@@ -1,0 +1,14 @@
+{
+  "clients": [
+    {
+      "name": "backend",
+      "baseUrl": "http://localhost:5001/swagger/v0.0.0/swagger.json",
+      "outPath": "app/client/webook"
+    },
+    {
+      "name": "authentication",
+      "baseUrl": "http://localhost:5000/swagger/v1/swagger.json",
+      "outPath": "app/client/authentication"
+    }
+  ]
+}

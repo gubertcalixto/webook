@@ -23,3 +23,11 @@ button.ant-btn.ant-btn-link {
 .clickable {
   cursor: pointer;
 }
+
+button.no-button-style {
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}

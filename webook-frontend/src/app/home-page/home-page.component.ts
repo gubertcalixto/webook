@@ -1,15 +1,74 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+
+import { EditorDocument } from '../client/webook';
+import { NavigationService } from '../navigation/navigation.service';
+import { HomePageService } from './home-page.service';
+import { DocumentCreationModel } from './tokens/classes/document-creation-model.class';
+import { documentCreationModels } from './tokens/consts/document-creation-models.const';
 
 @Component({
   selector: 'wb-home-page',
   templateUrl: './home-page.component.html',
-  styleUrls: ['./home-page.component.scss']
+  styleUrls: ['./home-page.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
-export class HomePageComponent implements OnInit {
+export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
+  private subs: Subscription[] = [];
+  private maximumCreatDocumenModelSize = 5;
+  public isAddContainerOpened = false;
+  public createDocumentViewExpanded = false;
+  public shouldHaveCreateDocumentViewExpanded = false;
+  public defaultDocumentCover = '/assets/document/default-document.svg';
+  public myDocuments: EditorDocument[] = [];
+  @ViewChild('addDocumentTemplate') private addDocumentTemplate: TemplateRef<any>;
 
-  constructor() { }
-
-  ngOnInit(): void {
+  public get createDocumentModels() {
+    if (!this.createDocumentViewExpanded) {
+      return documentCreationModels.slice(0, this.maximumCreatDocumenModelSize);
+    }
+    return documentCreationModels;
   }
 
+  constructor(
+    private homepageService: HomePageService,
+    private navigationService: NavigationService,
+    private router: Router
+  ) { }
+
+  ngOnInit(): void {
+    this.shouldHaveCreateDocumentViewExpanded = documentCreationModels.length > this.maximumCreatDocumenModelSize;
+    this.subs.push(this.homepageService.getMyDocuments().subscribe(res => {
+      this.myDocuments = res;
+    }));
+  }
+
+  ngAfterViewInit(): void {
+    if (this.addDocumentTemplate) {
+      this.navigationService.setNavigationActionsTemplate(this.addDocumentTemplate);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(s => s.unsubscribe());
+    this.navigationService.clearNavigationActionsTemplate();
+  }
+
+  public toggleCreateDocumentView(): void {
+    this.createDocumentViewExpanded = !this.createDocumentViewExpanded;
+  }
+
+  public createDocument(model?: DocumentCreationModel): void {
+    if (!model || model.id === 'empty') {
+      this.subs.push(this.homepageService.createDocument()
+        .subscribe(document => {
+          this.openDocument(document);
+        }));
+    }
+  }
+
+  public openDocument(document: EditorDocument): void {
+    this.router.navigateByUrl(`/document/${document.id}`);
+  }
 }
