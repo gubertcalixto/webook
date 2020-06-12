@@ -1,0 +1,1 @@
+dotnet run --project .\Authentication\IdentityServer.Host\IdentityServer.Host.csproj

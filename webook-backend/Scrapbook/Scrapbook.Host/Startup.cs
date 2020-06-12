@@ -1,10 +1,12 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Scrapbook.Host.Utils;
 using Scrapbook.Infrastructure;
 
 namespace Scrapbook.Host
@@ -47,6 +49,10 @@ namespace Scrapbook.Host
                         .AllowAnyMethod();
                 });
             });
+            
+            services
+                .AddSingleton<IHttpContextAccessor,HttpContextAccessor>()
+                .AddSingleton<IJwtReader, JwtReader>();
             
             services.AddSwaggerGen(c =>
                 c.SwaggerDoc(SwaggerVersion, new OpenApiInfo {Title = SwaggerTitle, Version = SwaggerVersion}));

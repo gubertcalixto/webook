@@ -1,7 +1,9 @@
-<button *ngIf="!isAddContainerOpened" (click)="isAddContainerOpened = !isAddContainerOpened" nz-button nzType="link"><i
-    fa="plus"></i></button>
-<button *ngIf="isAddContainerOpened" (click)="isAddContainerOpened = !isAddContainerOpened" nz-button nzType="link"><i
-    fa="chevron-up"></i></button>
+<ng-template #addDocumentTemplate>
+  <button *ngIf="!isAddContainerOpened" (click)="isAddContainerOpened = !isAddContainerOpened" nz-button
+    nzType="link"><i fa="plus"></i></button>
+  <button *ngIf="isAddContainerOpened" (click)="isAddContainerOpened = !isAddContainerOpened" nz-button nzType="link"><i
+      fa="chevron-up"></i></button>
+</ng-template>
 <nz-layout *ngIf="isAddContainerOpened" class="create-document">
   <nz-header>
     <div nz-row>
@@ -40,6 +42,27 @@
   </nz-content>
 </nz-layout>
 
+<section class="my-scrapbooks" nz-row [nzGutter]="16">
+  <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="6" *ngFor="let document of myDocuments">
+    <button class="no-button-style" (click)="openDocument(document)">
+      <nz-card [nzCover]="documentCoverTemplate" class="document-creation-model">
+        <nz-card-meta [nzTitle]="document.title" [nzDescription]="document.description"></nz-card-meta>
+      </nz-card>
+      <ng-template #documentCoverTemplate>
+        <img [src]="document.image ? document.image : defaultDocumentCover" [alt]="document.title" />
+      </ng-template>
+    </button>
+  </div>
+  <nz-empty *ngIf="!myDocuments.length" [nzNotFoundContent]="myDocumentsEmptyContent"
+    [nzNotFoundFooter]="myDocumentsEmptyFooter">
+    <ng-template #myDocumentsEmptyContent>
+      <span>Você ainda não criou um documento</span>
+    </ng-template>
+    <ng-template #myDocumentsEmptyFooter>
+      <button nz-button nzType="primary" (click)="createDocument()">Crie Agora</button>
+    </ng-template>
+  </nz-empty>
+</section>
 
 <!-- <nz-button-group>
   <button nz-button nzType="primary"><i fa="list"></i></button>

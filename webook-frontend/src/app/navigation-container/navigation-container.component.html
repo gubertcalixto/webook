@@ -28,6 +28,7 @@
     <nz-content>
       <nz-page-header *ngIf="routeHasNavigation">
         <nz-page-header-extra>
+          <ng-container *ngTemplateOutlet="navigationService.navigationActionsTemplate | async"></ng-container>
           <ng-container *ngIf="oAuthManagerService.isLogged">
             <button nz-button nzType="link" (click)="notificationClicked()">
               <nz-badge [nzDot]="hasNotification">

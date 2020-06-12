@@ -1,7 +1,0 @@
-{
-  "ngVersion": "9.0.0",
-  "stringEnums": "true",
-  "serviceSuffix": "ServiceProxy",
-  "serviceFileSuffix": "ServiceProxy",
-  "providedInRoot": "false"
-}

@@ -1,39 +1,49 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Scrapbook.Domain.Entities.Editor.Document;
-using Scrapbook.Domain.Shared;
+using Scrapbook.Domain.Enums.Editor;
 using Scrapbook.Host.Controllers.Document.Dtos;
+using Scrapbook.Host.Utils;
 using Scrapbook.Infrastructure;
 
 namespace Scrapbook.Host.Controllers.Document
 {
     public class DocumentController: CrudBaseController<EditorDocument>
     {
-        public DocumentController(DefaultContext context, DbSet<EditorDocument> repository, IMapper mapper) : base(context, repository, mapper)
+        public DocumentController(DefaultContext context, IMapper mapper, IJwtReader jwtReader) : base(context, context.Documents, mapper, jwtReader)
         {
         }
         
         [HttpPost("/document")]
-        public async Task<EditorDocument> Create(DocumentCreateOrUpdateInput orUpdateInput)
+        public async Task<EditorDocument> Create(DocumentCreateOrUpdateInput input)
         {
-            var itemToInsert = Mapper.Map<EditorDocument>(orUpdateInput);
-            
-            var hasSameTitleDocument = await HasSameTitleDocument(itemToInsert.Title);
-            if (hasSameTitleDocument)
+            var itemToInsert = Mapper.Map<EditorDocument>(input);
+
+            if (string.IsNullOrEmpty(itemToInsert.Title))
+                itemToInsert.Title = await GenerateDocumentTitle();
+            else
             {
-                Response.StatusCode = (int) HttpStatusCode.Conflict;
-                return null;
+                var hasSameTitleDocument = await HasSameTitleDocument(itemToInsert.Title);
+                if (hasSameTitleDocument)
+                {
+                    Response.StatusCode = (int) HttpStatusCode.Conflict;
+                    return null;
+                }
             }
-            
+
+            itemToInsert.UserId = JwtReader.GetUserId();
+            itemToInsert.DocumentAccess ??= EditorDocumentAllowedAccess.Private;
             var item = await Repository.AddAsync(itemToInsert);
             await Context.SaveChangesAsync();
             return item.Entity;
         }
-        
+
         [HttpGet("/document/{id}")]
         public new async Task<EditorDocument> Get(Guid id)
         {
@@ -70,9 +80,34 @@ namespace Scrapbook.Host.Controllers.Document
             await base.Delete(id);
         }
 
+        [HttpGet("/documents")]
+        public new async Task<List<EditorDocument>> GetAll()
+        {
+            return await Repository.Where(r => r.UserId == JwtReader.GetUserId()).ToListAsync();
+        }
+
         private async Task<bool> HasSameTitleDocument(string itemTitle)
         {
             return await Repository.AnyAsync(d => d.Title.Equals(itemTitle));
+        }
+
+        private async Task<string> GenerateDocumentTitle()
+        {
+            var output = "";
+            var currentIndex = 1;
+            while (string.IsNullOrEmpty(output))
+            {
+                const string titlePrefix = "Novo Documento";
+                var title = $"{titlePrefix} {currentIndex}";
+                if (await Repository.AnyAsync(e => e.Title == title))
+                {
+                    currentIndex++;
+                    continue;
+                }
+                output = title;
+            }
+
+            return output;
         }
     }
 }

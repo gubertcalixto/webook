@@ -14,7 +14,7 @@ const routes: Routes = [
     data: { title: 'Seja Bem Vindo' }
   },
   {
-    path: 'create-document',
+    path: 'document',
     loadChildren: () => import('./editor/editor-document/editor-document.module').then(m => m.EditorDocumentModule),
     data: { title: 'Editor' }
   },

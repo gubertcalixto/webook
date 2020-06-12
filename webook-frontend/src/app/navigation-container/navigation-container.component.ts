@@ -4,6 +4,8 @@ import { OauthManagerService } from '@oath/services/oauth-manager.service';
 import { UserService } from '@oath/services/user.service';
 import { filter } from 'rxjs/operators';
 
+import { NavigationService } from '../navigation/navigation.service';
+
 @Component({
   selector: 'wb-navigation-container',
   templateUrl: './navigation-container.component.html',
@@ -18,6 +20,7 @@ export class NavigationContainerComponent {
   constructor(
     public oAuthManagerService: OauthManagerService,
     public userService: UserService,
+    public navigationService: NavigationService,
     private router: Router
   ) {
     this.startNavigationResolver();
