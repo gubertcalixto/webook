@@ -11,19 +11,13 @@ using Scrapbook.Infrastructure;
 namespace Scrapbook.Host.Controllers
 {
     [Authorize]
-    public class CrudBaseController<TEntity>: ControllerBase where TEntity : class
+    public class CrudBaseController<TEntity>: BaseController<TEntity> where TEntity : class
     {
-        protected readonly DefaultContext Context;
-        protected readonly DbSet<TEntity> Repository;
-        protected readonly IMapper Mapper;
         protected readonly IJwtReader JwtReader;
         
-        public CrudBaseController(DefaultContext context, DbSet<TEntity> repository, IMapper mapper = null, IJwtReader jwtReader = null)
+        public CrudBaseController(DefaultContext context, DbSet<TEntity> repository, IMapper mapper = null, IJwtReader jwtReader = null): base(context, repository, mapper)
         {
-            Context = context;
-            Repository = repository;
             JwtReader = jwtReader;
-            Mapper = mapper;
         }
         
         protected async Task<TEntity> Get(Guid id)
@@ -34,8 +28,13 @@ namespace Scrapbook.Host.Controllers
         protected async Task Delete(Guid id)
         {
             var item = await Repository.FindAsync(id);
-            if (item != null)
-                Repository.Remove(item);
+            await Delete(item);
+        }
+        
+        protected async Task Delete(TEntity entity)
+        {
+            if (entity != null)
+                Repository.Remove(entity);
             await Context.SaveChangesAsync();
         }
     }
