@@ -9,6 +9,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { DocumentService } from 'src/app/services/document.service';
 
 import { EditorDocumentTitleComponent } from './document-title/document-title.component';
 import { EditorDocumentRoutingModule } from './editor-document-routing.module';
@@ -37,6 +38,9 @@ import { EditorDocumentPageNavigationComponent } from './page-navigation/page-na
     WebookEditorModule,
     FaIconsModule,
     EditorDocumentRoutingModule
+  ],
+  providers: [
+    DocumentService
   ]
 })
 export class EditorDocumentModule { }

@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "gen:client": "cd ./src/ && node ./assets/client/client-gen.js"
+    "gen:client": "cd ./src/ && node ./client/client-gen.js"
   },
   "private": true,
   "dependencies": {

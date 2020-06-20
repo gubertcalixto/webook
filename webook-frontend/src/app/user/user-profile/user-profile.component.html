@@ -12,10 +12,18 @@
       </nz-row>
       <nz-row class="profile-user-stats">
         <nz-col nzXs="12" nzSm="12" nzMd="10" nzLg="8">
-          <nz-statistic [nzValue]="13" nzSuffix="Documentos"></nz-statistic>
+          <nz-skeleton [nzLoading]="userDocumentsNumber === -1" nzType="input" [nzActive]="true" [nzParagraph]="false">
+            <nz-statistic [nzValue]="userDocumentsNumber"
+              [nzSuffix]="userDocumentsNumber === 1 ? 'Documento' : 'Documentos'">
+            </nz-statistic>
+          </nz-skeleton>
         </nz-col>
         <nz-col nzXs="12" nzSm="12" nzMd="10" nzLg="8">
-          <nz-statistic [nzValue]="93" nzSuffix="Seguidores"></nz-statistic>
+          <nz-skeleton [nzLoading]="userFollowersNumber === -1" [nzActive]="true" [nzParagraph]="false">
+            <nz-statistic [nzValue]="userFollowersNumber"
+              [nzSuffix]="userFollowersNumber === 1 ? 'Seguidor' : 'Seguidores'">
+            </nz-statistic>
+          </nz-skeleton>
         </nz-col>
       </nz-row>
     </nz-col>

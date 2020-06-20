@@ -1,5 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Scrapbook.Domain.Entities.ContactForm;
+using Scrapbook.Domain.Entities.Editor.Document;
+using Scrapbook.Domain.Entities.Editor.EditorArea;
+using Scrapbook.Domain.Entities.Editor.Plugin;
+using Scrapbook.Domain.Entities.Editor.Plugin.Component;
+using Scrapbook.Domain.Entities.Interactions;
+using Scrapbook.Domain.Entities.User;
 
 namespace Scrapbook.Infrastructure
 {
@@ -12,36 +19,36 @@ namespace Scrapbook.Infrastructure
             _configuration = configuration;
         }
 
-        // #region Editor
-        // public DbSet<TemplateComponent> Components { get; set; }
-        // public DbSet<TemplateComponentGroup> ComponentGroups { get; set; }
-        // public DbSet<Plugin> Plugins { get; set; }
-        // #endregion Editor
-        //
-        // #region Interaction
-        // public DbSet<CommentInteraction> Comments { get; set; }
-        // public DbSet<LikeInteraction> Likes { get; set; }
-        // public DbSet<LoveInteraction> Loves { get; set; }
-        // public DbSet<SaveInteraction> Saves { get; set; }
-        // public DbSet<TagInteraction> Tags { get; set; }
-        // #endregion Interaction
-        //
-        // #region InternalData
-        // public DbSet<ContactForm> ContactForms { get; set; }
-        // #endregion Interaction
-        //
-        // #region Template
-        // public DbSet<DocumentPage> DocumentPages { get; set; }
-        // public DbSet<PluginData> PluginData { get; set; }
-        // public DbSet<Template> Templates { get; set; }
-        // public DbSet<TemplateBody> TemplateBodies { get; set; }
-        // #endregion Template
+        #region User
+        public DbSet<UserPreference> UserPreferences { get; set; }
+        #endregion User
         
-        // #region User
-        // public DbSet<User> Users { get; set; }
-        // public DbSet<UserAccess> UserAccesses { get; set; }
-        // public DbSet<UserImage> UserImages { get; set; }
-        // #endregion User
+        #region ContactForm
+        public DbSet<ContactForm> ContactForms { get; set; }
+        #endregion ContactForm
+        
+        #region Interaction
+        public DbSet<EditorComponentFavorite> EditorComponentFavorites { get; set; }
+        public DbSet<EditorDocumentAccess> EditorDocumentAccesses { get; set; }
+        public DbSet<EditorInteraction> EditorInteractions { get; set; }
+        public DbSet<UserFollow> UserFollows { get; set; }
+        #endregion Interaction
+
+        #region Editor
+        public DbSet<EditorDocument> Documents { get; set; }
+        public DbSet<EditorDocumentPage> DocumentPages { get; set; }
+        #endregion Editor
+
+        #region EditorArea
+        public DbSet<EditorArea> EditorAreas { get; set; }
+        public DbSet<EditorAreaUserTemplate> EditorAreaUserTemplates { get; set; }
+        #endregion EditorArea
+        
+        #region EditorPlugins
+        public DbSet<EditorPlugin> EditorPlugins { get; set; }
+        public DbSet<EditorComponent> EditorComponents { get; set; }
+        public DbSet<EditorComponentInstance> EditorComponentInstances { get; set; }
+        #endregion EditorPlugins
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

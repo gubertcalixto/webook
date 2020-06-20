@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OAuthHttpInterceptor } from '@oath/tokens/oauth-http-interceptor.token';
 import { KeyboardShortcutsModule } from 'ng-keyboard-shortcuts';
 import { NZ_I18N, pt_BR } from 'ng-zorro-antd/i18n';
+import { UrlConsts } from 'src/environments/url-consts';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ApiModule as WebookBackendClientModule, BASE_PATH } from './client/webook';
 import { NavigationContainerModule } from './navigation-container/navigation-container.module';
 import { AppOAuthModule } from './setup/oauth/oauth.module';
 
@@ -18,6 +21,7 @@ import { AppOAuthModule } from './setup/oauth/oauth.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    WebookBackendClientModule,
     CommonModule,
     HttpClientModule,
     AppOAuthModule,
@@ -28,7 +32,16 @@ import { AppOAuthModule } from './setup/oauth/oauth.module';
     AppRoutingModule
   ],
   providers: [
-    { provide: NZ_I18N, useValue: pt_BR }
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: OAuthHttpInterceptor,
+      multi: true
+    },
+    { provide: NZ_I18N, useValue: pt_BR },
+    {
+      provide: BASE_PATH,
+      useValue: UrlConsts.webookBackend
+    }
   ],
   bootstrap: [AppComponent]
 })

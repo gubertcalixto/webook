@@ -5,6 +5,7 @@ import { EditorDocumentComponent } from './editor-document.component';
 
 const routes: Routes = [
   { path: '', component: EditorDocumentComponent },
+  { path: ':id', component: EditorDocumentComponent },
   { path: '**', redirectTo: '' }
 ];
 

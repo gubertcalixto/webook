@@ -6,5 +6,10 @@ namespace Scrapbook.Domain.Shared.Utils
         {
             return string.IsNullOrEmpty(propName) ? null : src.GetType().GetProperty(propName)?.GetValue(src, null);
         }
+        public static void SetPropValue(object src, string propName, object value)
+        {
+            if(!string.IsNullOrEmpty(propName)) 
+                src.GetType().GetProperty(propName)?.SetValue(src, value);
+        }
     }
 }
