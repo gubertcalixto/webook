@@ -42,8 +42,8 @@
                   "with": "src/environments/environment.prod.ts"
                 },
                 {
-                  "replace": "src/app/path/consts/oauth.settings.ts",
-                  "with": "src/app/path/consts/oauth.settings.prod.ts"
+                  "replace": "src/app/setup/oauth/consts/oauth.settings.ts",
+                  "with": "src/app/setup/oauth/consts/oauth.settings.prod.ts"
                 }
               ],
               "optimization": true,
