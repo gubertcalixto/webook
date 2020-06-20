@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class NavigationService {
   public search = new BehaviorSubject<string>(undefined);
-  public hasSearch = new BehaviorSubject<boolean>(true);
+  public hasSearch = new BehaviorSubject<boolean>(false);
   public navigationActionsTemplate = new BehaviorSubject<TemplateRef<any>>(undefined);
 
   public setNavigationActionsTemplate(template: TemplateRef<any>) {
@@ -15,5 +15,17 @@ export class NavigationService {
 
   public clearNavigationActionsTemplate() {
     this.setNavigationActionsTemplate(undefined);
+  }
+
+  public emitHasSearch(hasSearch: boolean) {
+    setTimeout(() => {
+      this.hasSearch.next(hasSearch);
+    });
+  }
+
+  public emitSearch(query: string) {
+    setTimeout(() => {
+      this.search.next(query);
+    });
   }
 }

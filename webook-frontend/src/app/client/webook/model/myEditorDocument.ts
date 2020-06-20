@@ -16,6 +16,5 @@ export interface MyEditorDocument {
     title?: string | null;
     description?: string | null;
     image?: string | null;
-    userId?: string;
 }
 

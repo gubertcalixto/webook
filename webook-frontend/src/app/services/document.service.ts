@@ -15,8 +15,8 @@ export class DocumentService {
     return this.documentServiceProxy.documentPost(title, id, description, allowedAccess);
   }
 
-  public getMyDocuments(): Observable<EditorDocument[]> {
-    return this.documentsServiceProxy.documentsMyUserGet();
+  public getMyDocuments(searchQuery?: string): Observable<EditorDocument[]> {
+    return this.documentsServiceProxy.documentsMyUserGet(searchQuery);
   }
 
   public getUserDocuments(userId: string): Observable<EditorDocument[]> {
@@ -25,6 +25,10 @@ export class DocumentService {
 
   public getDocument(id: string): Observable<EditorDocument> {
     return this.documentServiceProxy.documentIdGet(id);
+  }
+
+  public deleteDocument(id: string) {
+    return this.documentServiceProxy.documentIdDelete(id);
   }
 
   public updateTitle(id: string, title: string): Observable<string> {

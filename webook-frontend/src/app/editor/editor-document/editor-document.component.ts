@@ -53,15 +53,4 @@ export class EditorDocumentComponent implements OnDestroy {
         this.redirectBack();
       }));
   }
-
-  public updateDocumentTitle(title: string): void {
-    const lastTitle = this.document.title;
-    if (title === lastTitle) {
-      return;
-    }
-    this.document.title = title;
-    this.subs.push(this.documentService.updateTitle(this.document.id, title).subscribe(resultedTitle => {
-      this.document.title = resultedTitle;
-    }, () => this.document.title = lastTitle));
-  }
 }

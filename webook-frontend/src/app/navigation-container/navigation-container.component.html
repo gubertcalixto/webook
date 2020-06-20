@@ -28,6 +28,19 @@
     <nz-content>
       <nz-page-header *ngIf="routeHasNavigation">
         <nz-page-header-extra>
+          <ng-container *ngIf="navigationService.hasSearch | async">
+            <nz-input-group class="navigation-search-input" [nzSuffix]="searchInputSuffix">
+              <ng-template #searchInputSuffix>
+                <i fa="search"></i>
+                <button *ngIf="(navigationService.search | async)" class="no-button-style"
+                  (click)="navigationService.emitSearch(undefined)">
+                  <i fa="times"></i>
+                </button>
+              </ng-template>
+              <input #searchInput type="text" nz-input placeholder="Pesquise aqui..."
+                [ngModel]="navigationService.search | async" (ngModelChange)="navigationService.emitSearch($event)" />
+            </nz-input-group>
+          </ng-container>
           <ng-container *ngTemplateOutlet="navigationService.navigationActionsTemplate | async"></ng-container>
           <ng-container *ngIf="oAuthManagerService.isLogged">
             <button nz-button nzType="link" (click)="notificationClicked()">

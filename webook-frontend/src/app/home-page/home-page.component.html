@@ -44,27 +44,54 @@
 
 <section class="my-scrapbooks" nz-row [nzGutter]="16">
   <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="6" *ngFor="let document of myDocuments">
-    <button class="no-button-style" (click)="openDocument(document)">
-      <nz-card [nzCover]="documentCoverTemplate" class="document-creation-model">
-        <nz-card-meta [nzTitle]="document.title" [nzDescription]="document.description"></nz-card-meta>
-      </nz-card>
-      <ng-template #documentCoverTemplate>
+    <nz-card [nzCover]="documentCoverTemplate" class="document-creation-model">
+      <nz-card-meta [nzTitle]="documentTitleTemplate" [nzDescription]="document.description"></nz-card-meta>
+    </nz-card>
+    <ng-template #documentTitleTemplate>
+      <div nz-row class="document-title-container">
+        <a nz-col nzFlex="initial" (click)="openDocument(document.id)">{{document.title}}</a>
+        <div nz-col nzFlex="auto" class="actions">
+          <button class="no-button-style" nz-popover [nzPopoverTitle]="document.title"
+            [nzPopoverContent]="documentPopoverTemplate" nzPopoverPlacement="bottomRight" nzPopoverTrigger="click">
+            <i fa="ellipsis-v"></i>
+          </button>
+          <ng-template #documentPopoverTemplate>
+            <nz-list class="document-popover-list" nzItemLayout="horizontal">
+              <!-- <nz-list-item>
+                <button nz-button nzType="link" (click)="openDocument(document.id)">Configurações</button>
+              </nz-list-item> -->
+              <nz-list-item>
+                <button nz-button nzType="link" (click)="openDocument(document.id)">Editar</button>
+              </nz-list-item>
+              <nz-list-item>
+                <button nz-button nzType="link" nz-popconfirm nzPopconfirmTitle="Tem certeza?"
+                  nzPopconfirmPlacement="right" (nzOnConfirm)="deleteDocument(document.id)">
+                  <span nz-typography nzType="danger">Deletar</span>
+                </button>
+              </nz-list-item>
+            </nz-list>
+          </ng-template>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template #documentCoverTemplate>
+      <button class=" no-button-style" (click)="openDocument(document.id)">
         <img [src]="document.image ? document.image : defaultDocumentCover" [alt]="document.title" />
-      </ng-template>
-    </button>
+      </button>
+    </ng-template>
   </div>
   <nz-empty *ngIf="!myDocuments.length" [nzNotFoundContent]="myDocumentsEmptyContent"
     [nzNotFoundFooter]="myDocumentsEmptyFooter">
     <ng-template #myDocumentsEmptyContent>
-      <span>Você ainda não criou um documento</span>
+      <span *ngIf="!hasSearchFilterActivated">Você ainda não criou um documento</span>
+      <span *ngIf="hasSearchFilterActivated">Nenhum documento encontrado</span>
     </ng-template>
     <ng-template #myDocumentsEmptyFooter>
-      <button nz-button nzType="primary" (click)="createDocument()">Crie Agora</button>
+      <button *ngIf="!hasSearchFilterActivated" nz-button nzType="primary" (click)="createDocument()">Crie
+        Agora</button>
+      <button *ngIf="hasSearchFilterActivated" nz-button nzType="primary"
+        (click)="navigationService.emitSearch(undefined)">Limpar
+        Filtro</button>
     </ng-template>
   </nz-empty>
 </section>
-
-<!-- <nz-button-group>
-  <button nz-button nzType="primary"><i fa="list"></i></button>
-  <button nz-button nzType="default"><i fa="columns"></i></button>
-</nz-button-group> -->
