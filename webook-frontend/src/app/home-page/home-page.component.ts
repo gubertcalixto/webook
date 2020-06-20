@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 import { EditorDocument } from '../client/webook';
 import { NavigationService } from '../navigation/navigation.service';
@@ -23,6 +24,7 @@ export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
   public defaultDocumentCover = '/assets/document/default-document.svg';
   public myDocuments: EditorDocument[] = [];
   @ViewChild('addDocumentTemplate') private addDocumentTemplate: TemplateRef<any>;
+  hasSearchFilterActivated: boolean;
 
   public get createDocumentModels() {
     if (!this.createDocumentViewExpanded) {
@@ -32,27 +34,40 @@ export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   constructor(
-    private homepageService: DocumentService,
-    private navigationService: NavigationService,
+    public navigationService: NavigationService,
+    private documentService: DocumentService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
     this.shouldHaveCreateDocumentViewExpanded = documentCreationModels.length > this.maximumCreatDocumenModelSize;
-    this.subs.push(this.homepageService.getMyDocuments().subscribe(res => {
-      this.myDocuments = res;
-    }));
+    this.getMyDocuments();
   }
 
   ngAfterViewInit(): void {
     if (this.addDocumentTemplate) {
       this.navigationService.setNavigationActionsTemplate(this.addDocumentTemplate);
+      this.navigationService.emitHasSearch(true);
+
+      this.subs.push(this.navigationService.search
+        .pipe(debounceTime(300))
+        .subscribe(searchQuery => {
+          this.getMyDocuments(searchQuery);
+        }));
     }
   }
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
     this.navigationService.clearNavigationActionsTemplate();
+    this.navigationService.emitHasSearch(false);
+  }
+
+  private getMyDocuments(searchQuery?: string) {
+    this.hasSearchFilterActivated = Boolean(searchQuery);
+    this.subs.push(this.documentService.getMyDocuments(searchQuery).subscribe(res => {
+      this.myDocuments = res;
+    }));
   }
 
   public toggleCreateDocumentView(): void {
@@ -61,14 +76,20 @@ export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public createDocument(model?: DocumentCreationModel): void {
     if (!model || model.id === 'empty') {
-      this.subs.push(this.homepageService.createDocument()
+      this.subs.push(this.documentService.createDocument()
         .subscribe(document => {
-          this.openDocument(document);
+          this.openDocument(document.id);
         }));
     }
   }
+  public deleteDocument(documentId: string): void {
+    this.subs.push(this.documentService.deleteDocument(documentId)
+      .subscribe(() => {
+        this.getMyDocuments(this.navigationService.search.value);
+      }));
+  }
 
-  public openDocument(document: EditorDocument): void {
-    this.router.navigateByUrl(`/document/${document.id}`);
+  public openDocument(documentId: string): void {
+    this.router.navigateByUrl(`/document/${documentId}`);
   }
 }

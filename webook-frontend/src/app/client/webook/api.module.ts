@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { DocumentServiceProxy } from './api/documentServiceProxy';
 import { DocumentsServiceProxy } from './api/documentsServiceProxy';
+import { ProfileServiceProxy } from './api/profileServiceProxy';
 
 @NgModule({
   imports:      [],
@@ -12,7 +13,8 @@ import { DocumentsServiceProxy } from './api/documentsServiceProxy';
   exports:      [],
   providers: [
     DocumentServiceProxy,
-    DocumentsServiceProxy ]
+    DocumentsServiceProxy,
+    ProfileServiceProxy ]
 })
 export class ApiModule {
     public static forRoot(configurationFactory: () => Configuration): ModuleWithProviders<ApiModule> {

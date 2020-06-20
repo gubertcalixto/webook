@@ -1,6 +1,6 @@
 <ng-container *ngIf="document">
   <ng-template #headerTitle>
-    <wb-editor-document-title [documentTitle]="document.title" (documentTitleChange)="updateDocumentTitle($event)">
+    <wb-editor-document-title [documentId]="document.id" [(documentTitle)]="document.title">
     </wb-editor-document-title>
   </ng-template>
   <ng-template #headerBack>

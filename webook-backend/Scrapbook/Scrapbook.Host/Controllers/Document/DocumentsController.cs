@@ -29,9 +29,14 @@ namespace Scrapbook.Host.Controllers.Document
         }
         
         [HttpGet("/documents/my-user")]
-        public async Task<List<MyEditorDocument>> GetAll()
+        public async Task<List<MyEditorDocument>> GetAll(string querySearch)
         {
-            var myDocumentEntities = await Repository.Where(r => r.UserId == JwtReader.GetUserId()).ToListAsync();
+            var query = Repository
+                .Where(r => r.UserId == JwtReader.GetUserId());
+            if (!string.IsNullOrEmpty(querySearch))
+                query = query.Where(r => r.Description.Contains(querySearch) || r.Title.Contains(querySearch));
+            
+            var myDocumentEntities = await query.ToListAsync();
             var output = Mapper.Map<List<MyEditorDocument>>(myDocumentEntities);
             return output;
         }

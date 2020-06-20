@@ -85,13 +85,20 @@ export class DocumentsServiceProxy {
     }
 
     /**
+     * @param querySearch 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public documentsMyUserGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<Array<MyEditorDocument>>;
-    public documentsMyUserGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<Array<MyEditorDocument>>>;
-    public documentsMyUserGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<Array<MyEditorDocument>>>;
-    public documentsMyUserGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+    public documentsMyUserGet(querySearch?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<Array<MyEditorDocument>>;
+    public documentsMyUserGet(querySearch?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<Array<MyEditorDocument>>>;
+    public documentsMyUserGet(querySearch?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<Array<MyEditorDocument>>>;
+    public documentsMyUserGet(querySearch?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (querySearch !== undefined && querySearch !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>querySearch, 'querySearch');
+        }
 
         let headers = this.defaultHeaders;
 
@@ -117,6 +124,7 @@ export class DocumentsServiceProxy {
 
         return this.httpClient.get<Array<MyEditorDocument>>(`${this.configuration.basePath}/documents/my-user`,
             {
+                params: queryParameters,
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
