@@ -1,5 +1,3 @@
-.loading {
-}
 wb-root {
   display: flex;
   flex-direction: column;
@@ -12,7 +10,7 @@ wb-root {
     height: 100%;
     nz-content#content-area {
       display: flex;
-    flex-direction: column;
+      flex-direction: column;
       router-outlet + * {
         display: flex;
         flex-direction: column;
