@@ -1,5 +1,5 @@
 wb-home-page {
-  .create-document {
+  .create-document-container {
     .ant-layout-header {
       div[nz-row] {
         height: inherit;
@@ -51,30 +51,32 @@ wb-home-page {
       }
     }
   }
-  section.my-scrapbooks {
-    padding: 16px 16px 0;
-    nz-card {
-      .ant-card-cover {
-        button > img {
-          max-width: 100%;
+  .my-documents-container {
+    div.my-documents {
+      padding: 16px 16px 0;
+      nz-card {
+        .ant-card-cover {
+          button > img {
+            max-width: 100%;
+          }
         }
-      }
-      .document-title-container {
-        flex-wrap: nowrap;
-        a {
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        a + div.actions {
-          text-align: right;
-          i[fa="ellipsis-v"] {
-            padding: 0 8px;
+        .document-title-container {
+          flex-wrap: nowrap;
+          a {
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          a + div.actions {
+            text-align: right;
+            i[fa="ellipsis-v"] {
+              padding: 0 8px;
+            }
           }
         }
       }
-    }
-    nz-empty {
-      width: 100%;
+      nz-empty {
+        width: 100%;
+      }
     }
   }
 }

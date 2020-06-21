@@ -21,10 +21,10 @@ export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
   public isAddContainerOpened = false;
   public createDocumentViewExpanded = false;
   public shouldHaveCreateDocumentViewExpanded = false;
-  public defaultDocumentCover = '/assets/document/default-document.svg';
   public myDocuments: EditorDocument[] = [];
+  public isLoadingMyDocuments = true;
+  public hasSearchFilterActivated: boolean;
   @ViewChild('addDocumentTemplate') private addDocumentTemplate: TemplateRef<any>;
-  hasSearchFilterActivated: boolean;
 
   public get createDocumentModels() {
     if (!this.createDocumentViewExpanded) {
@@ -66,8 +66,9 @@ export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
   private getMyDocuments(searchQuery?: string) {
     this.hasSearchFilterActivated = Boolean(searchQuery);
     this.subs.push(this.documentService.getMyDocuments(searchQuery).subscribe(res => {
+      this.isLoadingMyDocuments = false;
       this.myDocuments = res;
-    }));
+    }, () => this.isLoadingMyDocuments = false));
   }
 
   public toggleCreateDocumentView(): void {
@@ -82,14 +83,15 @@ export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
         }));
     }
   }
+
+  public openDocument(documentId: string): void {
+    this.router.navigateByUrl(`/document/${documentId}`);
+  }
+
   public deleteDocument(documentId: string): void {
     this.subs.push(this.documentService.deleteDocument(documentId)
       .subscribe(() => {
         this.getMyDocuments(this.navigationService.search.value);
       }));
-  }
-
-  public openDocument(documentId: string): void {
-    this.router.navigateByUrl(`/document/${documentId}`);
   }
 }

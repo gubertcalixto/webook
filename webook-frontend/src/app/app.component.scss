@@ -1,3 +1,5 @@
+.loading {
+}
 wb-root {
   display: flex;
   flex-direction: column;
@@ -8,10 +10,14 @@ wb-root {
     display: flex;
     flex-direction: column;
     height: 100%;
-  }
-
-  router-outlet + * {
-    height: 100%;
-    overflow: auto;
+    nz-content#content-area {
+      display: flex;
+    flex-direction: column;
+      router-outlet + * {
+        display: flex;
+        flex-direction: column;
+        flex: auto;
+      }
+    }
   }
 }

@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OAuthHttpInterceptor } from '@oath/tokens/oauth-http-interceptor.token';
+import { FaIconsModule } from '@shared/components';
 import { KeyboardShortcutsModule } from 'ng-keyboard-shortcuts';
 import { NZ_I18N, pt_BR } from 'ng-zorro-antd/i18n';
 import { UrlConsts } from 'src/environments/url-consts';
@@ -19,10 +20,11 @@ import { AppOAuthModule } from './setup/oauth/oauth.module';
     AppComponent
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
     WebookBackendClientModule,
-    CommonModule,
+    FaIconsModule,
     HttpClientModule,
     AppOAuthModule,
     NavigationContainerModule,

@@ -3,41 +3,33 @@ import { NgModule } from '@angular/core';
 import { FaIconsModule } from '@shared/components';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzSpaceModule } from 'ng-zorro-antd/space';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzListModule } from 'ng-zorro-antd/list';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
-import { DocumentListModule } from '../document-list/document-list.module';
-import { DocumentService } from '../services/document.service';
-import { HomePageRoutingModule } from './home-page-routing.module';
-import { HomePageComponent } from './home-page.component';
+import { DocumentCardComponent } from './document-card/document-card.component';
 
 @NgModule({
-  declarations: [HomePageComponent],
+  declarations: [DocumentCardComponent],
   imports: [
     CommonModule,
-
     FaIconsModule,
-    DocumentListModule,
-
     NzButtonModule,
     NzCardModule,
-    NzEmptyModule,
     NzGridModule,
     NzInputModule,
     NzLayoutModule,
-    NzSpinModule,
-    NzSpaceModule,
+    NzListModule,
+    NzPopconfirmModule,
+    NzPopoverModule,
     NzTypographyModule,
-
-    HomePageRoutingModule
   ],
-  providers: [
-    DocumentService
+  exports: [
+    DocumentCardComponent
   ]
 })
-export class HomePageModule { }
+export class DocumentListModule { }

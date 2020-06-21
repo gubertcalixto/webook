@@ -1,1 +1,23 @@
-<p>user-preferences works!</p>
+<ng-template #tabsActions>
+  <div *ngIf="tabIndex !== 2" class="tab-extra-actions">
+    <button (click)="emitSave()" [disabled]="isSaving" nz-button nzType="primary">Salvar</button>
+  </div>
+</ng-template>
+<nz-tabset nzSize="large" (nzSelectedIndexChange)="tabIndex = $event" [nzTabBarExtraContent]="tabsActions">
+  <nz-tab *ngFor="let tab of tabs" [nzTitle]="tabTitleTemplate">
+    <ng-template #tabTitleTemplate>
+      <i [fa]="tab.icon" [color]="tab.iconColor"></i> {{tab.title}}
+    </ng-template>
+    <ng-container [ngPlural]="tabIndex">
+      <ng-template ngPluralCase="=0">
+        <wb-account-preferences></wb-account-preferences>
+      </ng-template>
+      <ng-template ngPluralCase="=1">
+        <wb-editor-preferences></wb-editor-preferences>
+      </ng-template>
+      <ng-template ngPluralCase="=2">
+        <wb-danger-zone-preferences></wb-danger-zone-preferences>
+      </ng-template>
+    </ng-container>
+  </nz-tab>
+</nz-tabset>

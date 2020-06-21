@@ -1,0 +1,34 @@
+<ng-container *ngIf="document">
+  <nz-card [nzCover]="documentCoverTemplate" class="document-creation-model">
+    <nz-card-meta [nzTitle]="documentTitleTemplate" [nzDescription]="document.description"></nz-card-meta>
+  </nz-card>
+  <ng-template #documentTitleTemplate>
+    <div nz-row class="document-title-container">
+      <a nz-col nzFlex="initial" (click)="openDocument(document.id)">{{document.title}}</a>
+      <div nz-col nzFlex="auto" class="actions">
+        <button class="no-button-style" nz-popover [nzPopoverTitle]="document.title"
+          [nzPopoverContent]="documentPopoverTemplate" nzPopoverPlacement="bottomRight" nzPopoverTrigger="click">
+          <i fa="ellipsis-v"></i>
+        </button>
+        <ng-template #documentPopoverTemplate>
+          <nz-list class="document-popover-list" nzItemLayout="horizontal">
+            <nz-list-item>
+              <button nz-button nzType="link" (click)="openDocument(document.id)">Editar</button>
+            </nz-list-item>
+            <nz-list-item>
+              <button nz-button nzType="link" nz-popconfirm nzPopconfirmTitle="Tem certeza?"
+                nzPopconfirmPlacement="right" (nzOnConfirm)="deleteDocument(document.id)">
+                <span nz-typography nzType="danger">Deletar</span>
+              </button>
+            </nz-list-item>
+          </nz-list>
+        </ng-template>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #documentCoverTemplate>
+    <button class=" no-button-style" (click)="openDocument(document.id)">
+      <img [src]="document.image ? document.image : defaultDocumentCover" [alt]="document.title" />
+    </button>
+  </ng-template>
+</ng-container>
