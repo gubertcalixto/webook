@@ -86,7 +86,7 @@ namespace Scrapbook.Host.Controllers.Document
                 }
             }
             item.Description = input.Description;
-            item.DocumentAccess = input.AllowedAccess;
+            item.DocumentAccess = input.AllowedAccess ?? EditorDocumentAllowedAccess.Private;
             var result = Repository.Update(item);
             await Context.SaveChangesAsync();
             return result.Entity;

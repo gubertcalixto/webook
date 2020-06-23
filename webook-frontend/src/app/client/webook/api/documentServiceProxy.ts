@@ -10,18 +10,15 @@
  * Do not edit the class manually.
  */
 /* tslint:disable:no-unused-variable member-ordering */
+import { HttpClient, HttpEvent, HttpHeaders, HttpParameterCodec, HttpParams, HttpResponse } from '@angular/common/http';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { Observable } from 'rxjs';
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
-import { Observable }                                        from 'rxjs';
+import { Configuration } from '../configuration';
+import { CustomHttpParameterCodec } from '../encoder';
+import { EditorDocument, EditorDocumentAllowedAccess } from '../model/models';
+import { BASE_PATH } from '../variables';
 
-import { EditorDocument } from '../model/models';
-import { EditorDocumentAllowedAccess } from '../model/models';
-
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { Configuration }                                     from '../configuration';
 
 
 
@@ -33,7 +30,7 @@ export class DocumentServiceProxy {
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+    constructor(protected httpClient: HttpClient, @Optional() @Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
         if (configuration) {
             this.configuration = configuration;
         }
@@ -64,16 +61,16 @@ export class DocumentServiceProxy {
 
         if (typeof value === "object") {
             if (Array.isArray(value)) {
-                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
+                (value as any[]).forEach(elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
             } else if (value instanceof Date) {
                 if (key != null) {
                     httpParams = httpParams.append(key,
                         (value as Date).toISOString().substr(0, 10));
                 } else {
-                   throw Error("key may not be null if value is Date");
+                    throw Error("key may not be null if value is Date");
                 }
             } else {
-                Object.keys(value).forEach( k => httpParams = this.addToHttpParamsRecursive(
+                Object.keys(value).forEach(k => httpParams = this.addToHttpParamsRecursive(
                     httpParams, value[k], key != null ? `${key}.${k}` : k));
             }
         } else if (key != null) {
@@ -89,10 +86,10 @@ export class DocumentServiceProxy {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public documentIdDelete(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
-    public documentIdDelete(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
-    public documentIdDelete(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
-    public documentIdDelete(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+    public documentIdDelete(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<any>;
+    public documentIdDelete(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<HttpResponse<any>>;
+    public documentIdDelete(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<HttpEvent<any>>;
+    public documentIdDelete(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: undefined }): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling documentIdDelete.');
         }
@@ -112,7 +109,7 @@ export class DocumentServiceProxy {
 
 
         let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
             responseType = 'text';
         }
 
@@ -132,10 +129,10 @@ export class DocumentServiceProxy {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public documentIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocument>;
-    public documentIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocument>>;
-    public documentIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocument>>;
-    public documentIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+    public documentIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<EditorDocument>;
+    public documentIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpResponse<EditorDocument>>;
+    public documentIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpEvent<EditorDocument>>;
+    public documentIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling documentIdGet.');
         }
@@ -158,7 +155,7 @@ export class DocumentServiceProxy {
 
 
         let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
             responseType = 'text';
         }
 
@@ -181,26 +178,26 @@ export class DocumentServiceProxy {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public documentIdPut(id: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocument>;
-    public documentIdPut(id: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocument>>;
-    public documentIdPut(id: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocument>>;
-    public documentIdPut(id: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+    public documentIdPut(id: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<EditorDocument>;
+    public documentIdPut(id: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpResponse<EditorDocument>>;
+    public documentIdPut(id: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpEvent<EditorDocument>>;
+    public documentIdPut(id: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling documentIdPut.');
         }
 
-        let queryParameters = new HttpParams({encoder: this.encoder});
+        let queryParameters = new HttpParams({ encoder: this.encoder });
         if (title !== undefined && title !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>title, 'Title');
+            queryParameters = this.addToHttpParams(queryParameters,
+                <any>title, 'Title');
         }
         if (description !== undefined && description !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>description, 'Description');
+            queryParameters = this.addToHttpParams(queryParameters,
+                <any>description, 'Description');
         }
         if (allowedAccess !== undefined && allowedAccess !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>allowedAccess, 'AllowedAccess');
+            queryParameters = this.addToHttpParams(queryParameters,
+                <any>allowedAccess, 'AllowedAccess');
         }
 
         let headers = this.defaultHeaders;
@@ -221,7 +218,7 @@ export class DocumentServiceProxy {
 
 
         let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
             responseType = 'text';
         }
 
@@ -244,10 +241,10 @@ export class DocumentServiceProxy {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public documentIdTitlePost(title: string, id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<string>;
-    public documentIdTitlePost(title: string, id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<string>>;
-    public documentIdTitlePost(title: string, id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<string>>;
-    public documentIdTitlePost(title: string, id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+    public documentIdTitlePost(title: string, id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<string>;
+    public documentIdTitlePost(title: string, id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpResponse<string>>;
+    public documentIdTitlePost(title: string, id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpEvent<string>>;
+    public documentIdTitlePost(title: string, id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<any> {
         if (title === null || title === undefined) {
             throw new Error('Required parameter title was null or undefined when calling documentIdTitlePost.');
         }
@@ -255,10 +252,10 @@ export class DocumentServiceProxy {
             throw new Error('Required parameter id was null or undefined when calling documentIdTitlePost.');
         }
 
-        let queryParameters = new HttpParams({encoder: this.encoder});
+        let queryParameters = new HttpParams({ encoder: this.encoder });
         if (title !== undefined && title !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>title, 'Title');
+            queryParameters = this.addToHttpParams(queryParameters,
+                <any>title, 'Title');
         }
 
         let headers = this.defaultHeaders;
@@ -279,7 +276,7 @@ export class DocumentServiceProxy {
 
 
         let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
             responseType = 'text';
         }
 
@@ -304,27 +301,27 @@ export class DocumentServiceProxy {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocument>;
-    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocument>>;
-    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocument>>;
-    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<EditorDocument>;
+    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpResponse<EditorDocument>>;
+    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpEvent<EditorDocument>>;
+    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<any> {
 
-        let queryParameters = new HttpParams({encoder: this.encoder});
+        let queryParameters = new HttpParams({ encoder: this.encoder });
         if (id !== undefined && id !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>id, 'Id');
+            queryParameters = this.addToHttpParams(queryParameters,
+                <any>id, 'Id');
         }
         if (title !== undefined && title !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>title, 'Title');
+            queryParameters = this.addToHttpParams(queryParameters,
+                <any>title, 'Title');
         }
         if (description !== undefined && description !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>description, 'Description');
+            queryParameters = this.addToHttpParams(queryParameters,
+                <any>description, 'Description');
         }
         if (allowedAccess !== undefined && allowedAccess !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>allowedAccess, 'AllowedAccess');
+            queryParameters = this.addToHttpParams(queryParameters,
+                <any>allowedAccess, 'AllowedAccess');
         }
 
         let headers = this.defaultHeaders;
@@ -345,7 +342,7 @@ export class DocumentServiceProxy {
 
 
         let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
             responseType = 'text';
         }
 

@@ -1,0 +1,41 @@
+<form *ngIf="form" nz-form [formGroup]="form" (ngSubmit)="saveModal()">
+  <h2 class="document-title" nz-typography [ngClass]="{'italic': !form.get('title').value}">
+    {{form.get('title').value || 'Sem Título'}}
+  </h2>
+  <nz-form-item>
+    <nz-form-label nzSpan="24" nzFor="title">Título do Documento</nz-form-label>
+    <nz-form-control nzErrorTip="O título do documento é obrigatório!">
+      <nz-input-group>
+        <input required nz-input formControlName="title" placeholder="Título do Documento" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzSpan="24" nzFor="description">Descrição do Documento</nz-form-label>
+    <nz-form-control nzErrorTip="A descrição deve ter, no máximo, 250 caracteres.">
+      <textarea nz-input formControlName="description" placeholder="Descrição do Documento"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item class="document-access-field">
+    <nz-form-control>
+      <div class="switch-container">
+        <ng-template #checkedTemplate><i fa="check"></i></ng-template>
+        <ng-template #unCheckedTemplate><i fa="times"></i></ng-template>
+        <nz-switch formControlName="documentAccess" [nzCheckedChildren]="checkedTemplate"
+          [nzUnCheckedChildren]="unCheckedTemplate">
+        </nz-switch>
+        <span (click)="documentAccessToggle()">Deseja manter este documento público</span>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+  <span class="document-access-info" *ngIf="form.get('documentAccess').dirty && !form.get('documentAccess').value"
+    nz-typography nzType="secondary">
+    Este documento não será visivel para outras pessoas
+  </span>
+  <span *ngIf="errorDuringUpdate" nz-typography nzType="danger">Ocorreu um erro ao salvar, tente novamente</span>
+</form>
+
+<div *nzModalFooter>
+  <button [disabled]="isUpdating" nz-button nzType="default" (click)="cancelModal()">Cancelar</button>
+  <button [disabled]="form?.invalid || isUpdating" nz-button nzType="primary" (click)="saveModal()">Salvar</button>
+</div>

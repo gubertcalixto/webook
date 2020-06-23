@@ -33,16 +33,16 @@ namespace Scrapbook.Host.Controllers.Profile
             return await GetFollowersNumber(_jwtReader.GetUserId());
         }
 
-        [HttpGet("/user/{userId}/followers-number")]
-        public async Task<int> GetFollowersNumber(Guid userId)
-        {
-            return await _userFollowRepository.CountAsync(f => f.UserId == userId);
-        }
-
         [HttpGet("/my-user/documents-number")]
         public async Task<int> GetDocumentsNumber()
         {
             return await GetDocumentsNumber(_jwtReader.GetUserId());
+        }
+
+        [HttpGet("/user/{userId}/followers-number")]
+        public async Task<int> GetFollowersNumber(Guid userId)
+        {
+            return await _userFollowRepository.CountAsync(f => f.UserId == userId);
         }
 
         [HttpGet("/user/{userId}/documents-number")]
