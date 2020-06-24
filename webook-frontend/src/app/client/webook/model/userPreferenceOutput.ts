@@ -9,15 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { EditorDocumentAllowedAccess } from './editorDocumentAllowedAccess';
 
 
-export interface EditorDocument { 
-    title?: string | null;
-    description?: string | null;
-    documentAccess?: EditorDocumentAllowedAccess;
-    image?: string | null;
-    userId?: string;
-    id?: string;
+export interface UserPreferenceOutput { 
+    invisibleMode?: boolean;
+    newsletterActivated?: boolean;
+    autoplayAudios?: boolean;
+    autoplayVideos?: boolean;
 }
 

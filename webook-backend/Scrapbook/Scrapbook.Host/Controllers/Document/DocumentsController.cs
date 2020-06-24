@@ -40,5 +40,18 @@ namespace Scrapbook.Host.Controllers.Document
             var output = Mapper.Map<List<MyEditorDocument>>(myDocumentEntities);
             return output;
         }
+        
+        [HttpDelete("/documents/my-user")]
+        public async Task DeleteAllMyDocuments()
+        {
+            var userId = JwtReader.GetUserId();
+            var userDocuments = await Repository.Where(r => r.UserId == userId).ToListAsync();
+
+            if (userDocuments.Any())
+            {
+                Repository.RemoveRange(userDocuments);
+                await Context.SaveChangesAsync();
+            }
+        }
     }
 }
