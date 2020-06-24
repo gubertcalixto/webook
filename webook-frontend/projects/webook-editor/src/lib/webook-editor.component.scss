@@ -12,9 +12,11 @@
     }
   }
   #editor {
+    $editor-square-size: 600px;
+    position: relative;
     border: 1px dotted #ccc;
-    height: 500px;
-    width: 500px;
+    width: #{$editor-square-size * 2};
+    height: $editor-square-size;
     > wb-editor-element-projection {
       $box-padding: 4px 8px;
       $box-border-transition-time: 0.25s;

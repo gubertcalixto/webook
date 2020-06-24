@@ -11,10 +11,10 @@
       <wb-editor-toolbox class="toolbox-area vertical left" (addElement)="addElementToEditor($event)"
         [headerTemplate]="toolboxHeaderTemplate"></wb-editor-toolbox>
       <div #editor id="editor" [ngClass]="{'editing': editMode}">
-        <!-- <wb-editor-element-projection *ngFor="let el of editorElements; let i= index" [item]="el" class="elements"
-          [ngDraggable]="editMode" [bounds]="editor" [inBounds]="true" [ngResizable]="editMode" [rzContainment]="editor"
-          [ngClass]="{'active': i === activeEditorElementIndex}" (click)="setEditorElementAsActive(i)">
-        </wb-editor-element-projection> -->
+        <wb-editor-element-projection *ngFor="let el of editorElements; let i= index" [item]="el" class="elements"
+          [wbDnd]="editMode" [wbDndBoundary]="editor" [ngClass]="{'active': i === activeEditorElementIndex}"
+          (click)="setEditorElementAsActive(i)">
+        </wb-editor-element-projection>
       </div>
     </div>
   </nz-content>
