@@ -31,8 +31,7 @@ export class AppModule {
         filter((event) => event instanceof NavigationEnd),
         map(() => {
           const title = this.getTitle(router.routerState, router.routerState.root);
-          // TODO: Set Title Correctly (app name)
-          return title ? `${title.trim()} | Scrapbook Authentication` : 'Scrapbook Authentication';
+          return title ? `${title.trim()} | Webook` : 'Webook';
         }))
       .subscribe((title: string) => titleService.setTitle(title));
   }
