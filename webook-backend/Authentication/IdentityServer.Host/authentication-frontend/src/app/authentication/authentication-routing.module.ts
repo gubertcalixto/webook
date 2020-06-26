@@ -8,14 +8,14 @@ const routes: Routes = [
     path: 'sign-in',
     component: SignInComponent,
     data: {
-      title: 'Sign In'
+      title: 'Login'
     }
   },
   {
     path: 'sign-up',
     component: SignUpComponent,
     data: {
-      title: 'Sign Up'
+      title: 'Cadastro'
     }
   },
   { path: '**', redirectTo: 'sign-in' }
