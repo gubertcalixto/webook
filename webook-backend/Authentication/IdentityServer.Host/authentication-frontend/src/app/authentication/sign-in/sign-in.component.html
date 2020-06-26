@@ -1,15 +1,15 @@
 <div nz-row nzJustify="space-between" nzAlign="middle">
   <div id="sign-in-content" nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="10" nzXl="8">
     <app-logo></app-logo>
-    <h2 nz-title>Log In to your Account</h2>
+    <h2 nz-title>Entre na sua Conta</h2>
     <app-authentication-social-media (authSocialMediaSelected)="onAuthSocialMediaSelected($event)">
     </app-authentication-social-media>
-    <nz-divider nzText="or use your email"></nz-divider>
+    <nz-divider nzText="ou use seu email"></nz-divider>
     <form nz-form [formGroup]="form" (submit)="submitForm()">
       <nz-form-item>
-        <nz-form-control nzErrorTip="Username field is required!">
+        <nz-form-control nzErrorTip="Nome de Usuário deve ser preenchido!">
           <nz-input-group [nzPrefix]="userPrefixTemplate">
-            <input nz-input id="sign-in-username" formControlName="userName" placeholder="Username *" />
+            <input nz-input id="sign-in-username" formControlName="userName" placeholder="Nome de Usuário *" />
           </nz-input-group>
           <ng-template #userPrefixTemplate>
             <i fa="user"></i>
@@ -17,10 +17,10 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item nz-row>
-        <nz-form-control nzErrorTip="Password field is required!" nz-col>
+        <nz-form-control nzErrorTip="Senha deve ser preenchida" nz-col>
           <nz-input-group [nzPrefix]="passwordPrefixTemplate" [nzSuffix]="passwordSuffixTemplate">
             <input nz-input id="sign-in-password" formControlName="password"
-              [type]="passwordVisible ? 'text' : 'password'" placeholder="Password *" />
+              [type]="passwordVisible ? 'text' : 'password'" placeholder="Senha *" />
           </nz-input-group>
           <ng-template #passwordPrefixTemplate>
             <i fa="lock"></i>
@@ -28,32 +28,32 @@
           <ng-template #passwordSuffixTemplate>
             <i [fa]="passwordVisible ? 'eye-slash' : 'eye'" class="clickable"
               (click)="passwordVisible = !passwordVisible" nz-tooltip
-              [nzTooltipTitle]="(passwordVisible ? 'Hide' : 'Show') + ' password'"></i>
+              [nzTooltipTitle]="(passwordVisible ? 'Esconder' : 'Mostrar') + ' password'"></i>
           </ng-template>
         </nz-form-control>
         <nz-form-item *ngIf="loginFailed" nz-col nzSpan="24" class="ant-typography-rtl">
-          <span nz-typography nzType="danger">Username or password is incorrect, try again</span>
+          <span nz-typography nzType="danger">Nome de usuário ou senha incorretos</span>
         </nz-form-item>
         <nz-form-item *ngIf="userInactive" nz-col nzSpan="24" class="ant-typography-rtl">
-          <span nz-typography nzType="danger">User is inactive</span>
+          <span nz-typography nzType="danger">Usuário está desativado</span>
         </nz-form-item>
         <nz-form-item *ngIf="userBlocked" nz-col nzSpan="24" class="ant-typography-rtl">
-          <span nz-typography nzType="danger">User is blocked, try again later</span>
+          <span nz-typography nzType="danger">O usuário está bloqueado, tente novamente mais tarde</span>
         </nz-form-item>
         <nz-form-item *ngIf="errorDuringLogin" nz-col nzSpan="24" class="ant-typography-rtl">
-          <span nz-typography nzType="danger">Somethin went wrong, try later</span>
+          <span nz-typography nzType="danger">Ocorreu um erro. Tente mais tarde</span>
         </nz-form-item>
         <div nz-col nzSpan="24" class="forgot-password-container">
-          <button nz-button nzType="link" (click)="forgotPassword()">Forgot password?</button>
+          <button nz-button nzType="link" (click)="forgotPassword()">Esqueceu a senha?</button>
         </div>
       </nz-form-item>
       <div id="sign-in-footer">
         <button type="submit" nz-button id="sign-in-form-button" nzType="primary"
           [disabled]="form.pristine || form.invalid">
-          Log in
+          Logar
         </button>
         <span>or <button id="sign-in-create-account-redirect" nz-button nzType="link"
-            (click)="redirectToCreateAccount()">Create an Account</button></span>
+            (click)="redirectToCreateAccount()">Criar Conta</button></span>
       </div>
     </form>
   </div>

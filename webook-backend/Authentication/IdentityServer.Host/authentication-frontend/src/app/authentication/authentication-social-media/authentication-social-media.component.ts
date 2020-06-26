@@ -10,19 +10,19 @@ export class AuthenticationSocialMediaComponent {
     {
       name: 'google',
       icon: 'google',
-      tooltip: 'Login with Google',
+      tooltip: 'Entrar com o Google',
       color: '#DC4E41'
     },
     {
       name: 'facebook',
       icon: 'facebook-f',
-      tooltip: 'Login with Facebook',
+      tooltip: 'Entrar com o Facebook',
       color: '#4064AD'
     },
     {
       name: 'twitter',
       icon: 'twitter',
-      tooltip: 'Login with Twitter',
+      tooltip: 'Entrar com o Twitter',
       color: '#20CCFE'
     },
   ];
