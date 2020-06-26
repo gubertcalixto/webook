@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Scrapbook.Host.Utils;
 using Scrapbook.Infrastructure;
 
-namespace Scrapbook.Host.Controllers.Document
+namespace Scrapbook.Host.Controllers
 {
     public class UserBaseController<TEntity>: BaseController<TEntity> where TEntity : class
     {

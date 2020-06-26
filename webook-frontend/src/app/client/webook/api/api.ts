@@ -4,4 +4,6 @@ export * from './documentsServiceProxy';
 import { DocumentsServiceProxy } from './documentsServiceProxy';
 export * from './profileServiceProxy';
 import { ProfileServiceProxy } from './profileServiceProxy';
-export const APIS = [DocumentServiceProxy, DocumentsServiceProxy, ProfileServiceProxy];
+export * from './userPreferencesServiceProxy';
+import { UserPreferencesServiceProxy } from './userPreferencesServiceProxy';
+export const APIS = [DocumentServiceProxy, DocumentsServiceProxy, ProfileServiceProxy, UserPreferencesServiceProxy];

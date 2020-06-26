@@ -13,7 +13,7 @@ namespace Scrapbook.Host
 {
     public class Startup
     {
-        private const string SwaggerVersion = "v0.0.0";
+        private const string SwaggerVersion = "v1";
         private const string SwaggerTitle = "Scrapbook";
         public IConfiguration Configuration { get; }
         

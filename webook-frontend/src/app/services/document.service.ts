@@ -31,6 +31,10 @@ export class DocumentService {
     return this.documentServiceProxy.documentIdDelete(id);
   }
 
+  public deleteAllMyDocument() {
+    return this.documentsServiceProxy.documentsMyUserDelete();
+  }
+
   public updateTitle(id: string, title: string): Observable<string> {
     return this.documentServiceProxy.documentIdTitlePost(title, id);
   }
