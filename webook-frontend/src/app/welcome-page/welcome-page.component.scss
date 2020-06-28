@@ -1,0 +1,44 @@
+.bg {
+  /* The image used */
+  background-image: url("https://cdn.pixabay.com/photo/2016/01/27/04/32/books-1163695_960_720.jpg");
+
+  /* Half height */
+  height: 50%;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  padding-top: 10%;
+  padding-bottom: 2%;
+}
+.icone {
+  color: rgba($color: #1890ff, $alpha: 1);
+  display: flex;
+  align-items: center;
+  place-content: center;
+  height: 15vh;
+  font-size: 500%;
+}
+.txtteste {
+  display: flex;
+  align-items: center;
+
+  height: 15vh;
+  font-size: 150%;
+}
+.head {
+  background-color: white;
+}
+.Titulo1 {
+  color: rgb(246, 248, 250);
+  text-shadow: 1px 1px 1px #000000;
+  align-items: center;
+  align-content: center;
+  text-align: center;
+}
+.Titulo2 {
+  color: rgb(246, 248, 250);
+  text-shadow: 1px 1px 1px #000000;
+}
