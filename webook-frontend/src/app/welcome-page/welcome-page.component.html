@@ -1,3 +1,141 @@
-<button nz-button nzType="primary" (click)="login()">Cadastrar / Logar</button>
-
-<a [routerLink]="['/search']">Pesquisar</a>
+<nz-layout>
+  <nz-header>
+    <div nz-row>
+      <div nz-col nzFlex="initial">
+        <h1>Webook</h1>
+      </div>
+      <div nz-col nzFlex="auto"></div>
+      <div nz-col nzFlex="initial">
+        <button nz-button nzType="primary" (click)="login()">
+          Cadastrar / Logar
+        </button>
+      </div>
+    </div>
+  </nz-header>
+  <nz-content>
+    <section nz-row class="presentation">
+      <video autoplay loop src="/assets/welcome/back-img.mp4"></video>
+      <div class="background-shadow"></div>
+      <div nz-col class="content">
+        <h1 nz-typography class="title">
+          Navegue, admire e se inspire!
+        </h1>
+        <h4 nz-typography class="subtitle">
+          Busque por bullet journals ou scrapbook criados na plataforma digital
+        </h4>
+        <nz-input-group class="search-input-group" [nzAddOnAfter]="searchInputSuffix" nzSize="large">
+          <input [(ngModel)]="searchValue" nz-input placeholder="Pesquise aqui..." (keyup.enter)="search()" />
+        </nz-input-group>
+        <ng-template #searchInputSuffix>
+          <nz-button-group nzSize="large">
+            <button *ngIf="searchValue" nz-button nzType="default" (click)="searchValue = undefined"><i
+                fa="times"></i></button>
+            <button nz-button nzType="primary" nzSearch (click)="search()"><i fa="search"></i></button>
+          </nz-button-group>
+        </ng-template>
+      </div>
+    </section>
+    <section class="what-is-webook">
+      <h1 nz-typography>O Webook</h1>
+      <p class="webook-description" nz-typography>
+        Webook é uma plataforma onde se pode criar scrapboks ou bullets journals de forma totalmente online bem
+        como
+        também compartilhá-los. Por ser digital, possibilita que você possa adicionar videos, músicas ou outros
+        recursos que no documento fisico não são possiveis. Além disso, o compartilhamento permite saber qual a
+        reação das pessoas em relação a sua criação.
+      </p>
+    </section>
+    <section class="features">
+      <h2 nz-typography>Uma plataforma para Criadores</h2>
+      <h4 nz-typography>O Webook foi criado para especialmente para você. Ele é muito prático e simples</h4>
+      <div class="features-container" nz-row>
+        <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="8">
+          <i class="feature-icon" fa="share-alt" color="#3f51b5"></i>
+          <h3 nz-typography style="text-align: center;">Compartilhável</h3>
+          <p nz-typography>
+            Aqui, além de poduzir seu scrapbook ou bullet journal, você pode
+            compartilha-lo sendo possivel obter feedback de outros usuários
+          </p>
+        </div>
+        <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="8">
+          <i class="feature-icon" fa="play-circle" color="#dc143c"></i>
+          <h3 nz-typography style="text-align: center;">Interativo</h3>
+          <p nz-typography>
+            É possivel criar recursos animados que pessoas possam interagir
+          </p>
+        </div>
+        <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="8">
+          <i class="feature-icon" fa="dollar-sign" color="#66a568"></i>
+          <h3 nz-typography style="text-align: center;">Acessível</h3>
+          <p nz-typography>
+            E o melhor, tudo isso de forma gratuita!
+          </p>
+        </div>
+      </div>
+    </section>
+    <nz-divider></nz-divider>
+    <section class="form">
+      <div nz-row>
+        <h2 nz-col nz-typography>Deixe aqui sua dúvida ou sugestão</h2>
+      </div>
+      <form *ngIf="form" [formGroup]="form" nz-form nzLayout="vertical">
+        <nz-form-item>
+          <nz-form-label>Nome</nz-form-label>
+          <nz-form-control [nzErrorTip]="userErrorTpl">
+            <input nz-input formControlName="userName" placeholder="Digite seu nome" />
+            <ng-template #userErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                Por favor, inclua seu nome
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>E-mail</nz-form-label>
+          <nz-form-control [nzErrorTip]="emailErrorTpl">
+            <input nz-input formControlName="email" placeholder="Digite seu email" type="email" />
+            <ng-template #emailErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('email')">
+                Esse e-mail não é valido
+              </ng-container>
+              <ng-container *ngIf="control.hasError('required')">
+                Por favor, inclua seu e-mail
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>Assunto</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="subject">
+              <nz-option [nzValue]="0" nzLabel="Elogio"></nz-option>
+              <nz-option [nzValue]="1" nzLabel="Reclamação"></nz-option>
+              <nz-option [nzValue]="2" nzLabel="Dúvida"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>Mensagem</nz-form-label>
+          <nz-form-control [nzErrorTip]="messageErrorTpl">
+            <textarea nz-input formControlName="message" rows="4"
+              placeholder="Escreva aqui sua dúvida ou sugestão"></textarea>
+            <ng-template #messageErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required') || control.hasError('minlength')">
+                Este campo é obrigatório e deve ter mais que 5 caracteres
+              </ng-container>
+              <ng-container *ngIf="control.hasError('maxlength')">
+                Este campo deve ter menos de 500 caracteres
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <div class="actions">
+          <button nz-button [disabled]="form.invalid || form.pending || form.pristine" (click)="sendForm()"
+            nzType="primary">
+            Enviar
+          </button>
+        </div>
+      </form>
+    </section>
+  </nz-content>
+</nz-layout>
