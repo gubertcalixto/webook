@@ -1,44 +1,125 @@
-.bg {
-  /* The image used */
-  background-image: url("https://cdn.pixabay.com/photo/2016/01/27/04/32/books-1163695_960_720.jpg");
-
-  /* Half height */
-  height: 50%;
-
-  /* Center and scale the image nicely */
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-
-  padding-top: 10%;
-  padding-bottom: 2%;
-}
-.icone {
-  color: rgba($color: #1890ff, $alpha: 1);
-  display: flex;
-  align-items: center;
-  place-content: center;
-  height: 15vh;
-  font-size: 500%;
-}
-.txtteste {
-  display: flex;
-  align-items: center;
-
-  height: 15vh;
-  font-size: 150%;
-}
-.head {
-  background-color: white;
-}
-.Titulo1 {
-  color: rgb(246, 248, 250);
-  text-shadow: 1px 1px 1px #000000;
-  align-items: center;
-  align-content: center;
-  text-align: center;
-}
-.Titulo2 {
-  color: rgb(246, 248, 250);
-  text-shadow: 1px 1px 1px #000000;
+$section-padding: 0 12px;
+$section-margin: 12px 0;
+$header-size: 48px;
+wb-welcome-page {
+  height: 100%;
+  > nz-layout {
+    > nz-header.ant-layout-header {
+      position: fixed;
+      width: 100%;
+      background-color: #fff;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    > nz-content {
+      overflow: auto;
+      margin-top: $header-size;
+      > section {
+        margin: $section-margin;
+        padding: $section-padding;
+      }
+      section.presentation {
+        display: flex;
+        align-items: center;
+        place-content: center;
+        height: 75vh;
+        margin-top: 0;
+        position: relative;
+        video,
+        .background-shadow {
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          z-index: 0;
+        }
+        .background-shadow {
+          background: rgba(0, 0, 0, 0.2);
+          height: 100%;
+        }
+        .content {
+          .title,
+          .subtitle {
+            cursor: context-menu;
+            color: #fff;
+            text-shadow: 1px 1px 1px #000000;
+          }
+          .title {
+            margin-bottom: 0;
+          }
+          .subtitle {
+            margin-top: 0;
+          }
+          .search-input-group {
+            $search-input-height: 40px;
+            input {
+              height: $search-input-height;
+              border-right: none;
+              outline: none;
+            }
+            .ant-input-group-addon {
+              padding: 0;
+              height: $search-input-height;
+              background: none;
+              border: none;
+              border-radius: unset;
+              nz-button-group {
+                button {
+                  outline: none;
+                }
+                button:first-child {
+                  border-left: none;
+                  border-radius: unset;
+                }
+                button:last-child {
+                  border-top-left-radius: unset;
+                  border-bottom-left-radius: unset;
+                  border-top-right-radius: 4px;
+                  border-bottom-right-radius: 4px;
+                }
+              }
+            }
+          }
+        }
+      }
+      section.what-is-webook {
+        padding: 0 15vw 2em;
+        > h1 {
+          text-align: center;
+        }
+        .webook-description {
+          text-align: justify;
+        }
+      }
+      section.features {
+        > h2,
+        > h4 {
+          text-align: center;
+          margin-top: 0;
+        }
+        > h4 {
+          margin-bottom: 2em;
+        }
+        & > .features-container {
+          place-content: center;
+          > div {
+            text-align: center;
+            .feature-icon {
+              margin: 12px 0;
+              font-size: 500%;
+              text-shadow: 1px 1px 1px #000;
+            }
+          }
+        }
+      }
+      section.form {
+        nz-form-item.ant-form-item {
+          margin-bottom: 0;
+        }
+        .actions {
+          margin-top: 1em;
+          text-align: right;
+        }
+      }
+    }
+  }
 }

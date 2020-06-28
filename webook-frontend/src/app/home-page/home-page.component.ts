@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
+import { OauthManagerService } from '@oath/services/oauth-manager.service';
 import { Subscription } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, switchMap } from 'rxjs/operators';
 
 import { EditorDocument } from '../client/webook';
 import { NavigationService } from '../navigation/navigation.service';
@@ -34,10 +35,19 @@ export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   constructor(
+    private oAuthManagerService: OauthManagerService,
     public navigationService: NavigationService,
     private documentService: DocumentService,
     private router: Router
-  ) { }
+  ) {
+    this.subs.push(this.oAuthManagerService.finishedLoadingSubject
+      .pipe(switchMap(() => this.oAuthManagerService.hasValidToken()))
+      .subscribe((res) => {
+        if (!res) {
+          this.router.navigateByUrl('/welcome');
+        }
+      }));
+  }
 
   ngOnInit(): void {
     this.shouldHaveCreateDocumentViewExpanded = documentCreationModels.length > this.maximumCreatDocumenModelSize;
