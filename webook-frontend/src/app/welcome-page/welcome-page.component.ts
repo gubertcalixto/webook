@@ -5,6 +5,8 @@ import { OauthManagerService } from '@oath/services/oauth-manager.service';
 import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
+import { ContactFormService } from './contact-form.service';
+
 @Component({
   selector: 'wb-welcome-page',
   templateUrl: './welcome-page.component.html',
@@ -15,9 +17,11 @@ export class WelcomePageComponent implements OnDestroy {
   private subs: Subscription[] = [];
   public form: FormGroup;
   public searchValue: string;
+  contactFormSend: boolean;
 
   constructor(
     public oAuthManagerService: OauthManagerService,
+    private contactFormService: ContactFormService,
     private fb: FormBuilder,
     private router: Router
   ) {
@@ -53,6 +57,8 @@ export class WelcomePageComponent implements OnDestroy {
     const email = this.form.get('email').value;
     const subject = this.form.get('subject').value;
     const message = this.form.get('message').value;
-    // TODO
+    this.subs.push(this.contactFormService.sendContactForm(userName, email, message, subject).subscribe(() => {
+      this.contactFormSend = true;
+    }));
   }
 }
