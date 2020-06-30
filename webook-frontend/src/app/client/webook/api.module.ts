@@ -3,6 +3,7 @@ import { Configuration } from './configuration';
 import { HttpClient } from '@angular/common/http';
 
 
+import { ContactFormServiceProxy } from './api/contactFormServiceProxy';
 import { DocumentServiceProxy } from './api/documentServiceProxy';
 import { DocumentsServiceProxy } from './api/documentsServiceProxy';
 import { ProfileServiceProxy } from './api/profileServiceProxy';
@@ -12,6 +13,7 @@ import { ProfileServiceProxy } from './api/profileServiceProxy';
   declarations: [],
   exports:      [],
   providers: [
+    ContactFormServiceProxy,
     DocumentServiceProxy,
     DocumentsServiceProxy,
     ProfileServiceProxy ]

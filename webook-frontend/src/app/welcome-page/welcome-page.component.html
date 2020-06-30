@@ -78,7 +78,7 @@
       <div nz-row>
         <h2 nz-col nz-typography>Deixe aqui sua dúvida ou sugestão</h2>
       </div>
-      <form *ngIf="form" [formGroup]="form" nz-form nzLayout="vertical">
+      <form *ngIf="form && !contactFormSend" [formGroup]="form" nz-form nzLayout="vertical">
         <nz-form-item>
           <nz-form-label>Nome</nz-form-label>
           <nz-form-control [nzErrorTip]="userErrorTpl">
@@ -111,6 +111,7 @@
               <nz-option [nzValue]="0" nzLabel="Elogio"></nz-option>
               <nz-option [nzValue]="1" nzLabel="Reclamação"></nz-option>
               <nz-option [nzValue]="2" nzLabel="Dúvida"></nz-option>
+              <nz-option [nzValue]="3" nzLabel="Outro"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -136,6 +137,8 @@
           </button>
         </div>
       </form>
+      <nz-result *ngIf="contactFormSend" nzStatus="success" nzTitle="Formulário enviado com sucesso">
+      </nz-result>
     </section>
   </nz-content>
 </nz-layout>
