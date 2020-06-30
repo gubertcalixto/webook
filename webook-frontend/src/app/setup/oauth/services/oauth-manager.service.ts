@@ -42,6 +42,12 @@ export class OauthManagerService {
       this.oauthService.setupAutomaticSilentRefresh();
       this.finishedLoading = true;
       this.finishedLoadingSubject.next(true);
+      // Makes sure hash was used successfully
+      setTimeout(() => {
+        if (location.hash) {
+          location.hash = '';
+        }
+      }, 5);
       return success;
     }
     catch (e) {

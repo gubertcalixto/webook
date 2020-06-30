@@ -6,11 +6,13 @@ import { WebookEditorModule } from '@wb-editor/webook-editor.module';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { DocumentService } from 'src/app/services/document.service';
 
+import { EditorConfigurationModule } from '../editor-configuration/editor-configuration.module';
 import { EditorDocumentTitleComponent } from './document-title/document-title.component';
 import { EditorDocumentRoutingModule } from './editor-document-routing.module';
 import { EditorDocumentComponent } from './editor-document.component';
@@ -29,14 +31,19 @@ import { EditorDocumentPageNavigationComponent } from './page-navigation/page-na
   imports: [
     CommonModule,
     FormsModule,
+
+    NzButtonModule,
     NzGridModule,
+    NzInputModule,
+    NzModalModule,
     NzPageHeaderModule,
     NzPaginationModule,
-    NzButtonModule,
     NzSpaceModule,
-    NzInputModule,
+
+    EditorConfigurationModule,
     WebookEditorModule,
     FaIconsModule,
+
     EditorDocumentRoutingModule
   ],
   providers: [

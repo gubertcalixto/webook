@@ -1,0 +1,21 @@
+wb-editor-configuration-modal {
+  .document-title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    &.italic {
+      font-style: italic;
+      color: #808080;
+    }
+  }
+  .document-access-field {
+    margin-bottom: 0;
+    .switch-container {
+      nz-switch + span {
+        margin-left: 8px;
+        cursor: pointer;
+        user-select: none;
+      }
+    }
+  }
+}

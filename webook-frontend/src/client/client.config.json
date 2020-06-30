@@ -2,7 +2,7 @@
   "clients": [
     {
       "name": "backend",
-      "baseUrl": "http://localhost:5001/swagger/v0.0.0/swagger.json",
+      "baseUrl": "http://localhost:5001/swagger/v1/swagger.json",
       "outPath": "app/client/webook"
     },
     {

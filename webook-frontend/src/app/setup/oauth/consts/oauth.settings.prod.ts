@@ -7,7 +7,7 @@ export const oAuthConfig: AuthConfig = {
   clientId: 'webook-frontend',
   scope: 'openid profile webook-backend',
   requireHttps: true,
-  clearHashAfterLogin: true,
+  clearHashAfterLogin: false,
   useSilentRefresh: true,
   silentRefreshRedirectUri: window.location.origin + '/assets/oauth/silent-refresh.html',
   showDebugInformation: false

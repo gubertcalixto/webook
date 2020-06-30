@@ -7,6 +7,7 @@ import { ContactFormServiceProxy } from './api/contactFormServiceProxy';
 import { DocumentServiceProxy } from './api/documentServiceProxy';
 import { DocumentsServiceProxy } from './api/documentsServiceProxy';
 import { ProfileServiceProxy } from './api/profileServiceProxy';
+import { UserPreferencesServiceProxy } from './api/userPreferencesServiceProxy';
 
 @NgModule({
   imports:      [],
@@ -16,7 +17,8 @@ import { ProfileServiceProxy } from './api/profileServiceProxy';
     ContactFormServiceProxy,
     DocumentServiceProxy,
     DocumentsServiceProxy,
-    ProfileServiceProxy ]
+    ProfileServiceProxy,
+    UserPreferencesServiceProxy ]
 })
 export class ApiModule {
     public static forRoot(configurationFactory: () => Configuration): ModuleWithProviders<ApiModule> {

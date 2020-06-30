@@ -1,9 +1,15 @@
 :host {
   padding: 0 8px;
-  nz-tabset {
-    padding-bottom: 12px;
-    .tab-extra-actions {
-      margin-right: 12px;
+  .preference-header {
+    display: flex;
+    align-items: center;
+    place-content: space-between;
+    margin-bottom: 0.5em;
+    > h1 {
+      margin-bottom: 0;
     }
+  }
+  .preference-container {
+    margin-bottom: 12px;
   }
 }

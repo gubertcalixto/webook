@@ -1,23 +1,32 @@
-<ng-template #tabsActions>
-  <div *ngIf="tabIndex !== 2" class="tab-extra-actions">
-    <button (click)="emitSave()" [disabled]="isSaving" nz-button nzType="primary">Salvar</button>
-  </div>
-</ng-template>
-<nz-tabset nzSize="large" (nzSelectedIndexChange)="tabIndex = $event" [nzTabBarExtraContent]="tabsActions">
-  <nz-tab *ngFor="let tab of tabs" [nzTitle]="tabTitleTemplate">
-    <ng-template #tabTitleTemplate>
-      <i [fa]="tab.icon" [color]="tab.iconColor"></i> {{tab.title}}
-    </ng-template>
-    <ng-container [ngPlural]="tabIndex">
-      <ng-template ngPluralCase="=0">
-        <wb-account-preferences></wb-account-preferences>
-      </ng-template>
-      <ng-template ngPluralCase="=1">
-        <wb-editor-preferences></wb-editor-preferences>
-      </ng-template>
-      <ng-template ngPluralCase="=2">
-        <wb-danger-zone-preferences></wb-danger-zone-preferences>
-      </ng-template>
-    </ng-container>
-  </nz-tab>
-</nz-tabset>
+<nz-spin [nzSpinning]="isLoading" nzSize="large">
+  <form *ngIf="form" [formGroup]="form">
+    <div class="preference-header">
+      <h1 nz-typography>Preferências de Usuário</h1>
+      <div class="actions">
+        <button (click)="save()" [disabled]="form.pristine || isSaving" nz-button nzType="primary">Salvar</button>
+      </div>
+    </div>
+    <div class="preference-container">
+      <h2>Conta</h2>
+      <label nz-checkbox formControlName="invisibleMode">Quero ficar invisivel</label>
+      <i nz-tooltip nzTooltipTitle="Seu perfil não poderá ser encontrado" fa="question-circle"></i>
+      <br />
+      <label nz-checkbox formControlName="newsletterActivated">Desejo receber novidades via email</label>
+    </div>
+    <div class="preference-container">
+      <h2>Editor</h2>
+      <label nz-checkbox formControlName="autoplayAudios">Tocar áudios automaticamente</label>
+      <br />
+      <label nz-checkbox formControlName="autoplayVideos">Iniciar vídeos automaticamente</label>
+    </div>
+    <div class="preference-container">
+      <h2>Danger Zone</h2>
+      <p>Tome cuidado com as opções abaixo, elas podem morder</p>
+      <nz-button-group>
+        <button (click)="deleteAccount()" nz-button nzType="danger" nzShape="round">Deletar Conta</button>
+        <button (click)="deleteDocuments()" nz-button nzType="dashed" nzShape="round">Deletar todos meus
+          documentos</button>
+      </nz-button-group>
+    </div>
+  </form>
+</nz-spin>

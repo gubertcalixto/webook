@@ -5,6 +5,7 @@ import { WebookEditorBaseComponentsModule } from '@wb-editor-base-components/web
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 
+import { DraggableComponentDirective } from './directives/draggable-component.directive';
 import {
   WebookEditorElementProjectionComponent,
 } from './webook-editor-element-projection/webook-editor-element-projection.component';
@@ -20,6 +21,7 @@ import { WebookEditorService } from './webook-editor.service';
     WebookEditorComponent,
     WebookEditorElementProjectionComponent,
     WebookEditorElementProjectionDirective,
+    DraggableComponentDirective,
     WebookEditorToolboxComponent
   ],
   imports: [
@@ -30,7 +32,9 @@ import { WebookEditorService } from './webook-editor.service';
     NzLayoutModule
   ],
   providers: [WebookEditorService],
-  exports: [WebookEditorComponent]
+  exports: [
+    WebookEditorComponent
+  ]
 })
 export class WebookEditorModule {
 }
