@@ -7,7 +7,7 @@
     <h2 nz-title>Criar Conta</h2>
     <app-authentication-social-media (authSocialMediaSelected)="onAuthSocialMediaSelected($event)">
     </app-authentication-social-media>
-    <nz-divider nzText="or"></nz-divider>
+    <nz-divider nzText="ou"></nz-divider>
     <form nz-form [formGroup]="form" (submit)="submitForm()">
       <nz-form-item nzGutter="16">
         <nz-form-control nzErrorTip="O campo Nome é obrigatório!" nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
@@ -18,7 +18,8 @@
             <input nz-input id="sign-up-first-name" formControlName="firstName" placeholder="Nome *" />
           </nz-input-group>
         </nz-form-control>
-        <nz-form-control nzErrorTip="O campo Sobrenome é obrigatório!" nzXs="24" nzSm="24" nzMd="24" nzLg="12" nzXl="12">
+        <nz-form-control nzErrorTip="O campo Sobrenome é obrigatório!" nzXs="24" nzSm="24" nzMd="24" nzLg="12"
+          nzXl="12">
           <nz-input-group>
             <input nz-input id="sign-up-last-name" formControlName="lastName" placeholder="Sobrenome *" />
           </nz-input-group>
@@ -67,7 +68,8 @@
       <div id="sign-up-footer">
         <button nz-button type="submit" id="sign-up-form-button" nzType="primary"
           [disabled]="!form.dirty || form.invalid">Criar Conta</button>
-        <span>ou <button id="sign-up-sign-in-redirect" nz-button nzType="link" (click)="redirectToSignIn()">Cadastrar-se</button></span>
+        <span>ou <button id="sign-up-sign-in-redirect" nz-button nzType="link"
+            (click)="redirectToSignIn()">Cadastrar-se</button></span>
       </div>
     </form>
   </div>

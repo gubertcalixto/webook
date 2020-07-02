@@ -28,7 +28,7 @@
           <ng-template #passwordSuffixTemplate>
             <i [fa]="passwordVisible ? 'eye-slash' : 'eye'" class="clickable"
               (click)="passwordVisible = !passwordVisible" nz-tooltip
-              [nzTooltipTitle]="(passwordVisible ? 'Esconder' : 'Mostrar') + ' password'"></i>
+              [nzTooltipTitle]="(passwordVisible ? 'Esconder' : 'Mostrar') + ' senha'"></i>
           </ng-template>
         </nz-form-control>
         <nz-form-item *ngIf="loginFailed" nz-col nzSpan="24" class="ant-typography-rtl">
