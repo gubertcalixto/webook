@@ -10,9 +10,4 @@
         <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="3.1.4" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Dtos\Identity\Inputs" />
-      <Folder Include="Dtos\Identity\Outputs" />
-    </ItemGroup>
-
 </Project>

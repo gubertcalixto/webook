@@ -12,9 +12,10 @@
 
 
 export enum LogInStatus {
-    Validated,
-    IncorrectUserOrPassword,
-    UserInactive,
-    UserBlocked,
-    UnknownError
-}
+    Validated = 0,
+    IncorrectUserOrPassword = 1,
+    UserInactive = 2,
+    UserBlocked = 3,
+    UnknownError = 4
+};
+

@@ -45,11 +45,12 @@ namespace IdentityServer.IdentityControllers.Account
         [HttpPost]
         public async Task<RegisterOutput> Register([FromBody] RegisterInput input)
         {
-            var doesUserExists = await DoesUserExists(input);
-            if (doesUserExists)
-                return new RegisterOutput { Result = RegisterOutputResult.UserAlreadyExists};
-
-            return await TryInsertUser(input);
+            var conflictedUserStatus = await DoesUserExists(input);
+            if (conflictedUserStatus == DoesUserExistsStatus.NotFound) return await TryInsertUser(input);
+            
+            return conflictedUserStatus == DoesUserExistsStatus.SameEmail
+                ? new RegisterOutput { Result = RegisterOutputResult.EmailConflict}
+                : new RegisterOutput { Result = RegisterOutputResult.LoginConflict};
         }
 
         private async Task<RegisterOutput> TryInsertUser(RegisterInput input)
@@ -66,13 +67,17 @@ namespace IdentityServer.IdentityControllers.Account
             return output;
         }
 
-        private async Task<bool> DoesUserExists(RegisterInput input)
+        private async Task<DoesUserExistsStatus> DoesUserExists(RegisterInput input)
         {
-            var doesUserExists = await UserRepository.AnyAsync(u =>
-                u.IsDeleted == false &&
-                (u.Email == input.Email || u.Login == input.Login)
+            var conflictedUser = await UserRepository.FirstOrDefaultAsync(u =>
+                u.IsDeleted == false &&  (u.Email == input.Email || u.Login == input.Login)
             );
-            return doesUserExists;
+            if (conflictedUser == null)
+                return DoesUserExistsStatus.NotFound;
+            if(conflictedUser.Email.Equals(input.Email))
+                return DoesUserExistsStatus.SameEmail;
+            
+            return DoesUserExistsStatus.SameLogin;
         }
 
         [HttpGet]

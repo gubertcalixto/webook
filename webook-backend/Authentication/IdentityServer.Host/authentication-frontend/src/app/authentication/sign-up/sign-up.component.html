@@ -54,13 +54,16 @@
           </ng-template>
           <ng-template #passwordSuffixTemplate>
             <i [fa]="passwordVisible ? 'eye-slash' : 'eye'" class="clickable" nz-tooltip
-              [nzTooltipTitle]="(passwordVisible ? 'Esconder' : 'Mostrar') + ' password'"
+              [nzTooltipTitle]="(passwordVisible ? 'Esconder' : 'Mostrar') + ' senha'"
               (click)="passwordVisible = !passwordVisible"></i>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
-      <nz-form-item *ngIf="userAlreadyExists" class="ant-typography-rtl">
-        <span nz-typography nzType="danger">O usuário já existe</span>
+      <nz-form-item *ngIf="loginAlreadyExists" class="ant-typography-rtl">
+        <span nz-typography nzType="danger">O login já está em uso</span>
+      </nz-form-item>
+      <nz-form-item *ngIf="emailAlreadyExists" class="ant-typography-rtl">
+        <span nz-typography nzType="danger">O email já está em uso.</span>
       </nz-form-item>
       <nz-form-item *ngIf="registerFailed" class="ant-typography-rtl">
         <span nz-typography nzType="danger">Ocorreu um erro. Tente mais tarde</span>
@@ -69,7 +72,7 @@
         <button nz-button type="submit" id="sign-up-form-button" nzType="primary"
           [disabled]="!form.dirty || form.invalid">Criar Conta</button>
         <span>ou <button id="sign-up-sign-in-redirect" nz-button nzType="link"
-            (click)="redirectToSignIn()">Cadastrar-se</button></span>
+            (click)="redirectToSignIn()">Entrar</button></span>
       </div>
     </form>
   </div>

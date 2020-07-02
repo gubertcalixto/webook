@@ -4,9 +4,10 @@ namespace IdentityServer.IdentityControllers.Account.Dtos.Register
 {
     public enum RegisterOutputResult
     {
-        UserAlreadyExists = 0,
-        Success = 1,
-        Failed
+        LoginConflict = 0,
+        EmailConflict = 1,
+        Success = 2,
+        Failed = 3
     }
     
     public class RegisterOutput

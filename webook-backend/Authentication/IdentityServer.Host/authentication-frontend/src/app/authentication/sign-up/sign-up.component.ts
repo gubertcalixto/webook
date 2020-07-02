@@ -17,8 +17,9 @@ export class SignUpComponent implements OnInit, OnDestroy {
   private subs: Subscription[] = [];
   public form: FormGroup;
   public passwordVisible: boolean;
-  public userAlreadyExists: boolean;
+  public loginAlreadyExists: boolean;
   public registerFailed: boolean;
+  public emailAlreadyExists: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -67,7 +68,8 @@ export class SignUpComponent implements OnInit, OnDestroy {
       return;
     }
     this.registerFailed = false;
-    this.userAlreadyExists = false;
+    this.loginAlreadyExists = false;
+    this.emailAlreadyExists = false;
 
     const id = UUID();
     const login = this.form.get('login').value;
@@ -82,8 +84,12 @@ export class SignUpComponent implements OnInit, OnDestroy {
             case RegisterOutputResult.Success:
               this.redirectToSignIn();
               break;
-            case RegisterOutputResult.UserAlreadyExists:
-              this.userAlreadyExists = true;
+            case RegisterOutputResult.LoginConflict:
+              this.loginAlreadyExists = true;
+              this.form.markAsPristine();
+              break;
+            case RegisterOutputResult.EmailConflict:
+              this.emailAlreadyExists = true;
               this.form.markAsPristine();
               break;
             case RegisterOutputResult.Failed:
