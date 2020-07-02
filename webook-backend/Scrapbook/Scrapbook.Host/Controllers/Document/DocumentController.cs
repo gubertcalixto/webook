@@ -115,7 +115,7 @@ namespace Scrapbook.Host.Controllers.Document
             {
                 const string titlePrefix = "Novo Documento";
                 var title = $"{titlePrefix} {currentIndex}";
-                if (await Repository.AnyAsync(e => e.Title == title))
+                if (await Repository.AnyAsync(e => e.UserId == JwtReader.GetUserId() && e.Title == title))
                 {
                     currentIndex++;
                     continue;
