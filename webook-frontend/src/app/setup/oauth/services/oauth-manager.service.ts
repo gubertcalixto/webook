@@ -47,7 +47,7 @@ export class OauthManagerService {
         if (location.hash) {
           location.hash = '';
         }
-      }, 5);
+      }, 200);
       return success;
     }
     catch (e) {

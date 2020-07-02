@@ -25,6 +25,7 @@ export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
   public myDocuments: EditorDocument[] = [];
   public isLoadingMyDocuments = true;
   public hasSearchFilterActivated: boolean;
+  public isLoading = true;
   @ViewChild('addDocumentTemplate') private addDocumentTemplate: TemplateRef<any>;
 
   public get createDocumentModels() {
@@ -45,6 +46,8 @@ export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((res) => {
         if (!res) {
           this.router.navigateByUrl('/welcome');
+        } else {
+          this.isLoading = false;
         }
       }));
   }

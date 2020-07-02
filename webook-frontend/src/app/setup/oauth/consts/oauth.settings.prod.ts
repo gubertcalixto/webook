@@ -3,7 +3,8 @@ import { AuthConfig } from 'angular-oauth2-oidc';
 export const oAuthConfig: AuthConfig = {
   // TODO Set production issuer
   issuer: 'https://localhost:5000',
-  redirectUri: window.location.origin + window.location.pathname,
+  redirectUri: `${window.location.origin}/home`,
+  postLogoutRedirectUri: `${window.location.origin}/welcome`,
   clientId: 'webook-frontend',
   scope: 'openid profile webook-backend',
   requireHttps: true,
