@@ -7,7 +7,7 @@ export class WebookEditorService {
 
   constructor() { }
 
-  public getElementContentById(id: string): Type<any> {
+  public getElementClassById(id: string): Type<any> {
     return this.elementList.get(id);
   }
 }
