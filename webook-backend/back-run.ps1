@@ -1,0 +1,1 @@
+dotnet run --project .\Scrapbook\Scrapbook.Host\Scrapbook.Host.csproj
