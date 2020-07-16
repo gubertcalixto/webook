@@ -30,7 +30,7 @@ export class WebookEditorElementProjectionComponent implements AfterContentInit,
 
   public instantiateComponent() {
     this.clearComponentInstance();
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(this.item.component);
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(this.item.componentClass);
     try {
       const componentRef = this.workflowHost.viewContainerRef.createComponent(componentFactory);
       this.currentComponentInstance = componentRef.instance;

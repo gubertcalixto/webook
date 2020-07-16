@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Scrapbook.Domain.Entities.Editor.Document;
 using Scrapbook.Domain.Enums.Editor;
+using Scrapbook.Domain.Shared;
+using Scrapbook.Domain.Shared.Utils.IQueryable;
 using Scrapbook.Host.Controllers.Document.Dtos;
 using Scrapbook.Host.Utils;
 using Scrapbook.Infrastructure;
@@ -20,12 +22,22 @@ namespace Scrapbook.Host.Controllers.Document
         }
 
         [HttpGet("/documents/user/{userId}")]
-        public async Task<List<EditorDocument>> GetAll(Guid userId)
+        public async Task<PagedResultOutput<EditorDocument>> GetAllFromUser(Guid userId, PagedResultInput input)
         {
-            return await Repository
+            var query = Repository
                 .Where(r => r.UserId == userId)
                 .Where(r => r.DocumentAccess == EditorDocumentAllowedAccess.Public)
+                .WhereIf(!string.IsNullOrEmpty(input.Filter),
+                r =>  r.Title.Contains(input.Filter) || r.Description.Contains(input.Filter));
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip(input.SkipCount ?? 0)
+                .Take(input.PageSize ?? 20)
                 .ToListAsync();
+            
+            return new PagedResultOutput<EditorDocument>(items, totalCount);
         }
         
         [HttpGet("/documents/my-user")]
@@ -39,6 +51,24 @@ namespace Scrapbook.Host.Controllers.Document
             var myDocumentEntities = await query.ToListAsync();
             var output = Mapper.Map<List<MyEditorDocument>>(myDocumentEntities);
             return output;
+        }
+        
+        [HttpGet("/documents/search")]
+        public async Task<PagedResultOutput<EditorDocument>> GetAll(PagedResultInput input)
+        {
+            var query = Repository
+                .Where(r => r.DocumentAccess == EditorDocumentAllowedAccess.Public)
+                .WhereIf(!string.IsNullOrEmpty(input.Filter),
+                    r =>  r.Title.Contains(input.Filter) || r.Description.Contains(input.Filter));
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip(input.SkipCount ?? 0)
+                .Take(input.PageSize ?? 20)
+                .ToListAsync();
+            
+            return new PagedResultOutput<EditorDocument>(items, totalCount);
         }
         
         [HttpDelete("/documents/my-user")]

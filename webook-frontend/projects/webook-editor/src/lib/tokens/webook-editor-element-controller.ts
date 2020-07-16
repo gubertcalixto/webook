@@ -1,3 +1,5 @@
+import { WebookEditorElement } from '@wb-editor-base/webook-editor-element';
+
 export class WebookEditorElementController {
   private internalEditMode = true;
   public get editMode(): boolean {
@@ -10,7 +12,7 @@ export class WebookEditorElementController {
     }
   }
 
-  public editorElements = [];
+  public editorElements: WebookEditorElement[] = [];
   public activeEditorElementIndex = -1;
 
   public get activeEditorElement() {
