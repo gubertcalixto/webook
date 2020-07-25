@@ -5,7 +5,7 @@ import {
   EDITOR_ELEMENT_DEFAULT_WIDTH,
   EDITOR_ELEMENT_DEFAULT_X,
   EDITOR_ELEMENT_DEFAULT_Y,
-} from '../../../consts/editor-element-instance-default-values.const';
+} from '../../../consts/element/instance/editor-element-instance-default-values.const';
 
 export class EditorElementInstanceFrame {
   width?: string;

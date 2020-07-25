@@ -1,4 +1,4 @@
-import { EditorElementDefinition } from '../classes/element/editor-element-definition.class';
+import { EditorElementDefinition } from '../../../classes/element/definition/editor-element-definition.class';
 
 // TODO: define elementClass
 // TODO: define imagePreviewPath

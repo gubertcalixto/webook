@@ -1,4 +1,4 @@
-import { EditorElementInstanceFrame } from '../element/element-instance/editor-element-instance-frame.class';
+import { EditorElementInstanceFrame } from '../element/instance/editor-element-instance-frame.class';
 import { EditorCommand } from './editor-command.abstract.class';
 
 export class EditorCopyCommand extends EditorCommand {
