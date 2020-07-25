@@ -1,0 +1,28 @@
+$item-size: 24px;
+$item-vertical-margin: 8px;
+$item-icon-space: 4px;
+$item-icon-size: 1.2em;
+.toolbox-container {
+  padding: 0 8px;
+  margin: 0;
+  .item {
+    display: flex;
+    align-items: center;
+    height: $item-size;
+    cursor: pointer;
+    i {
+      flex: initial;
+      font-size: $item-icon-size;
+      cursor: inherit;
+    }
+    span {
+      margin-left: $item-icon-space;
+      flex: auto;
+      cursor: inherit;
+    }
+
+    &:not(:first-child){
+      margin-top: $item-vertical-margin;
+    }
+  }
+}

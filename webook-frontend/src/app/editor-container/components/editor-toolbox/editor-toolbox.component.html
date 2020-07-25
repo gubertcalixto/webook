@@ -1,0 +1,17 @@
+<ul class="toolbox-container">
+  <li class="header-item item">
+    <button *ngIf="!isToolboxExpanded" class="no-button-style" (click)="toggleToolbox()" nz-tooltip
+      nzTooltipTitle="Expandir" nzTooltipPlacement="right">
+      <i fa="bars"></i>
+    </button>
+    <button *ngIf="isToolboxExpanded" class="no-button-style" (click)="toggleToolbox()" nz-tooltip
+      nzTooltipTitle="Recolher" nzTooltipPlacement="right">
+      <i fa="arrow-left"></i>
+    </button>
+  </li>
+  <li *ngFor="let item of items" class="item" (dragstart)="itemDragStart(item, $event);" draggable="true">
+    <i [fa]="item.icon" [color]="item.color" nz-tooltip [nzTooltipTitle]="!isToolboxExpanded ? item.label : undefined"
+      nzTooltipPlacement="right"></i>
+    <span [hidden]="!isToolboxExpanded">{{item.label}}</span>
+  </li>
+</ul>
