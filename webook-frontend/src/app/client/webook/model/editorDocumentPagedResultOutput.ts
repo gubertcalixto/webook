@@ -9,12 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { EditorDocument } from './editorDocument';
 
 
-export enum ContactFormSubjectType {
-    NUMBER_0 = 0,
-    NUMBER_1 = 1,
-    NUMBER_2 = 2,
-    NUMBER_3 = 3
-};
+export interface EditorDocumentPagedResultOutput { 
+    items?: Array<EditorDocument> | null;
+    totalCount?: number;
+}
 

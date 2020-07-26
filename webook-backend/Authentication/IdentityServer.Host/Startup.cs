@@ -30,9 +30,19 @@ namespace IdentityServer
     {
         private readonly IWebHostEnvironment _environment;
         private readonly IConfiguration _configuration;
+        private const string CorsDefinition = "DefaultCors";
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: CorsDefinition,
+                    builder =>
+                    {
+                        // TODO: Production Mode
+                        builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+                    });
+            });
             services.AddControllers();
             services
                 .AddAutoMapper(typeof(Startup))
@@ -123,7 +133,7 @@ namespace IdentityServer
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityServer API v.1.0.0"); });
             
             app.UseRouting();
-            app.UseCors();
+            app.UseCors(CorsDefinition);
             app.UseIdentityServer();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserInfo } from 'angular-oauth2-oidc';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { SimplifiedUser, UserServiceProxy } from 'src/app/client/authentication';
 
 import { OAuthUser } from '../tokens/oauth-user';
 import { OauthManagerService } from './oauth-manager.service';
@@ -15,7 +16,10 @@ export class UserService {
   public get userSubject() { return this.internalUserSubject; }
   public get user() { return this.internalUser; }
 
-  constructor(private authManagerService: OauthManagerService) {
+  constructor(
+    private authManagerService: OauthManagerService,
+    private userServiceProxy: UserServiceProxy,
+  ) {
     this.getUserInfoAfterLogin();
   }
 
@@ -48,5 +52,9 @@ export class UserService {
       this.internalUser = undefined;
     }
     this.internalUserSubject.next(this.internalUser);
+  }
+
+  public getUserById(userId: string): Observable<SimplifiedUser> {
+    return this.userServiceProxy.userIdGet(userId);
   }
 }

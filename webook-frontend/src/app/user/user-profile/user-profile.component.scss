@@ -13,4 +13,17 @@ wb-user-profile {
       place-content: space-evenly;
     }
   }
+  .profile-documents-container {
+    padding: 16px 16px 0;
+    .profile-documents {
+      nz-empty {
+        width: 100%;
+      }
+    }
+    .profile-documents-paginator {
+      margin-top: 16px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+  }
 }

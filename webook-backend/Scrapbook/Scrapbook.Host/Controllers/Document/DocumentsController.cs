@@ -24,9 +24,10 @@ namespace Scrapbook.Host.Controllers.Document
         [HttpGet("/documents/user/{userId}")]
         public async Task<PagedResultOutput<EditorDocument>> GetAllFromUser(Guid userId, PagedResultInput input)
         {
+            var isOwnUser = JwtReader.GetUserId() == userId;
             var query = Repository
                 .Where(r => r.UserId == userId)
-                .Where(r => r.DocumentAccess == EditorDocumentAllowedAccess.Public)
+                .WhereIf(!isOwnUser, r => r.DocumentAccess == EditorDocumentAllowedAccess.Public )
                 .WhereIf(!string.IsNullOrEmpty(input.Filter),
                 r =>  r.Title.Contains(input.Filter) || r.Description.Contains(input.Filter));
 
