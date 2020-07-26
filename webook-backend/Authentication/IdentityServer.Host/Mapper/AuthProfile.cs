@@ -1,5 +1,6 @@
 ﻿using System;
 using AutoMapper;
+using IdentityServer.Domain.Dtos;
 using IdentityServer.Domain.Entities;
 using IdentityServer.IdentityControllers.Account.Dtos.Register;
 
@@ -46,6 +47,8 @@ namespace IdentityServer.Mapper
                     dest => dest.SecondName,
                     opt => 
                         opt.MapFrom(x => x.LastName.Trim()));
+
+            CreateMap<ApplicationUser, SimplifiedUser>();
         }
     }
 }

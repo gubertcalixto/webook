@@ -11,7 +11,8 @@ import { UrlConsts } from 'src/environments/url-consts';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ApiModule as WebookBackendClientModule, BASE_PATH } from './client/webook';
+import { ApiModule as AuthenticationClientModule, BASE_PATH as AUTH_BASE_PATH } from './client/authentication';
+import { ApiModule as WebookBackendClientModule, BASE_PATH as BACK_BASE_PATH } from './client/webook';
 import { NavigationContainerModule } from './navigation-container/navigation-container.module';
 import { AppOAuthModule } from './setup/oauth/oauth.module';
 
@@ -24,6 +25,7 @@ import { AppOAuthModule } from './setup/oauth/oauth.module';
     BrowserModule,
     BrowserAnimationsModule,
     WebookBackendClientModule,
+    AuthenticationClientModule,
     FaIconsModule,
     HttpClientModule,
     AppOAuthModule,
@@ -41,8 +43,12 @@ import { AppOAuthModule } from './setup/oauth/oauth.module';
     },
     { provide: NZ_I18N, useValue: pt_BR },
     {
-      provide: BASE_PATH,
+      provide: BACK_BASE_PATH,
       useValue: UrlConsts.webookBackend
+    },
+    {
+      provide: AUTH_BASE_PATH,
+      useValue: UrlConsts.authenticationBackend
     }
   ],
   bootstrap: [AppComponent]

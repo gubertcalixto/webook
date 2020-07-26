@@ -1,12 +1,11 @@
-import { ContactFormServiceProxy } from './contactFormServiceProxy';
-import { DocumentServiceProxy } from './documentServiceProxy';
-import { DocumentsServiceProxy } from './documentsServiceProxy';
-import { ProfileServiceProxy } from './profileServiceProxy';
-import { UserPreferencesServiceProxy } from './userPreferencesServiceProxy';
-
 export * from './contactFormServiceProxy';
+import { ContactFormServiceProxy } from './contactFormServiceProxy';
 export * from './documentServiceProxy';
+import { DocumentServiceProxy } from './documentServiceProxy';
 export * from './documentsServiceProxy';
+import { DocumentsServiceProxy } from './documentsServiceProxy';
 export * from './profileServiceProxy';
+import { ProfileServiceProxy } from './profileServiceProxy';
 export * from './userPreferencesServiceProxy';
+import { UserPreferencesServiceProxy } from './userPreferencesServiceProxy';
 export const APIS = [ContactFormServiceProxy, DocumentServiceProxy, DocumentsServiceProxy, ProfileServiceProxy, UserPreferencesServiceProxy];

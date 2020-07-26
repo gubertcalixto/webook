@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { DocumentServiceProxy, DocumentsServiceProxy, EditorDocument, EditorDocumentAllowedAccess } from '../client/webook';
+import {
+  DocumentServiceProxy,
+  DocumentsServiceProxy,
+  EditorDocument,
+  EditorDocumentAllowedAccess,
+  EditorDocumentPagedResultOutput,
+} from '../client/webook';
 
 @Injectable()
 export class DocumentService {
@@ -19,8 +25,8 @@ export class DocumentService {
     return this.documentsServiceProxy.documentsMyUserGet(searchQuery);
   }
 
-  public getUserDocuments(userId: string): Observable<EditorDocument[]> {
-    return this.documentsServiceProxy.documentsUserUserIdGet(userId);
+  public getUserDocuments(userId: string, skipCount?: number, pageSize?: number, filter?: string): Observable<EditorDocumentPagedResultOutput> {
+    return this.documentsServiceProxy.documentsUserUserIdGet(userId, skipCount, pageSize, filter);
   }
 
   public getDocument(id: string): Observable<EditorDocument> {

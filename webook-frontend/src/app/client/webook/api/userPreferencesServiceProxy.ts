@@ -10,15 +10,18 @@
  * Do not edit the class manually.
  */
 /* tslint:disable:no-unused-variable member-ordering */
-import { HttpClient, HttpEvent, HttpHeaders, HttpParameterCodec, HttpParams, HttpResponse } from '@angular/common/http';
-import { Inject, Injectable, Optional } from '@angular/core';
-import { Observable } from 'rxjs';
 
-import { Configuration } from '../configuration';
-import { CustomHttpParameterCodec } from '../encoder';
-import { UserPreferenceInput, UserPreferenceOutput } from '../model/models';
-import { BASE_PATH } from '../variables';
+import { Inject, Injectable, Optional }                      from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams,
+         HttpResponse, HttpEvent, HttpParameterCodec }       from '@angular/common/http';
+import { CustomHttpParameterCodec }                          from '../encoder';
+import { Observable }                                        from 'rxjs';
 
+import { UserPreferenceInput } from '../model/models';
+import { UserPreferenceOutput } from '../model/models';
+
+import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
+import { Configuration }                                     from '../configuration';
 
 
 
@@ -30,7 +33,7 @@ export class UserPreferencesServiceProxy {
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
 
-    constructor(protected httpClient: HttpClient, @Optional() @Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
         if (configuration) {
             this.configuration = configuration;
         }
@@ -61,16 +64,16 @@ export class UserPreferencesServiceProxy {
 
         if (typeof value === "object") {
             if (Array.isArray(value)) {
-                (value as any[]).forEach(elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
+                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
             } else if (value instanceof Date) {
                 if (key != null) {
                     httpParams = httpParams.append(key,
                         (value as Date).toISOString().substr(0, 10));
                 } else {
-                    throw Error("key may not be null if value is Date");
+                   throw Error("key may not be null if value is Date");
                 }
             } else {
-                Object.keys(value).forEach(k => httpParams = this.addToHttpParamsRecursive(
+                Object.keys(value).forEach( k => httpParams = this.addToHttpParamsRecursive(
                     httpParams, value[k], key != null ? `${key}.${k}` : k));
             }
         } else if (key != null) {
@@ -85,10 +88,10 @@ export class UserPreferencesServiceProxy {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public userPreferencesGet(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<UserPreferenceOutput>;
-    public userPreferencesGet(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpResponse<UserPreferenceOutput>>;
-    public userPreferencesGet(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpEvent<UserPreferenceOutput>>;
-    public userPreferencesGet(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<any> {
+    public userPreferencesGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<UserPreferenceOutput>;
+    public userPreferencesGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<UserPreferenceOutput>>;
+    public userPreferencesGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<UserPreferenceOutput>>;
+    public userPreferencesGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -108,7 +111,7 @@ export class UserPreferencesServiceProxy {
 
 
         let responseType: 'text' | 'json' = 'json';
-        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
             responseType = 'text';
         }
 
@@ -128,10 +131,10 @@ export class UserPreferencesServiceProxy {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public userPreferencesPost(userPreferenceInput?: UserPreferenceInput, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<UserPreferenceOutput>;
-    public userPreferencesPost(userPreferenceInput?: UserPreferenceInput, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpResponse<UserPreferenceOutput>>;
-    public userPreferencesPost(userPreferenceInput?: UserPreferenceInput, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpEvent<UserPreferenceOutput>>;
-    public userPreferencesPost(userPreferenceInput?: UserPreferenceInput, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<any> {
+    public userPreferencesPost(userPreferenceInput?: UserPreferenceInput, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<UserPreferenceOutput>;
+    public userPreferencesPost(userPreferenceInput?: UserPreferenceInput, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<UserPreferenceOutput>>;
+    public userPreferencesPost(userPreferenceInput?: UserPreferenceInput, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<UserPreferenceOutput>>;
+    public userPreferencesPost(userPreferenceInput?: UserPreferenceInput, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -162,7 +165,7 @@ export class UserPreferencesServiceProxy {
         }
 
         let responseType: 'text' | 'json' = 'json';
-        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
             responseType = 'text';
         }
 
@@ -183,10 +186,10 @@ export class UserPreferencesServiceProxy {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public userPreferencesPut(userPreferenceInput?: UserPreferenceInput, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<UserPreferenceOutput>;
-    public userPreferencesPut(userPreferenceInput?: UserPreferenceInput, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpResponse<UserPreferenceOutput>>;
-    public userPreferencesPut(userPreferenceInput?: UserPreferenceInput, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpEvent<UserPreferenceOutput>>;
-    public userPreferencesPut(userPreferenceInput?: UserPreferenceInput, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<any> {
+    public userPreferencesPut(userPreferenceInput?: UserPreferenceInput, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<UserPreferenceOutput>;
+    public userPreferencesPut(userPreferenceInput?: UserPreferenceInput, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<UserPreferenceOutput>>;
+    public userPreferencesPut(userPreferenceInput?: UserPreferenceInput, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<UserPreferenceOutput>>;
+    public userPreferencesPut(userPreferenceInput?: UserPreferenceInput, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -217,7 +220,7 @@ export class UserPreferencesServiceProxy {
         }
 
         let responseType: 'text' | 'json' = 'json';
-        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
             responseType = 'text';
         }
 
