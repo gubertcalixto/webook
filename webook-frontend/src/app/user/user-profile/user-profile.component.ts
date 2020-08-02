@@ -99,11 +99,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     );
   }
 
-  public follow(): void {
-    // TODO
-    console.log('follow');
-  }
-
   public openDocument(documentId: string, editMode = false): void {
     // TODO: Visualize Mode
     if (editMode) {
@@ -121,5 +116,22 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       .subscribe(document => {
         this.openDocument(document.id, true);
       }));
+  }
+
+  public follow(): void {
+    console.log('follow');
+    this.subs.push(this.profileService.followUser().subscribe(result => {
+      // notificar usuário
+      this.getFollowersNumber();
+    }));
+  }
+
+  public unfollow(): void {
+    console.log('unfollow');
+    this.subs.push(this.profileService.unfollowUser().subscribe(result => {
+      // se usar unsebscribe pede a criação na página observable.
+      // notificar usuário
+      this.getFollowersNumber();
+    }));
   }
 }

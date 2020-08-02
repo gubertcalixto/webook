@@ -9,6 +9,8 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+//ng-alert
 import { NzStatisticModule } from 'ng-zorro-antd/statistic';
 import { DocumentListModule } from 'src/app/document-list/document-list.module';
 import { DocumentService } from 'src/app/services/document.service';
@@ -33,6 +35,8 @@ import { UserProfileComponent } from './user-profile.component';
     NzSpinModule,
     NzEmptyModule,
     NzPaginationModule,
+    NzAlertModule,
+    //ng-alert
 
 
     UserProfileRoutingModule
