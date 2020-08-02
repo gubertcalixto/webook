@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '@oath/services/user.service';
 import { OAuthUser } from '@oath/tokens/oauth-user';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
 import { EditorDocument } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
@@ -25,12 +26,15 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   public isLoadingUserDocuments = false;
   public userDocumentsPageSize = 20;
   public userDocumentsPageIndex = 1;
+  public isFollowingUserLoading = true;
+  public isFollowingUser = false;
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private profileService: ProfileService,
     private documentService: DocumentService,
+    private nzNotification: NzNotificationService,
     public userService: UserService,
   ) { }
 
@@ -40,33 +44,49 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.isMyUser = !Boolean(this.userId);
 
       if (this.isMyUser) {
-        this.subs.push(this.userService.userSubject.subscribe(user => {
-          if (!user) {
-            return;
-          }
-          this.user = user;
-          this.userId = this.user.userId;
-          this.initialProcess();
-        }));
+        this.getMyUser();
       } else {
-        this.subs.push(this.userService.getUserById(this.userId).subscribe(userResult => {
-          if (userResult) {
-            this.user = {
-              email: userResult.email,
-              firstName: userResult.firstName,
-              lastName: userResult.secondName,
-              userName: `${userResult.firstName} ${userResult.secondName}`,
-              userId: userResult.id
-            };
-            this.initialProcess();
-          }
-        }))
+        this.getUser();
+        this.getIsFollowingUser();
       }
     }));
   }
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
+  }
+
+  private getMyUser(): void {
+    this.subs.push(this.userService.userSubject.subscribe(user => {
+      if (!user) {
+        return;
+      }
+      this.user = user;
+      this.userId = this.user.userId;
+      this.initialProcess();
+    }));
+  }
+
+  private getUser(): void {
+    this.subs.push(this.userService.getUserById(this.userId).subscribe(userResult => {
+      if (userResult) {
+        this.user = {
+          email: userResult.email,
+          firstName: userResult.firstName,
+          lastName: userResult.secondName,
+          userName: `${userResult.firstName} ${userResult.secondName}`,
+          userId: userResult.id
+        };
+        this.initialProcess();
+      }
+    }));
+  }
+
+  private getIsFollowingUser(): void {
+    this.profileService.isFollowUser(this.userId).subscribe(isFollowing => {
+      this.isFollowingUser = isFollowing;
+      this.isFollowingUserLoading = false;
+    });
   }
 
   public initialProcess(): void {
@@ -90,18 +110,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   public getProfileDocuments(): void {
     this.isLoadingUserDocuments = true;
     const skipCount = (this.userDocumentsPageIndex - 1) * this.userDocumentsPageSize;
-    this.subs.push(
-      this.documentService.getUserDocuments(this.userId, skipCount, this.userDocumentsPageSize).subscribe(res => {
-        this.userDocuments = res.items;
-        this.userDocumentsTotalCount = res.totalCount;
-        this.isLoadingUserDocuments = false;
-      })
-    );
-  }
-
-  public follow(): void {
-    // TODO
-    console.log('follow');
+    this.subs.push(this.documentService.getUserDocuments(this.userId, skipCount, this.userDocumentsPageSize).subscribe(res => {
+      this.userDocuments = res.items;
+      this.userDocumentsTotalCount = res.totalCount;
+      this.isLoadingUserDocuments = false;
+    }));
   }
 
   public openDocument(documentId: string, editMode = false): void {
@@ -121,5 +134,21 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       .subscribe(document => {
         this.openDocument(document.id, true);
       }));
+  }
+
+  public follow(): void {
+    this.subs.push(this.profileService.followUser(this.userId).subscribe(() => {
+      this.isFollowingUser = true;
+      this.nzNotification.success('Você está seguindo este usuário', '', { nzPlacement: 'bottomRight', nzDuration: 2500 });
+      this.getFollowersNumber();
+    }));
+  }
+
+  public unfollow(): void {
+    this.subs.push(this.profileService.unfollowUser(this.userId).subscribe(() => {
+      this.isFollowingUser = false;
+      this.nzNotification.info('Você parou de seguir este usuário', '', { nzPlacement: 'bottomRight', nzDuration: 2500 });
+      this.getFollowersNumber();
+    }));
   }
 }
