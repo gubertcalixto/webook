@@ -23,4 +23,16 @@ export class ProfileService {
   public getFollowersNumber(userId: string): Observable<number> {
     return this.profileServiceProxy.userUserIdFollowersNumberGet(userId);
   }
+
+  public isFollowUser(userId: string): Observable<boolean> {
+    return this.profileServiceProxy.userUserIdIsFollowingGet(userId);
+  }
+
+  public followUser(userId: string): Observable<void> {
+    return this.profileServiceProxy.userUserIdFollowPost(userId);
+  }
+
+  public unfollowUser(userId: string): Observable<void> {
+    return this.profileServiceProxy.userUserIdUnfollowPost(userId);
+  }
 }

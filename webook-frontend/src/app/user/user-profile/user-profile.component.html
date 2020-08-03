@@ -27,8 +27,13 @@
         </nz-col>
       </nz-row>
     </nz-col>
-    <nz-col nzXs="0" nzSm="0" nzMd="0" nzLg="4">
-      <button *ngIf="!isMyUser" nz-button nzType="primary" (click)="follow()">Seguir</button>
+    <nz-col *ngIf="!isMyUser && !isFollowingUserLoading" nzXs="0" nzSm="0" nzMd="0" nzLg="4">
+      <button *ngIf="!isFollowingUser" nz-button nzType="primary"  (click)="follow()">
+        Seguir
+      </button>
+      <button *ngIf="isFollowingUser" nz-button nzType="danger" (click)="unfollow()">
+        Parar de Seguir
+      </button>
     </nz-col>
   </nz-row>
   <section nz-row class="profile-documents-container" [nzGutter]="16">
