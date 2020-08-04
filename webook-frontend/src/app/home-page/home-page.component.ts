@@ -64,24 +64,24 @@ export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
 
       this.subs.push(this.navigationService.search
         .pipe(debounceTime(300))
-        .subscribe(searchQuery => {
+        .subscribe((searchQuery) => {
           this.getMyDocuments(searchQuery);
         }));
     }
   }
 
   ngOnDestroy(): void {
-    this.subs.forEach(s => s.unsubscribe());
+    this.subs.forEach((s) => s.unsubscribe());
     this.navigationService.clearNavigationActionsTemplate();
     this.navigationService.emitHasSearch(false);
   }
 
   private getMyDocuments(searchQuery?: string) {
     this.hasSearchFilterActivated = Boolean(searchQuery);
-    this.subs.push(this.documentService.getMyDocuments(searchQuery).subscribe(res => {
+    this.subs.push(this.documentService.getMyDocuments(searchQuery).subscribe((res) => {
       this.isLoadingMyDocuments = false;
       this.myDocuments = res;
-    }, () => this.isLoadingMyDocuments = false));
+    }, () => (this.isLoadingMyDocuments = false)));
   }
 
   public toggleCreateDocumentView(): void {
@@ -91,7 +91,7 @@ export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
   public createDocument(model?: DocumentCreationModel): void {
     if (!model || model.id === 'empty') {
       this.subs.push(this.documentService.createDocument()
-        .subscribe(document => {
+        .subscribe((document) => {
           this.openDocument(document.id);
         }));
     }
