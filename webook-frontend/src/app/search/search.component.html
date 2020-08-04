@@ -1,1 +1,41 @@
-<p>search works!</p>
+<nz-layout>
+  <nz-content>
+    <section nz-row class="search-container">
+      <nz-input-group [nzAddOnAfter]="searchInputSuffix" nzSize="large">
+        <input nz-input [(ngModel)]="searchValue" placeholder="Pesquise aqui..." (keyup.enter)="search()" />
+      </nz-input-group>
+      <ng-template #searchInputSuffix>
+        <button nz-button nzType="primary" nzSize="large" nzSearch (click)="search()">
+          <i fa="search"></i>
+        </button>
+        <button nz-button nzType="secondary" nzSize="large" (click)="toggleSearchOrder()">
+          <i [fa]="order === 'desc' ? 'sort-alpha-down' : 'sort-alpha-up'"></i>
+        </button>
+      </ng-template>
+    </section>
+
+    <div class="documents" nz-row>
+      <wb-document-card *ngFor="let document of documents?.items" nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="6"
+        [document]="document" (openEvent)="openDocument($event)"></wb-document-card>
+      <nz-empty *ngIf="!isLoadingDocuments && !documents?.items.length" [nzNotFoundContent]="myDocumentsEmptyContent"
+        [nzNotFoundFooter]="myDocumentsEmptyFooter">
+        <ng-template #myDocumentsEmptyContent>
+          <span *ngIf="!hasSearchFilterActivated">Você ainda não criou um documento</span>
+          <span *ngIf="hasSearchFilterActivated">Nenhum documento encontrado</span>
+        </ng-template>
+        <ng-template #myDocumentsEmptyFooter>
+          <button *ngIf="!hasSearchFilterActivated" nz-button nzType="primary">
+            Crie Agora
+          </button>
+          <button *ngIf="hasSearchFilterActivated" nz-button nzType="primary" (click)="searchValue = ''">
+            Limpar Filtro
+          </button>
+        </ng-template>
+      </nz-empty>
+    </div>
+  </nz-content>
+</nz-layout>
+<nz-pagination [hidden]="documents?.totalCount <= documentsPageSize" class="profile-documents-paginator" nzSimple
+  [nzPageIndex]="documentsCurrentPage" (nzPageIndexChange)="documentsCurrentPage = $event; search()"
+  [(nzPageSize)]="documentsPageSize" [nzTotal]="documents?.totalCount || 0">
+</nz-pagination>

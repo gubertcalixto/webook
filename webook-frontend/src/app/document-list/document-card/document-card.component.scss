@@ -1,22 +1,16 @@
-wb-document-card {
-    nz-card {
-        .ant-card-cover {
-            button > img {
-                max-width: 100%;
-            }
-        }
-        .document-title-container {
-            flex-wrap: nowrap;
-            a {
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            a + div.actions {
-                text-align: right;
-                i[fa="ellipsis-v"] {
-                    padding: 0 8px;
-                }
-            }
-        }
+.document-image {
+  max-width: 100%;
+}
+.document-title-container {
+  flex-wrap: nowrap;
+  a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  a + div.actions {
+    text-align: right;
+    i[fa="ellipsis-v"] {
+      padding: 0 8px;
     }
+  }
 }

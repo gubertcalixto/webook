@@ -7,5 +7,7 @@ namespace Scrapbook.Domain.Shared
         public int? SkipCount { get; set; }
         public int? PageSize { get; set; }
         public string Filter { get; set; }
+        
+        public string Order { get; set; }
     }
 }

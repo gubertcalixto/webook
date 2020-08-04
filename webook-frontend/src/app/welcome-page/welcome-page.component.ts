@@ -49,7 +49,8 @@ export class WelcomePageComponent implements OnDestroy {
   }
 
   public search(): void {
-    // TODO Search
+    const url = !this.searchValue ? '/search' : `/search?query=${this.searchValue}`;
+    this.router.navigateByUrl(url);
   }
 
   public sendForm(): void {

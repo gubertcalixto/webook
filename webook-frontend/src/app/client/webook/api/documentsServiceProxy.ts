@@ -17,6 +17,7 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
+import { EditorDocument } from '../model/models';
 import { EditorDocumentPagedResultOutput } from '../model/models';
 import { MyEditorDocument } from '../model/models';
 
@@ -82,6 +83,56 @@ export class DocumentsServiceProxy {
             throw Error("key may not be null if value is not object or array");
         }
         return httpParams;
+    }
+
+    /**
+     * @param querySearch 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public documentsGet(querySearch?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<Array<EditorDocument>>;
+    public documentsGet(querySearch?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<Array<EditorDocument>>>;
+    public documentsGet(querySearch?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<Array<EditorDocument>>>;
+    public documentsGet(querySearch?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (querySearch !== undefined && querySearch !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>querySearch, 'querySearch');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'text/plain',
+                'application/json',
+                'text/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.get<Array<EditorDocument>>(`${this.configuration.basePath}/documents`,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
     }
 
     /**
@@ -177,13 +228,14 @@ export class DocumentsServiceProxy {
      * @param skipCount 
      * @param pageSize 
      * @param filter 
+     * @param order 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public documentsSearchGet(skipCount?: number, pageSize?: number, filter?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocumentPagedResultOutput>;
-    public documentsSearchGet(skipCount?: number, pageSize?: number, filter?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocumentPagedResultOutput>>;
-    public documentsSearchGet(skipCount?: number, pageSize?: number, filter?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocumentPagedResultOutput>>;
-    public documentsSearchGet(skipCount?: number, pageSize?: number, filter?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+    public documentsSearchGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocumentPagedResultOutput>;
+    public documentsSearchGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocumentPagedResultOutput>>;
+    public documentsSearchGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocumentPagedResultOutput>>;
+    public documentsSearchGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
         if (skipCount !== undefined && skipCount !== null) {
@@ -197,6 +249,10 @@ export class DocumentsServiceProxy {
         if (filter !== undefined && filter !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
             <any>filter, 'Filter');
+        }
+        if (order !== undefined && order !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>order, 'Order');
         }
 
         let headers = this.defaultHeaders;
@@ -238,13 +294,14 @@ export class DocumentsServiceProxy {
      * @param skipCount 
      * @param pageSize 
      * @param filter 
+     * @param order 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public documentsUserUserIdGet(userId: string, skipCount?: number, pageSize?: number, filter?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocumentPagedResultOutput>;
-    public documentsUserUserIdGet(userId: string, skipCount?: number, pageSize?: number, filter?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocumentPagedResultOutput>>;
-    public documentsUserUserIdGet(userId: string, skipCount?: number, pageSize?: number, filter?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocumentPagedResultOutput>>;
-    public documentsUserUserIdGet(userId: string, skipCount?: number, pageSize?: number, filter?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+    public documentsUserUserIdGet(userId: string, skipCount?: number, pageSize?: number, filter?: string, order?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocumentPagedResultOutput>;
+    public documentsUserUserIdGet(userId: string, skipCount?: number, pageSize?: number, filter?: string, order?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocumentPagedResultOutput>>;
+    public documentsUserUserIdGet(userId: string, skipCount?: number, pageSize?: number, filter?: string, order?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocumentPagedResultOutput>>;
+    public documentsUserUserIdGet(userId: string, skipCount?: number, pageSize?: number, filter?: string, order?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling documentsUserUserIdGet.');
         }
@@ -261,6 +318,10 @@ export class DocumentsServiceProxy {
         if (filter !== undefined && filter !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
             <any>filter, 'Filter');
+        }
+        if (order !== undefined && order !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>order, 'Order');
         }
 
         let headers = this.defaultHeaders;

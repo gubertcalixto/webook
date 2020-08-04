@@ -294,5 +294,8 @@
       }
     }
   },
-  "defaultProject": "webook-frontend"
+  "defaultProject": "webook-frontend",
+  "cli": {
+    "analytics": false
+  }
 }
