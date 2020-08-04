@@ -66,24 +66,14 @@ namespace Scrapbook.Host.Controllers.Document
 
             var totalCount = await query.CountAsync();
 
-            query = query
-                    .Skip(input.SkipCount ?? 0)
-                    .Take(input.PageSize ?? 20);
-
-            var items = new List<EditorDocument>();
-
-            if (input.Order == "asc")
-            {
-                items = await query
-                    .OrderBy(document => document.Title)
-                    .ToListAsync();
-            }
-            else
-            {
-                 items = await query
-                    .OrderByDescending(document => document.Title)
-                    .ToListAsync();
-            }
+            query = input.Order == "asc" 
+                ? query.OrderBy(document => document.Title)
+                : query.OrderByDescending(document => document.Title);
+            
+            var items = await query
+                .Skip(input.SkipCount ?? 0)
+                .Take(input.PageSize ?? 20)
+                .ToListAsync();
 
             return new PagedResultOutput<EditorDocument>(items, totalCount);
         }

@@ -35,7 +35,6 @@
     </div>
   </nz-content>
 </nz-layout>
-<nz-pagination [hidden]="documents?.totalCount <= documentsPageSize" class="profile-documents-paginator" nzSimple
-  [nzPageIndex]="documentsCurrentPage" (nzPageIndexChange)="documentsCurrentPage = $event; search()"
+<nz-pagination nzHideOnSinglePage class="profile-documents-paginator" nzSimple [(nzPageIndex)]="documentsCurrentPage"
   [(nzPageSize)]="documentsPageSize" [nzTotal]="documents?.totalCount || 0">
 </nz-pagination>

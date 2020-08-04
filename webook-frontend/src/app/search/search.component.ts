@@ -16,6 +16,7 @@ import { DocumentService } from '../services/document.service';
 export class SearchComponent implements OnInit {
   private subs: Subscription[] = [];
   private internalSearchValue = '';
+  private internalDocumentsCurrentPage = 1;
 
   public isLoading = true;
   public isLoadingDocuments = true;
@@ -25,7 +26,10 @@ export class SearchComponent implements OnInit {
   public documents: EditorDocumentPagedResultOutput;
 
   public documentsPageSize = 5;
-  public documentsCurrentPage = 1;
+  public get documentsCurrentPage() { return this.internalDocumentsCurrentPage; }
+  public set documentsCurrentPage(value) {
+    this.internalDocumentsCurrentPage = value;
+  }
   public order: 'asc' | 'desc' = 'asc';
 
   public get searchValue() { return this.internalSearchValue; }
@@ -50,6 +54,9 @@ export class SearchComponent implements OnInit {
     this.searchValueChangeSubject.pipe(debounceTime(400), distinctUntilChanged())
       .subscribe((model) => {
         this.searchValue = model;
+        if (this.documentsCurrentPage > 1) {
+          this.documentsCurrentPage = 1;
+        }
         this.search();
       });
   }
