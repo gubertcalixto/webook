@@ -1,3 +1,7 @@
+import {
+  EditorTextElementComponent,
+} from 'src/app/editor-container/components/editor/editor-components/editor-text-element/editor-text-element.component';
+
 import { EditorElementDefinition } from '../../../classes/element/definition/editor-element-definition.class';
 
 // TODO: define elementClass
@@ -6,7 +10,7 @@ import { EditorElementDefinition } from '../../../classes/element/definition/edi
 export const editorDefaultElements: EditorElementDefinition[] = [
   {
     elementId: 'text',
-    elementClass: undefined,
+    elementClass: EditorTextElementComponent,
     pluginId: 'default',
     label: 'Texto',
     icon: 'font',
@@ -19,7 +23,6 @@ export const editorDefaultElements: EditorElementDefinition[] = [
     pluginId: 'default',
     label: 'Imagem',
     icon: 'image',
-    color: 'aliceblue',
     imagePreviewPath: undefined
   },
   {

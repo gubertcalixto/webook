@@ -14,6 +14,11 @@ const routes: Routes = [
     data: { title: 'Seja Bem Vindo' }
   },
   {
+    path: 'new-editor',
+    loadChildren: () => import('./editor-container/editor-container.module').then(m => m.EditorContainerModule),
+    data: { title: 'Editor' }
+  },
+  {
     path: 'document',
     loadChildren: () => import('./editor/editor-document/editor-document.module').then(m => m.EditorDocumentModule),
     data: { title: 'Editor' }
