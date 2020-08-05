@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 
-import { EditorElementsManagerService } from '../../services/editor-elements-manager.service';
-import { EditorElementDefinition } from '../../tokens/classes/element/editor-element-definition.class';
+import {
+  EditorElementsDefinitionManagerService,
+} from '../../services/element/definition/editor-elements-definition-manager.service';
+import { EditorElementDefinition } from '../../tokens/classes/element/definition/editor-element-definition.class';
 import {
   EDITOR_TOOLBOX_DEFAULT_DRAG_PREVIEW_SPACE_X,
   EDITOR_TOOLBOX_DEFAULT_DRAG_PREVIEW_SPACE_Y,
@@ -27,7 +29,7 @@ export class EditorToolboxComponent {
   }
   @Output() public isToolboxExpandedChange = new EventEmitter<boolean>();
 
-  constructor(private editorElementsManagerService: EditorElementsManagerService) { }
+  constructor(private editorElementsManagerService: EditorElementsDefinitionManagerService) { }
 
   public toggleToolbox(): void {
     this.isToolboxExpanded = !this.isToolboxExpanded;
