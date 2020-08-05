@@ -1,0 +1,6 @@
+:host ::ng-deep {
+  position: absolute;
+  > span {
+    user-select: none;
+  }
+}
