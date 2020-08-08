@@ -14,19 +14,9 @@ const routes: Routes = [
     data: { title: 'Seja Bem Vindo' }
   },
   {
-    path: 'new-editor',
-    loadChildren: () => import('./editor-container/editor-container.module').then(m => m.EditorContainerModule),
-    data: { title: 'Editor' }
-  },
-  {
     path: 'document',
-    loadChildren: () => import('./editor/editor-document/editor-document.module').then(m => m.EditorDocumentModule),
-    data: { title: 'Editor' }
-  },
-  {
-    path: 'document-viewer',
-    loadChildren: () => import('./editor/document-viewer/document-viewer.module').then(m => m.DocumentViewerModule),
-    data: { title: 'Visualizar Documento' }
+    loadChildren: () => import('./editor-container/editor-container.module').then(m => m.EditorContainerModule),
+    data: { title: 'Editor de Documento' }
   },
   {
     path: 'search',
@@ -46,7 +36,8 @@ const routes: Routes = [
   },
   {
     path: 'not-found',
-    loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule)
+    loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule),
+    data: { title: 'Página não Encontrada' }
   },
   {
     path: '',
@@ -60,7 +51,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { enableTracing: true})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

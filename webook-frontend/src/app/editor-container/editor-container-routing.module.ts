@@ -2,12 +2,17 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MustBeLoggedAuthGuard } from '@oath/consts/guards/must-be-logged.guard';
 
-import { EditorContainerComponent } from './components/editor-container/editor-container.component';
+import { EditorPageComponent } from './components/editor-page/editor-page.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: EditorContainerComponent,
+    component: EditorPageComponent,
+    canActivate: [MustBeLoggedAuthGuard]
+  },
+  {
+    path: ':id',
+    component: EditorPageComponent,
     canActivate: [MustBeLoggedAuthGuard]
   },
   {

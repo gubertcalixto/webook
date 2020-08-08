@@ -6,6 +6,9 @@ import { NgxMoveableModule } from 'ngx-moveable';
 import { NgxSelectoModule } from 'ngx-selecto';
 
 import { EditorContainerComponent } from './components/editor-container/editor-container.component';
+import { EditorHeaderModule } from './components/editor-header/editor-header.module';
+import { EditorPageComponent } from './components/editor-page/editor-page.component';
+import { EditorPageService } from './components/editor-page/editor-page.service';
 import { EditorToolboxComponent } from './components/editor-toolbox/editor-toolbox.component';
 import { EditorComponentsModule } from './components/editor/editor-components/editor-components.module';
 import { EditorComponent } from './components/editor/editor.component';
@@ -21,11 +24,13 @@ import { EditorInteractionService } from './services/interactions/editor-interac
     EditorContainerComponent,
     EditorToolboxComponent,
     EditorComponent,
+    EditorPageComponent,
   ],
   imports: [
     CommonModule,
     FaIconsModule,
     EditorComponentsModule,
+    EditorHeaderModule,
 
     NgxMoveableModule,
     NgxSelectoModule,
@@ -35,6 +40,7 @@ import { EditorInteractionService } from './services/interactions/editor-interac
     EditorContainerRoutingModule
   ],
   providers: [
+    EditorPageService,
     EditorElementsDefinitionManagerService,
     EditorElementsInstanceManagerService,
     EditorInteractionService
