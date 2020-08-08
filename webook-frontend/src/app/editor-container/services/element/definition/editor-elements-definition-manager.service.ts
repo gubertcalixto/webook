@@ -27,7 +27,6 @@ export class EditorElementsDefinitionManagerService {
     return this.imagesPreview.get(itemId);
   }
 
-  
   private getEditorElementDefinitions(): void {
     this.registeredItems = editorDefaultElements;
   }

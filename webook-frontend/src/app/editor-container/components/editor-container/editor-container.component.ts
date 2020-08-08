@@ -1,4 +1,15 @@
-import { AfterViewInit, Component, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ComponentRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
+import { EditorDocument } from 'src/app/client/webook';
 
 import {
   EditorElementsDefinitionManagerService,
@@ -24,6 +35,9 @@ export class EditorContainerComponent implements OnInit, AfterViewInit {
   public get toolboxItems() {
     return this.editorElementsManagerService?.items;
   }
+  @Input() public document: EditorDocument;
+  @Input() public pageIndex = 1;
+  @Output() public pageIndexChange = new EventEmitter<number>();
 
   constructor(
     private editorElementsManagerService: EditorElementsDefinitionManagerService,
@@ -31,16 +45,38 @@ export class EditorContainerComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    const onWindowResize = () => {
-      this.editorElements.forEach(element => {
-        element.instance?.moveable?.updateRect();
-      });
-    };
-    window.addEventListener('resize', onWindowResize);
+    this.registerToWindowResize();
   }
 
   ngAfterViewInit(): void {
     this.instanceManagerService.editor = this.editorElement;
+    this.getDocumentPage();
+  }
+
+  private getDocumentPage(): void {
+    // TODO
+    const data = [
+      {
+        elementId: 'text',
+        instanceData: {
+          frameProperties: {
+            left: '200px',
+            top: '25px',
+          }
+        } as EditorElementInstanceData
+      }
+    ];
+    setTimeout(() => {
+      data.forEach(e => {
+        this.instanciateDocument(e.elementId, e.instanceData);
+      });
+    });
+  }
+
+  private registerToWindowResize(): void {
+    window.addEventListener('resize', () => {
+      this.editorElements.forEach(element => { element.instance?.updateFrame(); });
+    });
   }
 
   public editorDropElement(event: DragEvent): void {
@@ -55,10 +91,14 @@ export class EditorContainerComponent implements OnInit, AfterViewInit {
       }
     });
 
+    this.instanciateDocument(elementId, instanceData);
+  }
+
+  private instanciateDocument(elementId: string, data?: EditorElementInstanceData): void {
     this.editorElements.push(this.instanceManagerService.instanciateElement(
       elementId,
       this.editorContainer,
-      instanceData
+      data
     ));
   }
 

@@ -8,6 +8,7 @@ import { EditorResizeBaseElement } from '../editor-element-base-classes/resize/e
   styleUrls: ['./editor-text-element.component.scss']
 })
 export class EditorTextElementComponent extends EditorResizeBaseElement {
+  elementTypeId = 'text';
   public editing = false;
   public text = 'Escreva aqui...';
 

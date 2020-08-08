@@ -19,15 +19,13 @@ export abstract class EditorBaseElement implements AfterViewInit {
 
   protected preUpdateFrame = new Map<string, () => any>();
   protected postUpdateFrame = new Map<string, () => any>();
+  public abstract readonly elementTypeId: string;
 
   constructor(public elementRef: ElementRef<HTMLElement>) { }
 
   ngAfterViewInit(): void {
     // First change after component is instanced
     this.updateFrame(this.elementRef.nativeElement);
-    setTimeout(() => {
-      this.moveable.updateRect();
-    });
   }
 
   /**
@@ -39,6 +37,9 @@ export abstract class EditorBaseElement implements AfterViewInit {
     target.style.cssText = this.frame.toCSS();
     this.postUpdateFrame.forEach(fn => { fn(); });
     this.updateTransformationStyle();
+    setTimeout(() => {
+      this.moveable.updateRect();
+    });
   }
 
   private updateTransformationStyle(): void {

@@ -17,9 +17,13 @@ export abstract class EditorRotateBaseElement extends EditorDragBaseElement {
   private updateRotationPosition(): void {
     const targetTop = Number(String(this.frame.get('top')).replace('px', ''));
     const rotationButtonHeight = 50; // px
-    this.rotateOptions.rotatePosition = (isNaN(targetTop) ? 0 : targetTop) <= rotationButtonHeight
+    const newRotatePosition = (isNaN(targetTop) ? 0 : targetTop) <= rotationButtonHeight
       ? 'bottom'
       : 'top';
+    if (this.rotateOptions.rotatePosition !== newRotatePosition) {
+      // To avoid expression changed
+      setTimeout(() => { this.rotateOptions.rotatePosition = newRotatePosition; });
+    }
   }
 
   private updateRotation(rotation = this.rotateOptions.rotation, needsToUpdateFrame = true) {

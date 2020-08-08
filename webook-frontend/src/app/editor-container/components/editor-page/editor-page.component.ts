@@ -20,8 +20,6 @@ export class EditorPageComponent implements OnDestroy {
   public document: EditorDocument;
   public documentId: string;
   public pageIndex = 1;
-  public pageTotalCount = 5;
-  public pageSelectionExpanded = false;
 
   constructor(
     private router: Router,
@@ -32,7 +30,7 @@ export class EditorPageComponent implements OnDestroy {
     private viewContainerRef: ViewContainerRef
   ) {
     this.activatedRoute.params.subscribe(params => {
-      const documentId = params['id'];
+      const documentId = params.id;
       if (!documentId) {
         this.redirectBack();
         return;
