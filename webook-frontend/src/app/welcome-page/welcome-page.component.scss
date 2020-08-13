@@ -24,6 +24,9 @@ wb-welcome-page {
         height: 75vh;
         margin-top: 0;
         position: relative;
+        video{
+          background-color: #000000;
+        }
         video,
         .background-shadow {
           position: absolute;
@@ -121,5 +124,39 @@ wb-welcome-page {
         }
       }
     }
+  }
+}
+
+@media (max-width: 1100px) {
+  wb-welcome-page {
+    > nz-layout {
+      > nz-content {
+        section.presentation {
+          height: calc(100vh - #{$header-size});
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 700px) {
+  wb-welcome-page {
+    > nz-layout {
+      > nz-content {
+        section.presentation {
+          height: unset;
+          padding: 10vh 5vw 15vh;
+          overflow: hidden;
+          video {
+            width: unset;
+            min-width: 100%;
+            min-height: 100%;
+          }
+        }
+      }
+    }
+  }
+  nz-header.ant-layout-header {
+    padding: 0 12px;
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { OauthManagerService } from '@oath/services/oauth-manager.service';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -44,7 +45,8 @@ export class SearchComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private documentService: DocumentService,
-    public navigationService: NavigationService
+    public navigationService: NavigationService,
+    public oauthManagerService: OauthManagerService,
   ) { }
 
   ngOnInit(): void {

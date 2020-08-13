@@ -20,12 +20,15 @@
       <nz-empty *ngIf="!isLoadingDocuments && !documents?.items.length" [nzNotFoundContent]="myDocumentsEmptyContent"
         [nzNotFoundFooter]="myDocumentsEmptyFooter">
         <ng-template #myDocumentsEmptyContent>
-          <span *ngIf="!hasSearchFilterActivated">Você ainda não criou um documento</span>
-          <span *ngIf="hasSearchFilterActivated">Nenhum documento encontrado</span>
+          <span>Nenhum documento encontrado</span>
+          <p *ngIf="!oauthManagerService.isLogged">Por que você não experimenta criar um?</p>
         </ng-template>
         <ng-template #myDocumentsEmptyFooter>
-          <button *ngIf="!hasSearchFilterActivated" nz-button nzType="primary">
+          <button *ngIf="!hasSearchFilterActivated && oauthManagerService.isLogged" nz-button nzType="primary">
             Crie Agora
+          </button>
+          <button *ngIf="!hasSearchFilterActivated && !oauthManagerService.isLogged" (click)="oauthManagerService.login()" nz-button nzType="primary">
+            Cadastrar / Logar
           </button>
           <button *ngIf="hasSearchFilterActivated" nz-button nzType="primary" (click)="searchValue = ''">
             Limpar Filtro
