@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { OAuthService, UserInfo } from 'angular-oauth2-oidc';
+import { OAuthService, OAuthSuccessEvent, UserInfo } from 'angular-oauth2-oidc';
 import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -39,21 +39,30 @@ export class OauthManagerService {
         success = await this.oauthService.loadDiscoveryDocumentAndTryLogin() ||
           (this.oauthService.hasValidAccessToken() && this.oauthService.hasValidIdToken());
       }
+      this.clearHashAfterLogin();
       this.oauthService.setupAutomaticSilentRefresh();
       this.finishedLoading = true;
       this.finishedLoadingSubject.next(true);
-      // Makes sure hash was used successfully
-      setTimeout(() => {
-        if (location.hash) {
-          location.hash = '';
-        }
-      }, 200);
+     
       return success;
     }
     catch (e) {
       this.loginFailed = true;
       return Promise.resolve(false);
     }
+  }
+
+  private clearHashAfterLogin() {
+    // Makes sure hash was used successfully
+    this.oauthService.events.subscribe(oauthEvent => {
+      if (oauthEvent instanceof OAuthSuccessEvent) {
+        setTimeout(() => {
+          if (location.hash) {
+            location.hash = '';
+          }
+        }, 200);
+      }
+    });
   }
 
   public login(): void {
