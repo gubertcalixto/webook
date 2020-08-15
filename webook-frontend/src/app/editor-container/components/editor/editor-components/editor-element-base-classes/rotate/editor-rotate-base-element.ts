@@ -10,8 +10,17 @@ export abstract class EditorRotateBaseElement extends EditorDragBaseElement {
   constructor(public elementRef: ElementRef<HTMLElement>) {
     super(elementRef);
     this.postUpdateFrame.set('editor-rotate', () => {
-      this.updateRotation(this.rotateOptions.temporaryRotation ?? this.rotateOptions.rotation, false);
+      this.updateRotation(this.rotateOptions.temporaryRotation ? this.rotateOptions.temporaryRotation : this.rotateOptions.rotation, false);
     });
+  }
+
+  ngAfterViewInit(): void {
+    const initialRotation = this.frame.get('transform').rotate;
+    if (initialRotation) {
+      this.rotateOptions.rotation = initialRotation;
+      this.frame.set('rotate', `${initialRotation}`);
+    }
+    super.ngAfterViewInit();
   }
 
   private updateRotationPosition(): void {
@@ -28,7 +37,7 @@ export abstract class EditorRotateBaseElement extends EditorDragBaseElement {
 
   private updateRotation(rotation = this.rotateOptions.rotation, needsToUpdateFrame = true) {
     this.updateRotationPosition();
-    rotation = rotation ?? this.rotateOptions.rotation;
+    rotation = rotation ? rotation : this.rotateOptions.rotation;
     while (rotation > 360) {
       rotation -= 360;
     }
