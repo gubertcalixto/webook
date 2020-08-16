@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { ContactFormServiceProxy } from './api/contactFormServiceProxy';
 import { DocumentServiceProxy } from './api/documentServiceProxy';
 import { DocumentsServiceProxy } from './api/documentsServiceProxy';
+import { FeedServiceProxy } from './api/feedServiceProxy';
 import { ProfileServiceProxy } from './api/profileServiceProxy';
 import { UserPreferencesServiceProxy } from './api/userPreferencesServiceProxy';
 
@@ -17,6 +18,7 @@ import { UserPreferencesServiceProxy } from './api/userPreferencesServiceProxy';
     ContactFormServiceProxy,
     DocumentServiceProxy,
     DocumentsServiceProxy,
+    FeedServiceProxy,
     ProfileServiceProxy,
     UserPreferencesServiceProxy ]
 })

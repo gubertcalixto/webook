@@ -24,7 +24,7 @@ namespace Scrapbook.Host.Controllers.Document
         public async Task<EditorDocument> Create(DocumentCreateOrUpdateInput input)
         {
             var itemToInsert = Mapper.Map<EditorDocument>(input);
-
+            
             if (string.IsNullOrEmpty(itemToInsert.Title))
                 itemToInsert.Title = await GenerateDocumentTitle();
             else
@@ -39,6 +39,8 @@ namespace Scrapbook.Host.Controllers.Document
 
             itemToInsert.UserId = JwtReader.GetUserId();
             itemToInsert.DocumentAccess ??= EditorDocumentAllowedAccess.Private;
+            itemToInsert.CreationTime = DateTime.Now;
+
             var item = await Repository.AddAsync(itemToInsert);
             await Context.SaveChangesAsync();
             return item.Entity;
@@ -87,6 +89,8 @@ namespace Scrapbook.Host.Controllers.Document
             }
             item.Description = input.Description;
             item.DocumentAccess = input.AllowedAccess ?? EditorDocumentAllowedAccess.Private;
+            item.LastUpdateTime = DateTime.Now;
+            
             var result = Repository.Update(item);
             await Context.SaveChangesAsync();
             return result.Entity;

@@ -14,36 +14,23 @@ namespace Scrapbook.Host.Controllers.Profile
     {
         private readonly DbSet<EditorDocument> _documentRepository;
         private readonly DbSet<UserFollow> _userFollowRepository;
-        private readonly IJwtReader JwtReader;
-        private readonly DefaultContext Context;
+        private readonly IJwtReader _jwtReader;
+        private readonly DefaultContext _context;
 
         public ProfileController(DefaultContext context, IJwtReader jwtReader)
         {
             _context = context;
             _documentRepository = context.Documents;
             _userFollowRepository = context.UserFollows;
-         //   _jwtReader = jwtReader;
-            Context = context;
-            JwtReader = jwtReader;
+            _context = context;
+            _jwtReader = jwtReader;
         }
         
         [HttpGet("/my-user/followers-number")]
         public async Task<int> GetFollowersNumber()
         {
-            return await GetFollowersNumber(JwtReader.GetUserId());
+            return await GetFollowersNumber(_jwtReader.GetUserId());
         }
-
-        //[HttpGet("/my-user/followers-number")]
-        //public async Task<int> GetFollowersNumber()
-        //{
-        //    return await GetFollowersNumber(_jwtReader.GetUserId());
-        //}
-
-        //[HttpGet("/my-user/documents-number")]
-        //public async Task<int> GetDocumentsNumber()
-        //{
-        //    return await GetDocumentsNumber(_jwtReader.GetUserId());
-        //}
 
         [HttpGet("/user/{userId}/followers-number")]
         public async Task<int> GetFollowersNumber(Guid userId)
