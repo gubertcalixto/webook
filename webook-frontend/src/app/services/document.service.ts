@@ -13,7 +13,7 @@ import {
 export class DocumentService {
   constructor(
     private documentServiceProxy: DocumentServiceProxy,
-    private documentsServiceProxy: DocumentsServiceProxy,
+    private documentsServiceProxy: DocumentsServiceProxy
   ) { }
 
   public createDocument(title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, id?: string)
@@ -23,6 +23,10 @@ export class DocumentService {
 
   public getMyDocuments(searchQuery?: string): Observable<EditorDocument[]> {
     return this.documentsServiceProxy.documentsMyUserGet(searchQuery);
+  }
+
+  public getAllDocuments(filter?: string, skipCount?: number, pageSize?: number, order?: string): Observable<EditorDocumentPagedResultOutput> {
+    return this.documentsServiceProxy.documentsSearchGet(skipCount, pageSize, filter, order);
   }
 
   public getUserDocuments(userId: string, skipCount?: number, pageSize?: number, filter?: string): Observable<EditorDocumentPagedResultOutput> {

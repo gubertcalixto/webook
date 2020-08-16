@@ -1,0 +1,14 @@
+:host {
+  padding-bottom: 1rem;
+  wb-editor-header,
+  wb-editor-container {
+    display: flex;
+    flex-direction: column;
+  }
+  wb-editor-header {
+    flex: initial;
+  }
+  wb-editor-container {
+    flex: auto;
+  }
+}

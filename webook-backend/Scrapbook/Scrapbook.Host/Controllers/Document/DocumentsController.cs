@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Scrapbook.Domain.Entities.Editor.Document;
@@ -53,23 +54,38 @@ namespace Scrapbook.Host.Controllers.Document
             var output = Mapper.Map<List<MyEditorDocument>>(myDocumentEntities);
             return output;
         }
-        
+
+        [AllowAnonymous]
         [HttpGet("/documents/search")]
         public async Task<PagedResultOutput<EditorDocument>> GetAll(PagedResultInput input)
         {
             var query = Repository
                 .Where(r => r.DocumentAccess == EditorDocumentAllowedAccess.Public)
                 .WhereIf(!string.IsNullOrEmpty(input.Filter),
-                    r =>  r.Title.Contains(input.Filter) || r.Description.Contains(input.Filter));
+                    r => r.Title.Contains(input.Filter) || r.Description.Contains(input.Filter));
 
             var totalCount = await query.CountAsync();
 
+            query = input.Order == "asc" 
+                ? query.OrderBy(document => document.Title)
+                : query.OrderByDescending(document => document.Title);
+            
             var items = await query
                 .Skip(input.SkipCount ?? 0)
                 .Take(input.PageSize ?? 20)
                 .ToListAsync();
-            
+
             return new PagedResultOutput<EditorDocument>(items, totalCount);
+        }
+
+        [HttpGet("/documents/")]
+        public async Task<List<EditorDocument>> GetAllDocuments(string querySearch)
+        {
+            var query = Repository.WhereIf(querySearch!=null, r => r.Description.Contains(querySearch) || r.Title.Contains(querySearch));
+            
+            var DocumentEntities = await query.ToListAsync();
+            var output = Mapper.Map<List<EditorDocument>>(DocumentEntities);
+            return output;
         }
         
         [HttpDelete("/documents/my-user")]

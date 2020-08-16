@@ -50,7 +50,7 @@
     <nz-spin nz-col nzSpan="24" nzSize="large" [nzSpinning]="isLoadingMyDocuments">
       <div class="my-documents" nz-row [nzGutter]="16">
         <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="6" *ngFor="let document of myDocuments">
-          <wb-document-card [document]="document" (openEvent)="openDocument($event)"
+          <wb-document-card [allowActions]="true" [document]="document" (openEvent)="openDocument($event)"
             (deleteEvent)="deleteDocument($event)"></wb-document-card>
         </div>
         <nz-empty *ngIf="!isLoadingMyDocuments && !myDocuments.length" [nzNotFoundContent]="myDocumentsEmptyContent"
@@ -60,11 +60,13 @@
             <span *ngIf="hasSearchFilterActivated">Nenhum documento encontrado</span>
           </ng-template>
           <ng-template #myDocumentsEmptyFooter>
-            <button *ngIf="!hasSearchFilterActivated" nz-button nzType="primary" (click)="createDocument()">Crie
-              Agora</button>
+            <button *ngIf="!hasSearchFilterActivated" nz-button nzType="primary" (click)="createDocument()">
+              Crie Agora
+            </button>
             <button *ngIf="hasSearchFilterActivated" nz-button nzType="primary"
-              (click)="navigationService.emitSearch(undefined)">Limpar
-              Filtro</button>
+              (click)="navigationService.emitSearch(undefined)">
+              Limpar Filtro
+            </button>
           </ng-template>
         </nz-empty>
       </div>

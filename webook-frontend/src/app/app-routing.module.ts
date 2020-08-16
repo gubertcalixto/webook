@@ -15,13 +15,8 @@ const routes: Routes = [
   },
   {
     path: 'document',
-    loadChildren: () => import('./editor/editor-document/editor-document.module').then(m => m.EditorDocumentModule),
-    data: { title: 'Editor' }
-  },
-  {
-    path: 'document-viewer',
-    loadChildren: () => import('./editor/document-viewer/document-viewer.module').then(m => m.DocumentViewerModule),
-    data: { title: 'Visualizar Documento' }
+    loadChildren: () => import('./editor-container/editor-container.module').then(m => m.EditorContainerModule),
+    data: { title: 'Editor de Documento' }
   },
   {
     path: 'search',
@@ -41,7 +36,8 @@ const routes: Routes = [
   },
   {
     path: 'not-found',
-    loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule)
+    loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule),
+    data: { title: 'Página não Encontrada' }
   },
   {
     path: '',

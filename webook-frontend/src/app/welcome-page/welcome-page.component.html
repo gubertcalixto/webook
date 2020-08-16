@@ -24,13 +24,16 @@
           Busque por bullet journals ou scrapbook criados na plataforma digital
         </h4>
         <nz-input-group class="search-input-group" [nzAddOnAfter]="searchInputSuffix" nzSize="large">
-          <input [(ngModel)]="searchValue" nz-input placeholder="Pesquise aqui..." (keyup.enter)="search()" />
+          <input nz-input [(ngModel)]="searchValue" placeholder="Pesquise aqui..." (keyup.enter)="search()" />
         </nz-input-group>
         <ng-template #searchInputSuffix>
           <nz-button-group nzSize="large">
-            <button *ngIf="searchValue" nz-button nzType="default" (click)="searchValue = undefined"><i
-                fa="times"></i></button>
-            <button nz-button nzType="primary" nzSearch (click)="search()"><i fa="search"></i></button>
+            <button *ngIf="searchValue" nz-button nzType="default" (click)="searchValue = ''">
+              <i fa="times"></i>
+            </button>
+            <button nz-button nzType="primary" nzSearch (click)="search()">
+              <i fa="search"></i>
+            </button>
           </nz-button-group>
         </ng-template>
       </div>
@@ -38,18 +41,22 @@
     <section class="what-is-webook">
       <h1 nz-typography>O Webook</h1>
       <p class="webook-description" nz-typography>
-        Webook é uma plataforma onde se pode criar scrapboks ou bullets journals de forma totalmente online bem
-        como
-        também compartilhá-los. Por ser digital, possibilita que você possa adicionar videos, músicas ou outros
-        recursos que no documento fisico não são possiveis. Além disso, o compartilhamento permite saber qual a
-        reação das pessoas em relação a sua criação.
+        Webook é uma plataforma onde se pode criar scrapboks ou bullets journals
+        de forma totalmente online bem como também compartilhá-los. Por ser
+        digital, possibilita que você possa adicionar videos, músicas ou outros
+        recursos que no documento fisico não são possiveis. Além disso, o
+        compartilhamento permite saber qual a reação das pessoas em relação a
+        sua criação.
       </p>
     </section>
     <section class="features">
       <h2 nz-typography>Uma plataforma para Criadores</h2>
-      <h4 nz-typography>O Webook foi criado especialmente para você. Ele é muito prático e simples</h4>
+      <h4 nz-typography>
+        O Webook foi criado especialmente para você. Ele é muito prático e
+        simples
+      </h4>
       <div class="features-container" nz-row>
-        <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="8">
+        <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8">
           <i class="feature-icon" fa="share-alt" color="#3f51b5"></i>
           <h3 nz-typography style="text-align: center;">Compartilhável</h3>
           <p nz-typography>
@@ -57,14 +64,14 @@
             compartilhá-lo sendo possivel obter feedback de outros usuários
           </p>
         </div>
-        <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="8">
+        <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8">
           <i class="feature-icon" fa="play-circle" color="#dc143c"></i>
           <h3 nz-typography style="text-align: center;">Interativo</h3>
           <p nz-typography>
             É possivel criar recursos animados que pessoas possam interagir
           </p>
         </div>
-        <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="8">
+        <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8">
           <i class="feature-icon" fa="dollar-sign" color="#66a568"></i>
           <h3 nz-typography style="text-align: center;">Acessível</h3>
           <p nz-typography>
