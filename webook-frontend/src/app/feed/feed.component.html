@@ -1,0 +1,19 @@
+<ng-container *ngIf="oauthManagerService.isLogged">
+  <section nz-row class="feed-documents-container" [nzGutter]="16">
+    <div nz-col nzSpan="24">
+      <h1 nz-typography>Feed</h1>
+    </div>
+    <nz-spin nz-col nzSpan="24" nzSize="large" [nzSpinning]="isLoadingFeed">
+      <div class="feed-documents" nz-row [nzGutter]="16">
+        <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="6" *ngFor="let document of documents">
+          <wb-document-card [document]="document" (openEvent)="openDocument($event)">
+          </wb-document-card>
+        </div>
+      </div>
+      <nz-pagination [hidden]="documentsTotalCount <= documentsPageSize" class="profile-documents-paginator" nzSimple
+        [(nzPageIndex)]="documentsPageIndex" (nzPageIndexChange)="getFeed()" [(nzPageSize)]="documentsPageSize"
+        [nzTotal]="documentsTotalCount || 0">
+      </nz-pagination>
+    </nz-spin>
+  </section>
+</ng-container>

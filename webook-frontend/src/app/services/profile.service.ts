@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { UserService } from '@oath/services/user.service';
 import { Observable } from 'rxjs';
 
 import { ProfileServiceProxy } from '../client/webook/api/profileServiceProxy';
@@ -6,10 +7,13 @@ import { ProfileServiceProxy } from '../client/webook/api/profileServiceProxy';
 @Injectable()
 export class ProfileService {
 
-  constructor(private profileServiceProxy: ProfileServiceProxy) { }
+  constructor(
+    private profileServiceProxy: ProfileServiceProxy,
+    private userService: UserService
+  ) { }
 
   public getMyDocumentsNumber(): Observable<number> {
-    return this.profileServiceProxy.myUserDocumentsNumberGet();
+    return this.getDocumentsNumber(this.userService.user.userId);
   }
 
   public getDocumentsNumber(userId: string): Observable<number> {

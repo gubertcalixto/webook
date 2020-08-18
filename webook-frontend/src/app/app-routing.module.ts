@@ -9,6 +9,11 @@ const routes: Routes = [
     data: { title: 'Home', hasNavigation: true }
   },
   {
+    path: 'feed',
+    loadChildren: () => import('./feed/feed.module').then(m => m.FeedModule),
+    data: { title: 'Feed', hasNavigation: true }
+  },
+  {
     path: 'welcome',
     loadChildren: () => import('./welcome-page/welcome-page.module').then(m => m.WelcomePageModule),
     data: { title: 'Seja Bem Vindo' }

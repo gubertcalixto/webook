@@ -22,6 +22,7 @@ namespace Scrapbook.Host.Controllers.Profile
             _context = context;
             _documentRepository = context.Documents;
             _userFollowRepository = context.UserFollows;
+            _context = context;
             _jwtReader = jwtReader;
         }
         
@@ -29,12 +30,6 @@ namespace Scrapbook.Host.Controllers.Profile
         public async Task<int> GetFollowersNumber()
         {
             return await GetFollowersNumber(_jwtReader.GetUserId());
-        }
-
-        [HttpGet("/my-user/documents-number")]
-        public async Task<int> GetDocumentsNumber()
-        {
-            return await GetDocumentsNumber(_jwtReader.GetUserId());
         }
 
         [HttpGet("/user/{userId}/followers-number")]

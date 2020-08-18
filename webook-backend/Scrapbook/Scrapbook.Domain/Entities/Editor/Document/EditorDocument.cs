@@ -12,5 +12,7 @@ namespace Scrapbook.Domain.Entities.Editor.Document
         public EditorDocumentAllowedAccess? DocumentAccess { get; set; }
         public string Image { get; set; }
         public Guid UserId { get; set; }
+        public DateTime? CreationTime { get; set; }
+        public DateTime? LastUpdateTime { get; set; }
     }
 }

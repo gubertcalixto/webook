@@ -78,13 +78,13 @@ namespace Scrapbook.Host.Controllers.Document
             return new PagedResultOutput<EditorDocument>(items, totalCount);
         }
 
-        [HttpGet("/documents/")]
+        [HttpGet("/documents")]
         public async Task<List<EditorDocument>> GetAllDocuments(string querySearch)
         {
             var query = Repository.WhereIf(querySearch!=null, r => r.Description.Contains(querySearch) || r.Title.Contains(querySearch));
             
-            var DocumentEntities = await query.ToListAsync();
-            var output = Mapper.Map<List<EditorDocument>>(DocumentEntities);
+            var documentEntities = await query.ToListAsync();
+            var output = Mapper.Map<List<EditorDocument>>(documentEntities);
             return output;
         }
         
