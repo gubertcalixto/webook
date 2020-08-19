@@ -12,7 +12,7 @@ export class EditorTextElementComponent extends EditorResizeBaseElement {
   public editing = false;
   public text = 'Escreva aqui...';
 
-  @ViewChild('inputToSave', { static: false }) inputToSave: ElementRef<HTMLInputElement>;
+  @ViewChild('inputToSave') inputToSave: ElementRef<HTMLInputElement>;
 
   constructor(public elementRef: ElementRef<HTMLElement>, private changeDetectorRef: ChangeDetectorRef) {
     super(elementRef);

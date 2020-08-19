@@ -4,7 +4,7 @@ export class EditorElementInstanceFrameProperties {
   left?: string;
   top?: string;
   transform?: {
-    rotate?: string;
+    rotate?: number;
     scaleX?: number;
     scaleY?: number;
     matrix3d?: number[];

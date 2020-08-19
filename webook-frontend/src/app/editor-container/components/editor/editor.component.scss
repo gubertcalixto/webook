@@ -1,4 +1,4 @@
-:host {
+wb-editor {
   position: relative;
   > wb-editor-element-projection {
     $box-padding: 4px 8px;
@@ -25,5 +25,10 @@
     > * {
       cursor: initial;
     }
+  }
+}
+.moveable-control-box {
+  &:not(.selected){
+    display: none !important;
   }
 }

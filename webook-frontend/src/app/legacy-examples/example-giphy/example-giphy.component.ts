@@ -27,7 +27,6 @@ export class ExampleGiphyComponent implements OnDestroy {
     this.service.search(value)
       .pipe(debounceTime(300))
       .subscribe(res => {
-        console.log(res);
         this.result = res;
       });
   }

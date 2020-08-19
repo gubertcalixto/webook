@@ -55,10 +55,15 @@ export abstract class EditorDragBaseElement extends EditorBaseElement {
   }
 
   public onDragStart(event: MoveableEventsParameters['dragStart']) {
+    (event.inputEvent as MouseEvent).preventDefault();
+    (event.inputEvent as MouseEvent).stopPropagation();
     this.dragOptions.isDragging = true;
   }
 
   public onDrag(event: MoveableEventsParameters['drag']) {
+    (event.inputEvent as MouseEvent).preventDefault();
+    (event.inputEvent as MouseEvent).stopPropagation();
+    
     let left = event.left;
     let top = event.top;
     if (!this.dragOptions.allowExceedDuringDrag) {
@@ -72,6 +77,8 @@ export abstract class EditorDragBaseElement extends EditorBaseElement {
   }
 
   public onDragEnd(event: MoveableEventsParameters['dragEnd']) {
+    (event.inputEvent as MouseEvent).preventDefault();
+    (event.inputEvent as MouseEvent).stopPropagation();
     if (
       !this.dragOptions.temporaryCoordinates ||
       !this.dragOptions.temporaryCoordinates.x ||
