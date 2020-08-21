@@ -14,6 +14,8 @@ export abstract class EditorBaseElement implements AfterViewInit {
   protected preUpdateFrame = new Map<string, () => any>();
   protected postUpdateFrame = new Map<string, () => any>();
 
+  private frameSnapshot: string;
+
   public target = this.elementRef?.nativeElement;
   public elementId = uuid();
   public forceMoveableEnable = false;
@@ -83,13 +85,12 @@ export abstract class EditorBaseElement implements AfterViewInit {
    * @param target Target Element
    */
   public updateFrame(target: HTMLElement = this.target, ignoreEmitChange = false): void {
-    const frameSnapshot = JSON.stringify(this.frame.properties);
     this.preUpdateFrame.forEach(fn => { fn(); });
     target.style.cssText = this.frame.toCSS();
     this.postUpdateFrame.forEach(fn => { fn(); });
     this.updateTransformationStyle();
     setTimeout(() => {
-      if (frameSnapshot !== JSON.stringify(this.frame.properties)) {
+      if (!this.frameSnapshot || this.frameSnapshot !== JSON.stringify(this.frame.properties)) {
         this.moveable.updateRect();
         if (!ignoreEmitChange) {
           this.emitChange();

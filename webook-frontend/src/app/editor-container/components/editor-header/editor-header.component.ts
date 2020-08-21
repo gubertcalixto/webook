@@ -14,9 +14,10 @@ export class EditorHeaderComponent implements OnDestroy {
   private subs: Subscription[] = [];
   public pageTotalCount = 5;
   public pageSelectionExpanded = false;
-
+  
   @Input() public document: EditorDocument;
   @Input() public pageIndex = 1;
+  @Input() public showPageSaveStatus = true;
   @Output() public pageIndexChange = new EventEmitter<number>();
   @Output() public redirectBack = new EventEmitter<void>();
   @Output() public openDocumentConfiguration = new EventEmitter<void>();

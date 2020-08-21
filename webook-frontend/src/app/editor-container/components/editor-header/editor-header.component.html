@@ -2,8 +2,8 @@
   <ng-template #headerTitle>
     <wb-editor-document-title [documentId]="document.id" [(documentTitle)]="document.title">
     </wb-editor-document-title>
-    <span *ngIf="documentPageService.pendingPageSave" class="page-saved-status">Salvando documento...</span>
-    <span *ngIf="!documentPageService.pendingPageSave" class="page-saved-status">Documento salvo</span>
+    <span *ngIf="showPageSaveStatus && documentPageService.pendingPageSave" class="page-saved-status">Salvando documento...</span>
+    <span *ngIf="showPageSaveStatus && !documentPageService.pendingPageSave" class="page-saved-status">Documento salvo</span>
   </ng-template>
   <ng-template #headerBack>
     <i fa="arrow-left"></i>

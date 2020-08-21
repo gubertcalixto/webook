@@ -47,11 +47,14 @@ export abstract class EditorDragBaseElement extends EditorBaseElement {
 
   private setFramePosition(
     left: number = this.dragOptions.coordinates.x,
-    top: number = this.dragOptions.coordinates.y
+    top: number = this.dragOptions.coordinates.y,
+    emitUpdate: boolean = true
   ): void {
     this.frame.set('left', `${left}px`);
     this.frame.set('top', `${top}px`);
-    this.updateFrame();
+    if (emitUpdate) {
+      this.updateFrame();
+    }
   }
 
   public onDragStart(event: MoveableEventsParameters['dragStart']): void {
@@ -76,7 +79,6 @@ export abstract class EditorDragBaseElement extends EditorBaseElement {
     this.dragOptions.temporaryCoordinates.x = left;
     this.dragOptions.temporaryCoordinates.y = top;
     this.setFramePosition(left, top);
-    this.updateFrame();
   }
 
   public onDragEnd(event: MoveableEventsParameters['dragEnd']): void {
