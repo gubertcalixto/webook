@@ -36,11 +36,11 @@ export class EditorPageComponent implements OnDestroy {
         return;
       }
       this.documentId = documentId;
-      this.getOrUpdateDocument();
+      this.getDocument();
     });
 
     this.subs.push(this.editorPageService.documentChangedSubject.subscribe(() => {
-      this.getOrUpdateDocument();
+      this.getDocument();
     }));
   }
 
@@ -52,7 +52,7 @@ export class EditorPageComponent implements OnDestroy {
     this.router.navigateByUrl('/');
   }
 
-  private getOrUpdateDocument(): void {
+  private getDocument(): void {
     this.subs.push(this.documentService.getDocument(this.documentId).subscribe(document => {
       if (!document) {
         this.redirectBack();
@@ -76,7 +76,7 @@ export class EditorPageComponent implements OnDestroy {
     });
     this.subs.push(modal.afterClose.subscribe((result: boolean) => {
       if (result) {
-        this.getOrUpdateDocument();
+        this.getDocument();
       }
     }));
   }

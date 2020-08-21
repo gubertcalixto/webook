@@ -29,10 +29,11 @@ export class EditorElementsInstanceManagerService {
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(elementToInstanciate.elementClass);
     const componentRef = containerRef.createComponent(componentFactory);
     if (componentRef.instance) {
+      componentRef.instance.elementId = elementId || uuid();
+      componentRef.instance.editor = this.editor;
       componentRef.instance.frame = new Frame(normalizedData.frameProperties);
       componentRef.instance.data = normalizedData.data;
-      componentRef.instance.editor = this.editor;
-      componentRef.instance.elementId = elementId || uuid();
+      componentRef.instance.readonlyMode = this.editor.readonlyMode
     }
     return componentRef;
   }

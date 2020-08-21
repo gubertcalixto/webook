@@ -9,6 +9,7 @@ import { SelectoEvents } from 'selecto';
 })
 export class EditorComponent {
   @HostBinding('class.editing') @Input() public editMode: boolean;
+  @Input() public readonlyMode = false;
   @Output() public editModeChange = new EventEmitter<boolean>();
   public temporarySelectedElementIds: string[] = [];
   public selectedElementIds: string[] = [];
@@ -19,28 +20,32 @@ export class EditorComponent {
   }
 
   public get elementHTML() { return this.elementRef?.nativeElement; }
-  public get currentSelectedElementIds() { 
-    return this.temporarySelectedElementIds.length 
-    ? this.temporarySelectedElementIds
-    : this.selectedElementIds;
+  public get currentSelectedElementIds() {
+    return this.temporarySelectedElementIds.length
+      ? this.temporarySelectedElementIds
+      : this.selectedElementIds;
   }
 
   constructor(public elementRef: ElementRef<HTMLElement>) { }
 
-  public onDragStart(event: SelectoEvents['drag']) {
+  public onDragStart(event: SelectoEvents['drag']): void {
+    if (this.readonlyMode) { return; }
     // TODO Drag Group
   }
-  
-  public onSelectStart(event: SelectoEvents['selectStart']) {
+
+  public onSelectStart(event: SelectoEvents['selectStart']): void {
+    if (this.readonlyMode) { return; }
     this.isSelecting = true;
   }
-  
-  public onSelect(event: SelectoEvents['select']) {
+
+  public onSelect(event: SelectoEvents['select']): void {
+    if (this.readonlyMode) { return; }
     const selectedIds = event.selected.map(x => x.id);
     this.temporarySelectedElementIds = selectedIds;
   }
-  
-  public onSelectEnd(event: SelectoEvents['selectEnd']) {
+
+  public onSelectEnd(event: SelectoEvents['selectEnd']): void {
+    if (this.readonlyMode) { return; }
     const selectedIds = event.selected.map(x => x.id);
     this.selectedElementIds = selectedIds;
     this.temporarySelectedElementIds.splice(0);

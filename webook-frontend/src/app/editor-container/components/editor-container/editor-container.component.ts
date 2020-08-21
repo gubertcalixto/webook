@@ -4,12 +4,15 @@ import {
   ComponentRef,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
+import { merge, Subscription } from 'rxjs';
 import { EditorDocument } from 'src/app/client/webook';
+import { EditorDocumentPageService } from 'src/app/services/document-page.service';
 
 import {
   EditorElementsDefinitionManagerService,
@@ -18,6 +21,7 @@ import {
   EditorElementsInstanceManagerService,
 } from '../../services/element/instance/editor-elements-instance-manager.service';
 import { EditorElementInstanceData } from '../../tokens/classes/element/instance/editor-element-instance-data.class';
+import { EditorElementHistoryData } from '../../tokens/classes/history/editor-history-pre-serialize.class';
 import { EditorHistoryManager } from '../../tokens/classes/history/editor-history-stack.class';
 import { EditorBaseElement } from '../editor/editor-components/editor-element-base-classes/editor-base-element';
 import { EditorComponent } from '../editor/editor.component';
@@ -27,21 +31,26 @@ import { EditorComponent } from '../editor/editor.component';
   templateUrl: './editor-container.component.html',
   styleUrls: ['./editor-container.component.scss']
 })
-export class EditorContainerComponent implements OnInit, AfterViewInit {
+export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('editor', { static: false }) private editorElement: EditorComponent;
   @ViewChild('editorContainer', { read: ViewContainerRef }) editorContainer: ViewContainerRef;
+  @Input() public document: EditorDocument;
+  @Input() public readonlyMode = false;
+  @Input() public pageIndex = 1;
+  @Output() public pageIndexChange = new EventEmitter<number>();
+
+  private windowResizeListenerFn = () => { this.editorElements.forEach(element => { element.instance?.updateFrame(); }); };
+  private editorElementChangeSubscription: Subscription;
   public editorHistory = new EditorHistoryManager();
   public editorElements: ComponentRef<EditorBaseElement>[] = [];
   public get toolboxItems() {
     return this.editorElementsManagerService?.items;
   }
-  @Input() public document: EditorDocument;
-  @Input() public pageIndex = 1;
-  @Output() public pageIndexChange = new EventEmitter<number>();
 
   constructor(
     private editorElementsManagerService: EditorElementsDefinitionManagerService,
-    private instanceManagerService: EditorElementsInstanceManagerService
+    private instanceManagerService: EditorElementsInstanceManagerService,
+    private editorDocumentPageService: EditorDocumentPageService
   ) { }
 
   ngOnInit(): void {
@@ -53,33 +62,29 @@ export class EditorContainerComponent implements OnInit, AfterViewInit {
     this.getDocumentPage();
   }
 
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.windowResizeListenerFn);
+  }
+
   private getDocumentPage(): void {
-    // TODO
-    const data = [
-      {
-        elementId: 'text',
-        instanceData: {
-          frameProperties: {
-            left: '200px',
-            top: '25px',
-          }
-        } as EditorElementInstanceData
+    this.editorDocumentPageService.getPage(this.document.id, this.pageIndex).subscribe(result => {
+      if (result.pageData) {
+        const data: EditorElementHistoryData[] = JSON.parse(result.pageData);
+        data.forEach(e => {
+          this.instanciateDocument(e.elementId, e.instanceData);
+        });
       }
-    ];
-    setTimeout(() => {
-      data.forEach(e => {
-        this.instanciateDocument(e.elementId, e.instanceData);
-      });
-    });
+    })
+
   }
 
   private registerToWindowResize(): void {
-    window.addEventListener('resize', () => {
-      this.editorElements.forEach(element => { element.instance?.updateFrame(); });
-    });
+    if (this.readonlyMode) { return; }
+    window.addEventListener('resize', this.windowResizeListenerFn);
   }
 
   public editorDropElement(event: DragEvent): void {
+    if (this.readonlyMode) { return; }
     const elementId = event.dataTransfer.getData('text/plain');
     if (typeof elementId !== 'string') {
       return;
@@ -100,9 +105,30 @@ export class EditorContainerComponent implements OnInit, AfterViewInit {
       this.editorContainer,
       data
     ));
+    this.subscribeToElementChanges();
   }
 
   public editorDragOver(event: DragEvent): void {
+    if (this.readonlyMode) { return; }
     event.preventDefault();
+  }
+
+  private subscribeToElementChanges(): void {
+    if (this.readonlyMode) { return; }
+    if (this.editorElementChangeSubscription) {
+      this.editorElementChangeSubscription.unsubscribe();
+    }
+    this.editorElementChangeSubscription = merge(...this.editorElements.map(e => e.instance.change)).subscribe((elementId: string) => {
+      const data: EditorElementHistoryData[] = this.editorElements.map(el => {
+        return {
+          elementId: el.instance.elementTypeId,
+          instanceData: {
+            frameProperties: el.instance?.frame.raw(),
+            data: el.instance?.data
+          }
+        }
+      });
+      this.editorDocumentPageService.savePage(this.document.id, this.pageIndex, data);
+    })
   }
 }

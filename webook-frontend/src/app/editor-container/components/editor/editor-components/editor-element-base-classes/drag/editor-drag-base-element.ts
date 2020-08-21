@@ -48,22 +48,25 @@ export abstract class EditorDragBaseElement extends EditorBaseElement {
   private setFramePosition(
     left: number = this.dragOptions.coordinates.x,
     top: number = this.dragOptions.coordinates.y
-  ) {
+  ): void {
     this.frame.set('left', `${left}px`);
     this.frame.set('top', `${top}px`);
     this.updateFrame();
   }
 
-  public onDragStart(event: MoveableEventsParameters['dragStart']) {
+  public onDragStart(event: MoveableEventsParameters['dragStart']): void {
     (event.inputEvent as MouseEvent).preventDefault();
     (event.inputEvent as MouseEvent).stopPropagation();
+    if (this.readonlyMode) { return; }
+
     this.dragOptions.isDragging = true;
   }
 
-  public onDrag(event: MoveableEventsParameters['drag']) {
+  public onDrag(event: MoveableEventsParameters['drag']): void {
     (event.inputEvent as MouseEvent).preventDefault();
     (event.inputEvent as MouseEvent).stopPropagation();
-    
+    if (this.readonlyMode) { return; }
+
     let left = event.left;
     let top = event.top;
     if (!this.dragOptions.allowExceedDuringDrag) {
@@ -76,9 +79,10 @@ export abstract class EditorDragBaseElement extends EditorBaseElement {
     this.updateFrame();
   }
 
-  public onDragEnd(event: MoveableEventsParameters['dragEnd']) {
+  public onDragEnd(event: MoveableEventsParameters['dragEnd']): void {
     (event.inputEvent as MouseEvent).preventDefault();
     (event.inputEvent as MouseEvent).stopPropagation();
+    if (this.readonlyMode) { return; }
     if (
       !this.dragOptions.temporaryCoordinates ||
       !this.dragOptions.temporaryCoordinates.x ||

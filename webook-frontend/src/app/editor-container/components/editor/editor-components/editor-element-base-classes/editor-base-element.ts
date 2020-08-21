@@ -1,4 +1,4 @@
-import { AfterViewInit, ElementRef, HostBinding, HostListener, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output, ViewChild } from '@angular/core';
 import { NgxMoveableComponent } from 'ngx-moveable';
 import { Frame } from 'scenejs';
 import {
@@ -17,6 +17,7 @@ export abstract class EditorBaseElement implements AfterViewInit {
   public target = this.elementRef?.nativeElement;
   public elementId = uuid();
   public forceMoveableEnable = false;
+  public isLoading = true;
 
   @HostBinding('class') public readonly defaultClasses = 'editor-element';
   // #region MoveableEvents
@@ -39,20 +40,26 @@ export abstract class EditorBaseElement implements AfterViewInit {
     width: '250px',
     height: '200px'
   });
-  @Input() public data: any;
+  @Input() public data: any = {};
   @Input() public editor: EditorComponent;
+  @Input() public readonlyMode = false;
+  @Output() public change = new EventEmitter<string>();
 
   public get isSelected() {
+    if (this.readonlyMode) { return false; }
     return this.editor?.currentSelectedElementIds?.includes(this.elementId);
   }
   public get isOnlySelected() {
+    if (this.readonlyMode) { return false; }
     return this.editor?.currentSelectedElementIds?.length === 1 && this.isSelected;
   }
   public get hasSelectionEnded() {
+    if (this.readonlyMode) { return false; }
     return !this.editor?.isSelecting;
   }
   public get moveableClasses() {
-    if(!this.hasSelectionEnded) { return undefined; }
+    if (this.readonlyMode) { return undefined; }
+    if (!this.hasSelectionEnded) { return undefined; }
     if (this.isOnlySelected) { return 'only selected' }
     if (this.isSelected) { return 'selected'; }
     return undefined;
@@ -62,17 +69,20 @@ export abstract class EditorBaseElement implements AfterViewInit {
 
   ngAfterViewInit(): void {
     // First change after component is instanced
-    this.updateFrame(this.elementRef.nativeElement);
+    this.updateFrame(this.elementRef.nativeElement, true);
     // Sets element id
     this.elementId = this.elementId ? this.elementId : uuid();
     this.elementRef.nativeElement.id = this.elementId;
+    if (!this.data) {
+      this.data = {};
+    }
   }
 
   /**
    * Update element frame
    * @param target Target Element
    */
-  public updateFrame(target: HTMLElement = this.target): void {
+  public updateFrame(target: HTMLElement = this.target, ignoreEmitChange = false): void {
     const frameSnapshot = JSON.stringify(this.frame.properties);
     this.preUpdateFrame.forEach(fn => { fn(); });
     target.style.cssText = this.frame.toCSS();
@@ -81,24 +91,40 @@ export abstract class EditorBaseElement implements AfterViewInit {
     setTimeout(() => {
       if (frameSnapshot !== JSON.stringify(this.frame.properties)) {
         this.moveable.updateRect();
+        if (!ignoreEmitChange) {
+          this.emitChange();
+        }
       }
     });
   }
 
+  public emitChange(): void {
+    if (this.readonlyMode) { return; }
+    this.change.next(this.elementId);
+  }
+
   private updateTransformationStyle(): void {
     let transformStyle = '';
-    if (this.frame.get('rotate')) {
-      transformStyle += ` rotate(${this.frame.get('rotate') ?? 0}deg)`;
+    const frameTransform = {
+      rotate: this.frame.get('rotate'),
+      scaleX: this.frame.get('scaleX'),
+      scaleY: this.frame.get('scaleY'),
+      matrix3d: this.frame.get('matrix')
+    };
+
+    if (frameTransform.rotate) {
+      transformStyle += ` rotate(${frameTransform.rotate ?? 0}deg)`;
     }
-    if (this.frame.get('scaleX')) {
-      transformStyle += ` scaleX(${this.frame.get('scaleX')})`;
+    if (frameTransform.scaleX) {
+      transformStyle += ` scaleX(${frameTransform.scaleX})`;
     }
-    if (this.frame.get('scaleY')) {
-      transformStyle += ` scaleY(${this.frame.get('scaleY')})`;
+    if (frameTransform.scaleY) {
+      transformStyle += ` scaleY(${frameTransform.scaleY})`;
     }
-    if (this.frame.get('matrix') && this.frame.get('matrix').length) {
-      transformStyle += ` matrix3d(${this.frame.get('matrix').join(', ')})`;
+    if (frameTransform.matrix3d && frameTransform.matrix3d.length) {
+      transformStyle += ` matrix3d(${frameTransform.matrix3d.join(', ')})`;
     }
     this.target.style.transform = transformStyle.trim();
+    this.frame.set('transform', frameTransform)
   }
 }
