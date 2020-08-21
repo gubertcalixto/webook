@@ -14,6 +14,11 @@ export class EditorHeaderComponent implements OnDestroy {
   private subs: Subscription[] = [];
   public pageTotalCount = 5;
   public pageSelectionExpanded = false;
+  public pageSaveStatusLabel = new Map([
+    ['saved', 'Documento salvo'],
+    ['saving', 'Salvando documento...'],
+    ['waitingDebounce', 'Aguardando Mudanças...']
+  ])
   
   @Input() public document: EditorDocument;
   @Input() public pageIndex = 1;

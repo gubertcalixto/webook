@@ -5,7 +5,12 @@ wb-editor-header {
     justify-content: center;
   }
   .page-saved-status {
+    cursor: context-menu;
+    user-select: none;
     color: #808080;
     font-size: 80%;
+    &.waiting {
+      opacity: 0.3;
+    }
   }
 }

@@ -10,6 +10,7 @@ interface IDocumentPageSaveData {
   pageNumber: number;
   content: string;
 }
+export type DocumentPageSaveStatus = 'waitingDebounce' | 'saved' | 'saving';
 
 @Injectable()
 export class EditorDocumentPageService {
@@ -17,8 +18,8 @@ export class EditorDocumentPageService {
 
   private savePageSubject = new Subject<IDocumentPageSaveData>();
   public savedPageSubject = new Subject<void>();
-  public pendingPageSave = false;
-  public pendingPageSaveSubject = new BehaviorSubject<boolean>(false);
+  public pageSaveStatus: DocumentPageSaveStatus = 'saved';
+  public pageSaveStatusSubject = new BehaviorSubject<DocumentPageSaveStatus>('saved');
 
   constructor(private documentInstanceService: DocumentInstanceServiceProxy) {
     this.savePageSubject
@@ -28,10 +29,10 @@ export class EditorDocumentPageService {
       })
   }
 
-  public emitPageSaveStatus(status: boolean) {
-    if (this.pendingPageSave === status) { return; }
-    this.pendingPageSave = status;
-    this.pendingPageSaveSubject.next(status);
+  public emitPageSaveStatus(status: DocumentPageSaveStatus) {
+    if (this.pageSaveStatus === status) { return; }
+    this.pageSaveStatus = status;
+    this.pageSaveStatusSubject.next(status);
   }
 
   public getPage(documentId: string, pageNumber: number): Observable<DocumentPageOutput> {
@@ -39,7 +40,7 @@ export class EditorDocumentPageService {
   }
 
   public savePage(editorDocumentId: string, pageNumber: number, content?: EditorElementHistoryData[]): void {
-    this.emitPageSaveStatus(true);
+    this.emitPageSaveStatus('waitingDebounce');
     this.savePageSubject.next({
       editorDocumentId,
       pageNumber,
@@ -48,7 +49,7 @@ export class EditorDocumentPageService {
   }
 
   private doSave(data: IDocumentPageSaveData): void {
-    this.emitPageSaveStatus(true);
+    this.emitPageSaveStatus('saving');
     const input: DocumentSavePageInput = {
       editorDocumentId: data.editorDocumentId,
       pageNumber: data.pageNumber,
@@ -58,7 +59,7 @@ export class EditorDocumentPageService {
       .pipe(first())
       .subscribe(() => {
         this.savedPageSubject.next();
-        this.emitPageSaveStatus(false);
+        this.emitPageSaveStatus('saved');
       });
   }
 }
