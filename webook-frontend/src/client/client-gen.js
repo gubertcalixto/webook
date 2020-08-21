@@ -21,6 +21,7 @@ const downloadSwaggerJar = cb => {
 
 const genSwagger = (clientSettings = { name: "", baseUrl: "", outPath: "", donTAskJustGenerate: "" }) => {
   const swaggerLocation = ('\"' + (__dirname + '/temp/' + swaggerFile) + '\"');
+  // Full Config: https://github.com/OpenAPITools/openapi-generator/blob/master/docs/generators/typescript-angular.md
   const swaggerOptionsLocation = ('\"' + __dirname + '/temp/swagger-gencode.options' + '\"');
   const packageName = (clientSettings.name ? '--package-name ' + clientSettings.name : '');
   const outputLocation = (clientSettings.outPath ? clientSettings.outPath : './client/');

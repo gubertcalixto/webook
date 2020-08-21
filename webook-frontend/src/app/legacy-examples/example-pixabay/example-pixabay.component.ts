@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { PixabayResult, TccPixabayService } from 'projects/tcc-pixabay/src/public-api';
+import { PixabayResult, TccPixabayService } from 'projects/legacy-projects/tcc-pixabay/src/public-api';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { NavigationService } from 'src/app/navigation/navigation.service';
