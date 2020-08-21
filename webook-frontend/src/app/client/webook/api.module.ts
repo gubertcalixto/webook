@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { ContactFormServiceProxy } from './api/contactFormServiceProxy';
 import { DocumentServiceProxy } from './api/documentServiceProxy';
+import { DocumentInstanceServiceProxy } from './api/documentInstanceServiceProxy';
 import { DocumentsServiceProxy } from './api/documentsServiceProxy';
 import { FeedServiceProxy } from './api/feedServiceProxy';
 import { ProfileServiceProxy } from './api/profileServiceProxy';
@@ -17,6 +18,7 @@ import { UserPreferencesServiceProxy } from './api/userPreferencesServiceProxy';
   providers: [
     ContactFormServiceProxy,
     DocumentServiceProxy,
+    DocumentInstanceServiceProxy,
     DocumentsServiceProxy,
     FeedServiceProxy,
     ProfileServiceProxy,

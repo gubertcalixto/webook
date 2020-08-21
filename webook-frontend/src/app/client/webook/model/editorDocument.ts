@@ -18,6 +18,8 @@ export interface EditorDocument {
     documentAccess?: EditorDocumentAllowedAccess;
     image?: string | null;
     userId?: string;
+    creationTime?: string | null;
+    lastUpdateTime?: string | null;
     id?: string;
 }
 
