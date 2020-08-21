@@ -2,17 +2,19 @@
   <ng-template #headerTitle>
     <wb-editor-document-title [documentId]="document.id" [(documentTitle)]="document.title">
     </wb-editor-document-title>
+    <span *ngIf="documentPageService.pendingPageSave" class="page-saved-status">Salvando documento...</span>
+    <span *ngIf="!documentPageService.pendingPageSave" class="page-saved-status">Documento salvo</span>
   </ng-template>
   <ng-template #headerBack>
     <i fa="arrow-left"></i>
   </ng-template>
   <nz-page-header (nzBack)="redirectBack.next()" [nzTitle]="headerTitle" [nzBackIcon]="headerBack" class="site-page-header">
-    <nz-page-header-extra>
+    <nz-page-header-extra class="page-navigation-container">
       <wb-editor-document-page-navigation [(pageIndex)]="pageIndex" [totalCount]="pageTotalCount"
         [(pageSelectionExpanded)]="pageSelectionExpanded">
       </wb-editor-document-page-navigation>
     </nz-page-header-extra>
-    <nz-page-header-extra>
+    <nz-page-header-extra class="actions-container">
       <!-- TODO: Undo and Redo -->
       <button nz-button nzType="link"><i fa="undo-alt"></i></button>
       <button nz-button nzType="link"><i fa="redo"></i></button>

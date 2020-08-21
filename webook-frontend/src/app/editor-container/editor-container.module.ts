@@ -5,7 +5,6 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NgxMoveableModule } from 'ngx-moveable';
 import { NgxSelectoModule } from 'ngx-selecto';
 
-import { EditorDocumentPageService } from '../services/document-page.service';
 import { EditorContainerComponent } from './components/editor-container/editor-container.component';
 import { EditorHeaderModule } from './components/editor-header/editor-header.module';
 import { EditorPageComponent } from './components/editor-page/editor-page.component';
@@ -14,6 +13,7 @@ import { EditorToolboxComponent } from './components/editor-toolbox/editor-toolb
 import { EditorComponentsModule } from './components/editor/editor-components/editor-components.module';
 import { EditorComponent } from './components/editor/editor.component';
 import { EditorContainerRoutingModule } from './editor-container-routing.module';
+import { EditorDocumentPageService } from './services/document-page.service';
 import {
   EditorElementsDefinitionManagerService,
 } from './services/element/definition/editor-elements-definition-manager.service';

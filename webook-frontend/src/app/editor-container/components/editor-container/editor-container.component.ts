@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { merge, Subscription } from 'rxjs';
 import { EditorDocument } from 'src/app/client/webook';
-import { EditorDocumentPageService } from 'src/app/services/document-page.service';
+import { EditorDocumentPageService } from 'src/app/editor-container/services/document-page.service';
 
 import {
   EditorElementsDefinitionManagerService,
@@ -50,7 +50,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   constructor(
     private editorElementsManagerService: EditorElementsDefinitionManagerService,
     private instanceManagerService: EditorElementsInstanceManagerService,
-    private editorDocumentPageService: EditorDocumentPageService
+    private documentPageService: EditorDocumentPageService
   ) { }
 
   ngOnInit(): void {
@@ -67,7 +67,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private getDocumentPage(): void {
-    this.editorDocumentPageService.getPage(this.document.id, this.pageIndex).subscribe(result => {
+    this.documentPageService.getPage(this.document.id, this.pageIndex).subscribe(result => {
       if (result.pageData) {
         const data: EditorElementHistoryData[] = JSON.parse(result.pageData);
         data.forEach(e => {
@@ -128,7 +128,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
           }
         }
       });
-      this.editorDocumentPageService.savePage(this.document.id, this.pageIndex, data);
+      this.documentPageService.savePage(this.document.id, this.pageIndex, data);
     })
   }
 }

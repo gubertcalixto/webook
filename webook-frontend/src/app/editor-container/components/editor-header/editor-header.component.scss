@@ -1,6 +1,11 @@
-wb-editor-document {
-  nz-page-header-extra {
+wb-editor-header {
+  nz-page-header-extra.page-navigation-container {
     display: flex;
     align-items: center;
+    justify-content: center;
+  }
+  .page-saved-status {
+    color: #808080;
+    font-size: 80%;
   }
 }

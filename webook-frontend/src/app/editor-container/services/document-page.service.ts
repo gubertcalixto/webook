@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { debounceTime, first } from 'rxjs/operators';
 
-import { DocumentInstanceServiceProxy, DocumentPageOutput, DocumentSavePageInput } from '../client/webook';
-import { EditorElementHistoryData } from '../editor-container/tokens/classes/history/editor-history-pre-serialize.class';
+import { DocumentInstanceServiceProxy, DocumentPageOutput, DocumentSavePageInput } from '../../client/webook';
+import { EditorElementHistoryData } from '../tokens/classes/history/editor-history-pre-serialize.class';
 
 interface IDocumentPageSaveData {
   editorDocumentId: string;
@@ -17,6 +17,8 @@ export class EditorDocumentPageService {
 
   private savePageSubject = new Subject<IDocumentPageSaveData>();
   public savedPageSubject = new Subject<void>();
+  public pendingPageSave = false;
+  public pendingPageSaveSubject = new BehaviorSubject<boolean>(false);
 
   constructor(private documentInstanceService: DocumentInstanceServiceProxy) {
     this.savePageSubject
@@ -26,11 +28,18 @@ export class EditorDocumentPageService {
       })
   }
 
+  public emitPageSaveStatus(status: boolean) {
+    if (this.pendingPageSave === status) { return; }
+    this.pendingPageSave = status;
+    this.pendingPageSaveSubject.next(status);
+  }
+
   public getPage(documentId: string, pageNumber: number): Observable<DocumentPageOutput> {
     return this.documentInstanceService.documentDocumentIdPagePageNumberGet(documentId, pageNumber);
   }
 
   public savePage(editorDocumentId: string, pageNumber: number, content?: EditorElementHistoryData[]): void {
+    this.emitPageSaveStatus(true);
     this.savePageSubject.next({
       editorDocumentId,
       pageNumber,
@@ -39,6 +48,7 @@ export class EditorDocumentPageService {
   }
 
   private doSave(data: IDocumentPageSaveData): void {
+    this.emitPageSaveStatus(true);
     const input: DocumentSavePageInput = {
       editorDocumentId: data.editorDocumentId,
       pageNumber: data.pageNumber,
@@ -48,6 +58,7 @@ export class EditorDocumentPageService {
       .pipe(first())
       .subscribe(() => {
         this.savedPageSubject.next();
+        this.emitPageSaveStatus(false);
       });
   }
 }
