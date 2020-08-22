@@ -15,6 +15,7 @@ export class UserService {
 
   public get userSubject() { return this.internalUserSubject; }
   public get user() { return this.internalUser; }
+  public get userId() { return this.internalUser?.userId; }
 
   constructor(
     private authManagerService: OauthManagerService,

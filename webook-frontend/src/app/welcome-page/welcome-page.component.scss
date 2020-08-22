@@ -24,20 +24,22 @@ wb-welcome-page {
         height: 75vh;
         margin-top: 0;
         position: relative;
-        video{
+        video {
           background-color: #000000;
+          min-width: 100%;
+          min-height: 100%;
         }
         video,
         .background-shadow {
           position: absolute;
           left: 0;
           bottom: 0;
-          width: 100%;
           z-index: 0;
         }
         .background-shadow {
           background: rgba(0, 0, 0, 0.2);
           height: 100%;
+          width: 100%;
         }
         .content {
           .title,

@@ -10,8 +10,17 @@ export abstract class EditorRotateBaseElement extends EditorDragBaseElement {
   constructor(public elementRef: ElementRef<HTMLElement>) {
     super(elementRef);
     this.postUpdateFrame.set('editor-rotate', () => {
-      this.updateRotation(this.rotateOptions.temporaryRotation ?? this.rotateOptions.rotation, false);
+      this.updateRotation(this.rotateOptions.temporaryRotation ? this.rotateOptions.temporaryRotation : this.rotateOptions.rotation, false);
     });
+  }
+
+  ngAfterViewInit(): void {
+    const initialRotation = this.frame.get('transform').rotate;
+    if (initialRotation) {
+      this.rotateOptions.rotation = initialRotation;
+      this.frame.set('rotate', `${initialRotation}`);
+    }
+    super.ngAfterViewInit();
   }
 
   private updateRotationPosition(): void {
@@ -28,7 +37,7 @@ export abstract class EditorRotateBaseElement extends EditorDragBaseElement {
 
   private updateRotation(rotation = this.rotateOptions.rotation, needsToUpdateFrame = true) {
     this.updateRotationPosition();
-    rotation = rotation ?? this.rotateOptions.rotation;
+    rotation = rotation ? rotation : this.rotateOptions.rotation;
     while (rotation > 360) {
       rotation -= 360;
     }
@@ -43,17 +52,20 @@ export abstract class EditorRotateBaseElement extends EditorDragBaseElement {
     }
   }
 
-  public onRotateStart(event: MoveableEventsParameters['rotateStart']) {
+  public onRotateStart(event: MoveableEventsParameters['rotateStart']): void {
+    if (this.visualizeMode) { return; }
     this.rotateOptions.isRotating = true;
   }
 
-  public onRotate(event: MoveableEventsParameters['rotate']) {
+  public onRotate(event: MoveableEventsParameters['rotate']): void {
+    if (this.visualizeMode) { return; }
     // Current Rotation + Added rotation
     this.rotateOptions.temporaryRotation = event.beforeRotate + (this.rotateOptions.rotation || 0);
     this.updateRotation(this.rotateOptions.temporaryRotation);
   }
 
-  public onRotateEnd(event: MoveableEventsParameters['rotateEnd']) {
+  public onRotateEnd(event: MoveableEventsParameters['rotateEnd']): void {
+    if (this.visualizeMode) { return; }
     this.rotateOptions.rotation = this.rotateOptions.temporaryRotation;
     this.rotateOptions.temporaryRotation = undefined;
     this.rotateOptions.isRotating = false;

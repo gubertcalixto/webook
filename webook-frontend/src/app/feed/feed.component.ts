@@ -47,8 +47,6 @@ export class FeedComponent implements OnInit {
   }
 
   public openDocument(documentId: string): void {
-    // TODO: Visualize Mode
-    console.log('Abrindo documento: ' + documentId);
-    // this.router.navigateByUrl(`/document/${documentId}`);
+    this.router.navigateByUrl(`/document/${documentId}`);
   }
 }

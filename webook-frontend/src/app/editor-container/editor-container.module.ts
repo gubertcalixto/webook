@@ -13,11 +13,13 @@ import { EditorToolboxComponent } from './components/editor-toolbox/editor-toolb
 import { EditorComponentsModule } from './components/editor/editor-components/editor-components.module';
 import { EditorComponent } from './components/editor/editor.component';
 import { EditorContainerRoutingModule } from './editor-container-routing.module';
+import { EditorDocumentPageService } from './services/document-page.service';
 import {
   EditorElementsDefinitionManagerService,
 } from './services/element/definition/editor-elements-definition-manager.service';
 import { EditorElementsInstanceManagerService } from './services/element/instance/editor-elements-instance-manager.service';
 import { EditorInteractionService } from './services/interactions/editor-interaction.service';
+import { DocumentViewPageComponent } from './components/document-view-page/document-view-page.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,7 @@ import { EditorInteractionService } from './services/interactions/editor-interac
     EditorToolboxComponent,
     EditorComponent,
     EditorPageComponent,
+    DocumentViewPageComponent,
   ],
   imports: [
     CommonModule,
@@ -43,6 +46,7 @@ import { EditorInteractionService } from './services/interactions/editor-interac
     EditorPageService,
     EditorElementsDefinitionManagerService,
     EditorElementsInstanceManagerService,
+    EditorDocumentPageService,
     EditorInteractionService
   ]
 })

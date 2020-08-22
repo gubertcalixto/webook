@@ -1,5 +1,5 @@
 <span *ngIf="!editing" (dblclick)="toggleEditMode()">{{text}}</span>
-<ng-container *ngIf="editing">
+<ng-container *ngIf="editing && !visualizeMode">
   <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
     <input #inputToSave type="text" nz-input placeholder="input search text" (keyup.enter)="saveEdit()"
       (keyup.esc)="toggleEditMode()" />
@@ -11,24 +11,26 @@
 </ng-container>
 
 <ng-container *ngIf="elementRef">
-  <ngx-moveable 
-    #moveable 
-    [target]="target" 
+  <ngx-moveable
+    *ngIf="!visualizeMode"
+    #moveable
+    [target]="target"
+    [className]="moveableClasses"
 
     [origin]="dragOptions.hasOrigin"
-    [draggable]="dragOptions.draggable"
+    [draggable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && dragOptions.draggable"
     [dragTarget]="dragOptions.dragTarget"
     (dragStart)="onDragStart($event)"
     (drag)="onDrag($event)"
     (dragEnd)="onDragEnd($event)"
 
-    [rotatable]="rotateOptions.rotatable"
+    [rotatable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && rotateOptions.rotatable"
     [rotationPosition]="rotateOptions.rotatePosition"
     (rotateStart)="onRotateStart($event)"
     (rotate)="onRotate($event)"
     (rotateEnd)="onRotateEnd($event)"
 
-    [resizable]="resizeOptions.resizable"
+    [resizable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && resizeOptions.resizable"
     [keepRatio]="resizeOptions.keepRatio"
     (resizeStart)="onResizeStart($event)"
     (resize)="onResize($event)"

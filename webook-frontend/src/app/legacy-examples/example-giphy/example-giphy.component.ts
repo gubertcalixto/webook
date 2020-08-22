@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { GiphyItemListResult, TccGiphyService } from 'projects/tcc-giphy/src/public-api';
+import { TccGiphyService } from 'projects/legacy-projects/tcc-giphy/src/public-api';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { NavigationService } from 'src/app/navigation/navigation.service';
@@ -27,7 +27,6 @@ export class ExampleGiphyComponent implements OnDestroy {
     this.service.search(value)
       .pipe(debounceTime(300))
       .subscribe(res => {
-        console.log(res);
         this.result = res;
       });
   }

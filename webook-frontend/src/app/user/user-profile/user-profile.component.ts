@@ -118,9 +118,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   public openDocument(documentId: string, editMode = false): void {
-    // TODO: Visualize Mode
     if (editMode) {
       this.router.navigateByUrl(`/document/${documentId}`);
+    } else {
+      this.router.navigateByUrl(`/document/${documentId}/view`);
     }
   }
 

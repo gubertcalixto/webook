@@ -10,15 +10,21 @@ import { EditorResizeBaseElement } from '../editor-element-base-classes/resize/e
 export class EditorTextElementComponent extends EditorResizeBaseElement {
   elementTypeId = 'text';
   public editing = false;
-  public text = 'Escreva aqui...';
+  public text: string = 'Escreva aqui...';
 
-  @ViewChild('inputToSave', { static: false }) inputToSave: ElementRef<HTMLInputElement>;
+  @ViewChild('inputToSave') inputToSave: ElementRef<HTMLInputElement>;
 
   constructor(public elementRef: ElementRef<HTMLElement>, private changeDetectorRef: ChangeDetectorRef) {
     super(elementRef);
   }
 
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    this.text = this.data?.text || 'Escreva aqui...';
+  }
+
   public toggleEditMode(): void {
+    if (this.visualizeMode) { return; }
     this.editing = !this.editing;
 
     // Needed to process editing mode
@@ -34,5 +40,7 @@ export class EditorTextElementComponent extends EditorResizeBaseElement {
   public saveEdit(): void {
     this.text = this.inputToSave.nativeElement.value;
     this.toggleEditMode();
+    this.data.text = this.text;
+    this.emitChange();
   }
 }

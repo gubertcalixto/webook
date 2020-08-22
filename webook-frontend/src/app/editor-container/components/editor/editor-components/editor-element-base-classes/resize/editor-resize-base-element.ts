@@ -12,10 +12,12 @@ export abstract class EditorResizeBaseElement extends EditorRotateBaseElement {
   }
 
   public onResizeStart(event: MoveableEventsParameters['resizeStart']): void {
+    if (this.visualizeMode) { return; }
     this.resizeOptions.isResizing = true;
   }
 
   public onResize(event: MoveableEventsParameters['resize']): void {
+    if (this.visualizeMode) { return; }
     const setWidth = () => {
       let oldWidth = Number(String(this.frame.get('width')).replace('px', ''));
       if (isNaN(oldWidth)) { oldWidth = this.target.clientWidth; }
@@ -60,6 +62,7 @@ export abstract class EditorResizeBaseElement extends EditorRotateBaseElement {
   }
 
   public onResizeEnd(event: MoveableEventsParameters['resizeEnd']): void {
+    if (this.visualizeMode) { return; }
     this.resizeOptions.isResizing = false;
   }
 }

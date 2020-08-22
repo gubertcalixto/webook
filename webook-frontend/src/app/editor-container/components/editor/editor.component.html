@@ -1,1 +1,18 @@
 <ng-content></ng-content>
+
+<ngx-selecto
+    *ngIf="!visualizeMode"
+    [container]="elementRef.nativeElement"
+    [dragContainer]="elementRef.nativeElement"
+    [selectableTargets]='[".editor-element"]'
+    [selectByClick]="true"
+    [selectFromInside]="false"
+    [continueSelect]="false"
+    toggleContinueSelect="ctrl"
+    [keyContainer]="elementRef.nativeElement"
+    [hitRate]="1"
+    (dragStart)="onDragStart($event)"
+    (selectStart)="onSelectStart($event)"
+    (select)="onSelect($event)"
+    (selectEnd)="onSelectEnd($event)"
+></ngx-selecto>

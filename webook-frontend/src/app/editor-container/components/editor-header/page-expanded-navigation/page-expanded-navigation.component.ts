@@ -8,6 +8,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class EditorDocumentPageExpandedNavigationComponent {
   @Input() public pageIndex = 1;
   @Input() public totalCount = 0;
+  @Input() public visualizeMode = false;
   @Output() private pageIndexChange = new EventEmitter<number>();
   @Output() private pageSelected = new EventEmitter<void>();
   public itemsPerPage = 3;

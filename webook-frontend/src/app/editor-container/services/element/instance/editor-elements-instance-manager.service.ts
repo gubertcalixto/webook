@@ -4,6 +4,7 @@ import { EditorComponent } from 'src/app/editor-container/components/editor/edit
 import {
   EditorElementInstanceData,
 } from 'src/app/editor-container/tokens/classes/element/instance/editor-element-instance-data.class';
+import { v4 as uuid } from 'uuid';
 
 import { EditorElementsDefinitionManagerService } from '../definition/editor-elements-definition-manager.service';
 
@@ -17,19 +18,22 @@ export class EditorElementsInstanceManagerService {
   ) { }
 
   public instanciateElement(
-    elementId: string,
+    elementTypeId: string,
     containerRef: ViewContainerRef,
-    data?: EditorElementInstanceData
+    data?: EditorElementInstanceData,
+    elementId?: string
   ) {
-    const elementToInstanciate = this.definitionManagerService.getEditorElementDefinition(elementId);
+    const elementToInstanciate = this.definitionManagerService.getEditorElementDefinition(elementTypeId);
     if (!elementToInstanciate?.elementClass) { return; }
     const normalizedData = new EditorElementInstanceData(data);
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(elementToInstanciate.elementClass);
     const componentRef = containerRef.createComponent(componentFactory);
     if (componentRef.instance) {
+      componentRef.instance.elementId = elementId || uuid();
+      componentRef.instance.editor = this.editor;
       componentRef.instance.frame = new Frame(normalizedData.frameProperties);
       componentRef.instance.data = normalizedData.data;
-      componentRef.instance.editor = this.editor;
+      componentRef.instance.visualizeMode = this.editor.visualizeMode;
     }
     return componentRef;
   }

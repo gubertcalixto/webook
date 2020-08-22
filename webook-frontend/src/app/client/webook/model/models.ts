@@ -1,4 +1,6 @@
 export * from './contactFormSubjectType';
+export * from './documentPageOutput';
+export * from './documentSavePageInput';
 export * from './editorDocument';
 export * from './editorDocumentAllowedAccess';
 export * from './editorDocumentPagedResultOutput';

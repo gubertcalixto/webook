@@ -13,7 +13,7 @@ export class ProfileService {
   ) { }
 
   public getMyDocumentsNumber(): Observable<number> {
-    return this.getDocumentsNumber(this.userService.user.userId);
+    return this.getDocumentsNumber(this.userService.userId);
   }
 
   public getDocumentsNumber(userId: string): Observable<number> {

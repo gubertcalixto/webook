@@ -1,9 +1,16 @@
 <div class="content-wrapper">
-  <wb-editor-toolbox [items]="toolboxItems"></wb-editor-toolbox>
-  <wb-editor #editor (drop)="editorDropElement($event)" (dragover)="editorDragOver($event)">
-    <ng-container #editorContainer></ng-container>
-  </wb-editor>
-  <div>
-    PROPERTIES Menu
-  </div>
+  <ng-container *ngIf="visualizeMode">
+    <wb-editor #editor [visualizeMode]="visualizeMode">
+      <ng-container #editorContainer></ng-container>
+    </wb-editor>
+  </ng-container>
+  <ng-container *ngIf="!visualizeMode">
+    <wb-editor-toolbox [items]="toolboxItems"></wb-editor-toolbox>
+    <wb-editor #editor (drop)="editorDropElement($event)" (dragover)="editorDragOver($event)" [visualizeMode]="visualizeMode">
+      <ng-container #editorContainer></ng-container>
+    </wb-editor>
+    <div>
+      PROPERTIES Menu
+    </div>
+  </ng-container>
 </div>

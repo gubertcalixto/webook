@@ -1,9 +1,11 @@
 import { Component, OnDestroy, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '@oath/services/user.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Subscription } from 'rxjs';
 import { EditorDocument } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
+import { RouterHistoryService } from 'src/app/setup/router-history.service';
 
 import {
   EditorConfigurationModalComponent,
@@ -24,10 +26,12 @@ export class EditorPageComponent implements OnDestroy {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private routerHistoryService: RouterHistoryService,
     private documentService: DocumentService,
     private editorPageService: EditorPageService,
     private nzModalService: NzModalService,
-    private viewContainerRef: ViewContainerRef
+    private viewContainerRef: ViewContainerRef,
+    private userService: UserService
   ) {
     this.activatedRoute.params.subscribe(params => {
       const documentId = params.id;
@@ -36,11 +40,11 @@ export class EditorPageComponent implements OnDestroy {
         return;
       }
       this.documentId = documentId;
-      this.getOrUpdateDocument();
+      this.getDocument();
     });
 
     this.subs.push(this.editorPageService.documentChangedSubject.subscribe(() => {
-      this.getOrUpdateDocument();
+      this.getDocument();
     }));
   }
 
@@ -49,14 +53,17 @@ export class EditorPageComponent implements OnDestroy {
   }
 
   public redirectBack(): void {
-    this.router.navigateByUrl('/');
+    this.routerHistoryService.navigateBack();
   }
 
-  private getOrUpdateDocument(): void {
+  private getDocument(): void {
     this.subs.push(this.documentService.getDocument(this.documentId).subscribe(document => {
       if (!document) {
         this.redirectBack();
         return;
+      }
+      if(document.userId != this.userService.userId ){
+        this.router.navigateByUrl(`/document/${this.documentId}/view`);
       }
       this.document = document;
     },
@@ -76,7 +83,7 @@ export class EditorPageComponent implements OnDestroy {
     });
     this.subs.push(modal.afterClose.subscribe((result: boolean) => {
       if (result) {
-        this.getOrUpdateDocument();
+        this.getDocument();
       }
     }));
   }

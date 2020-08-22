@@ -1,0 +1,4 @@
+<ng-container *ngIf="document">
+  <wb-editor-header [document]="document" (redirectBack)="redirectBack()" [(pageIndex)]="pageIndex" [visualizeMode]="true"></wb-editor-header>
+  <wb-editor-container [document]="document" [(pageIndex)]="pageIndex" [visualizeMode]="true"></wb-editor-container>
+</ng-container>

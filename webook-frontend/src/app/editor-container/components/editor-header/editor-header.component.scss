@@ -1,6 +1,19 @@
-wb-editor-document {
-  nz-page-header-extra {
+wb-editor-header {
+  wb-editor-document-title {
+    display: flex;
+  }
+  nz-page-header-extra.page-navigation-container {
     display: flex;
     align-items: center;
+    justify-content: center;
+  }
+  .page-saved-status {
+    cursor: context-menu;
+    user-select: none;
+    color: #808080;
+    font-size: 80%;
+    &.waiting {
+      opacity: 0.3;
+    }
   }
 }

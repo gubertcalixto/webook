@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using AutoMapper;
 using Scrapbook.Domain.Entities.ContactForm;
 using Scrapbook.Domain.Entities.Editor.Document;
@@ -22,6 +23,14 @@ namespace Scrapbook.Host.Configuration.AutoMapper
         {
             CreateMap<DocumentCreateOrUpdateInput, EditorDocument>();
             CreateMap<EditorDocument, MyEditorDocument>();
+            CreateMap<DocumentSavePageInput, EditorDocumentPage>()
+                .ForMember(f => f.PageData, 
+                    opt => opt
+                        .MapFrom(r => Encoding.ASCII.GetBytes(r.PageData)));
+            CreateMap<EditorDocumentPage, DocumentPageOutput>()
+                .ForMember(f => f.PageData, 
+                    opt => opt
+                        .MapFrom(r => Encoding.ASCII.GetString(r.PageData)));
         }
 
         private void CreateUserPreferencesMap()

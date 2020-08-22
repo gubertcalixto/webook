@@ -1,4 +1,4 @@
-<nz-input-group [hidden]="!isEditingTitle" [nzSuffix]="documentTitleIconSuffix">
+<nz-input-group *ngIf="!visualizeMode" [hidden]="!isEditingTitle" [nzSuffix]="documentTitleIconSuffix">
   <input #documentTitleInput type="text" nz-input placeholder="Title" [value]="documentTitle"
     (keyup.enter)="updateDocumentTitle()" (keyup.esc)="toggleEditing(false)" />
   <ng-template #documentTitleIconSuffix>
