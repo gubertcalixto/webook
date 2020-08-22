@@ -33,7 +33,7 @@ export class EditorElementsInstanceManagerService {
       componentRef.instance.editor = this.editor;
       componentRef.instance.frame = new Frame(normalizedData.frameProperties);
       componentRef.instance.data = normalizedData.data;
-      componentRef.instance.readonlyMode = this.editor.readonlyMode
+      componentRef.instance.visualizeMode = this.editor.visualizeMode;
     }
     return componentRef;
   }

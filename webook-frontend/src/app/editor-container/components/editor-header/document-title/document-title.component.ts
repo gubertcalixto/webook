@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostBinding, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DocumentService } from 'src/app/services/document.service';
 
@@ -12,6 +12,7 @@ export class EditorDocumentTitleComponent implements OnDestroy {
   @Input() public isEditingTitle = false;
   @Input() public documentTitle: string;
   @Input() public documentId: string;
+  @HostBinding('class.visualize-mode') @Input() public visualizeMode = false;
   @Output() public documentTitleChange = new EventEmitter<string>();
   @ViewChild('documentTitleInput', { static: false }) public titleInput: ElementRef<HTMLInputElement>;
 
@@ -22,6 +23,9 @@ export class EditorDocumentTitleComponent implements OnDestroy {
   }
 
   public toggleEditing(value?: boolean): void {
+    if (this.visualizeMode) {
+      return;
+    }
     if (typeof value === 'undefined') {
       this.isEditingTitle = !this.isEditingTitle;
     } else {
@@ -34,6 +38,9 @@ export class EditorDocumentTitleComponent implements OnDestroy {
   }
 
   public updateDocumentTitle(): void {
+    if (this.visualizeMode) {
+      return;
+    }
     if (!this.titleInput?.nativeElement?.value) {
       return;
     }
@@ -52,6 +59,5 @@ export class EditorDocumentTitleComponent implements OnDestroy {
       this.documentTitle = lastTitle;
       this.isEditingTitle = false;
     }));
-
   }
 }

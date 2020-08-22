@@ -9,7 +9,7 @@ import { SelectoEvents } from 'selecto';
 })
 export class EditorComponent {
   @HostBinding('class.editing') @Input() public editMode: boolean;
-  @Input() public readonlyMode = false;
+  @Input() public visualizeMode = false;
   @Output() public editModeChange = new EventEmitter<boolean>();
   public temporarySelectedElementIds: string[] = [];
   public selectedElementIds: string[] = [];
@@ -29,23 +29,23 @@ export class EditorComponent {
   constructor(public elementRef: ElementRef<HTMLElement>) { }
 
   public onDragStart(event: SelectoEvents['drag']): void {
-    if (this.readonlyMode) { return; }
+    if (this.visualizeMode) { return; }
     // TODO Drag Group
   }
 
   public onSelectStart(event: SelectoEvents['selectStart']): void {
-    if (this.readonlyMode) { return; }
+    if (this.visualizeMode) { return; }
     this.isSelecting = true;
   }
 
   public onSelect(event: SelectoEvents['select']): void {
-    if (this.readonlyMode) { return; }
+    if (this.visualizeMode) { return; }
     const selectedIds = event.selected.map(x => x.id);
     this.temporarySelectedElementIds = selectedIds;
   }
 
   public onSelectEnd(event: SelectoEvents['selectEnd']): void {
-    if (this.readonlyMode) { return; }
+    if (this.visualizeMode) { return; }
     const selectedIds = event.selected.map(x => x.id);
     this.selectedElementIds = selectedIds;
     this.temporarySelectedElementIds.splice(0);

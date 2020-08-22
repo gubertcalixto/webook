@@ -24,7 +24,7 @@ export class EditorTextElementComponent extends EditorResizeBaseElement {
   }
 
   public toggleEditMode(): void {
-    if (this.readonlyMode) { return; }
+    if (this.visualizeMode) { return; }
     this.editing = !this.editing;
 
     // Needed to process editing mode

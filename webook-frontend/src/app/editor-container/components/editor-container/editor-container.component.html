@@ -1,12 +1,12 @@
 <div class="content-wrapper">
-  <ng-container *ngIf="readonlyMode">
-    <wb-editor #editor [readonlyMode]="readonlyMode">
+  <ng-container *ngIf="visualizeMode">
+    <wb-editor #editor [visualizeMode]="visualizeMode">
       <ng-container #editorContainer></ng-container>
     </wb-editor>
   </ng-container>
-  <ng-container *ngIf="!readonlyMode">
+  <ng-container *ngIf="!visualizeMode">
     <wb-editor-toolbox [items]="toolboxItems"></wb-editor-toolbox>
-    <wb-editor #editor (drop)="editorDropElement($event)" (dragover)="editorDragOver($event)" [readonlyMode]="readonlyMode">
+    <wb-editor #editor (drop)="editorDropElement($event)" (dragover)="editorDragOver($event)" [visualizeMode]="visualizeMode">
       <ng-container #editorContainer></ng-container>
     </wb-editor>
     <div>

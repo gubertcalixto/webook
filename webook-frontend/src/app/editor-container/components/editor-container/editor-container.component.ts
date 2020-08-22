@@ -35,7 +35,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   @ViewChild('editor', { static: false }) private editorElement: EditorComponent;
   @ViewChild('editorContainer', { read: ViewContainerRef }) editorContainer: ViewContainerRef;
   @Input() public document: EditorDocument;
-  @Input() public readonlyMode = false;
+  @Input() public visualizeMode = false;
   @Input() public pageIndex = 1;
   @Output() public pageIndexChange = new EventEmitter<number>();
 
@@ -79,12 +79,12 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private registerToWindowResize(): void {
-    if (this.readonlyMode) { return; }
+    if (this.visualizeMode) { return; }
     window.addEventListener('resize', this.windowResizeListenerFn);
   }
 
   public editorDropElement(event: DragEvent): void {
-    if (this.readonlyMode) { return; }
+    if (this.visualizeMode) { return; }
     const elementId = event.dataTransfer.getData('text/plain');
     if (typeof elementId !== 'string') {
       return;
@@ -109,12 +109,12 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   public editorDragOver(event: DragEvent): void {
-    if (this.readonlyMode) { return; }
+    if (this.visualizeMode) { return; }
     event.preventDefault();
   }
 
   private subscribeToElementChanges(): void {
-    if (this.readonlyMode) { return; }
+    if (this.visualizeMode) { return; }
     if (this.editorElementChangeSubscription) {
       this.editorElementChangeSubscription.unsubscribe();
     }

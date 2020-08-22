@@ -1,11 +1,15 @@
-h2 {
-  cursor: pointer;
-  $title-size: 45px;
-  $margin-size: 8px;
-  height: #{$title-size - ($margin-size * 2)};
-  margin-top: $margin-size;
-  margin-bottom: $margin-size;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+wb-editor-document-title {
+  &:not(.visualize-mode) {
+    h2 {
+      cursor: pointer;
+      $title-size: 45px;
+      $margin-size: 8px;
+      height: #{$title-size - ($margin-size * 2)};
+      margin-top: $margin-size;
+      margin-bottom: $margin-size;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
 }

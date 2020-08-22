@@ -1,5 +1,5 @@
 <span *ngIf="!editing" (dblclick)="toggleEditMode()">{{text}}</span>
-<ng-container *ngIf="editing && !readonlyMode">
+<ng-container *ngIf="editing && !visualizeMode">
   <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
     <input #inputToSave type="text" nz-input placeholder="input search text" (keyup.enter)="saveEdit()"
       (keyup.esc)="toggleEditMode()" />
@@ -12,7 +12,7 @@
 
 <ng-container *ngIf="elementRef">
   <ngx-moveable
-    *ngIf="!readonlyMode"
+    *ngIf="!visualizeMode"
     #moveable
     [target]="target"
     [className]="moveableClasses"

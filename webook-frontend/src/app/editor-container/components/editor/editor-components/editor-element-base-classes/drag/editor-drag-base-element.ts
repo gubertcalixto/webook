@@ -60,7 +60,7 @@ export abstract class EditorDragBaseElement extends EditorBaseElement {
   public onDragStart(event: MoveableEventsParameters['dragStart']): void {
     (event.inputEvent as MouseEvent).preventDefault();
     (event.inputEvent as MouseEvent).stopPropagation();
-    if (this.readonlyMode) { return; }
+    if (this.visualizeMode) { return; }
 
     this.dragOptions.isDragging = true;
   }
@@ -68,7 +68,7 @@ export abstract class EditorDragBaseElement extends EditorBaseElement {
   public onDrag(event: MoveableEventsParameters['drag']): void {
     (event.inputEvent as MouseEvent).preventDefault();
     (event.inputEvent as MouseEvent).stopPropagation();
-    if (this.readonlyMode) { return; }
+    if (this.visualizeMode) { return; }
 
     let left = event.left;
     let top = event.top;
@@ -84,7 +84,7 @@ export abstract class EditorDragBaseElement extends EditorBaseElement {
   public onDragEnd(event: MoveableEventsParameters['dragEnd']): void {
     (event.inputEvent as MouseEvent).preventDefault();
     (event.inputEvent as MouseEvent).stopPropagation();
-    if (this.readonlyMode) { return; }
+    if (this.visualizeMode) { return; }
     if (
       !this.dragOptions.temporaryCoordinates ||
       !this.dragOptions.temporaryCoordinates.x ||

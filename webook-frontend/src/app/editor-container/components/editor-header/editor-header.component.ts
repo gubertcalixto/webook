@@ -23,6 +23,7 @@ export class EditorHeaderComponent implements OnDestroy {
   @Input() public document: EditorDocument;
   @Input() public pageIndex = 1;
   @Input() public showPageSaveStatus = true;
+  @Input() public visualizeMode = false;
   @Output() public pageIndexChange = new EventEmitter<number>();
   @Output() public redirectBack = new EventEmitter<void>();
   @Output() public openDocumentConfiguration = new EventEmitter<void>();

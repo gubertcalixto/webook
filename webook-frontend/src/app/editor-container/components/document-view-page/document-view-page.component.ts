@@ -1,21 +1,17 @@
-import { Component, OnDestroy, ViewContainerRef } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { Subscription } from 'rxjs';
 import { EditorDocument } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
 
-import {
-  EditorConfigurationModalComponent,
-} from '../editor-configuration/editor-configuration-modal/editor-configuration-modal.component';
-import { EditorPageService } from './editor-page.service';
+import { EditorPageService } from '../editor-page/editor-page.service';
 
 @Component({
-  selector: 'wb-editor-page',
-  templateUrl: './editor-page.component.html',
-  styleUrls: ['./editor-page.component.scss']
+  selector: 'wb-document-view-page',
+  templateUrl: './document-view-page.component.html',
+  styleUrls: ['./document-view-page.component.scss']
 })
-export class EditorPageComponent implements OnDestroy {
+export class DocumentViewPageComponent implements OnDestroy {
   private subs: Subscription[] = [];
   public document: EditorDocument;
   public documentId: string;
@@ -25,9 +21,7 @@ export class EditorPageComponent implements OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private documentService: DocumentService,
-    private editorPageService: EditorPageService,
-    private nzModalService: NzModalService,
-    private viewContainerRef: ViewContainerRef
+    private editorPageService: EditorPageService
   ) {
     this.activatedRoute.params.subscribe(params => {
       const documentId = params.id;
@@ -64,21 +58,5 @@ export class EditorPageComponent implements OnDestroy {
       () => {
         this.redirectBack();
       }));
-  }
-
-  public openDocumentConfiguration(): void {
-    const modal = this.nzModalService.create({
-      nzContent: EditorConfigurationModalComponent,
-      nzViewContainerRef: this.viewContainerRef,
-      nzGetContainer: () => document.body,
-      nzComponentParams: {
-        documentId: this.documentId
-      }
-    });
-    this.subs.push(modal.afterClose.subscribe((result: boolean) => {
-      if (result) {
-        this.getDocument();
-      }
-    }));
   }
 }

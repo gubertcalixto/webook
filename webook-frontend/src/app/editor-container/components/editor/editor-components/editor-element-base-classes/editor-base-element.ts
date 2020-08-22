@@ -44,23 +44,23 @@ export abstract class EditorBaseElement implements AfterViewInit {
   });
   @Input() public data: any = {};
   @Input() public editor: EditorComponent;
-  @Input() public readonlyMode = false;
+  @Input() public visualizeMode = false;
   @Output() public change = new EventEmitter<string>();
 
   public get isSelected() {
-    if (this.readonlyMode) { return false; }
+    if (this.visualizeMode) { return false; }
     return this.editor?.currentSelectedElementIds?.includes(this.elementId);
   }
   public get isOnlySelected() {
-    if (this.readonlyMode) { return false; }
+    if (this.visualizeMode) { return false; }
     return this.editor?.currentSelectedElementIds?.length === 1 && this.isSelected;
   }
   public get hasSelectionEnded() {
-    if (this.readonlyMode) { return false; }
+    if (this.visualizeMode) { return false; }
     return !this.editor?.isSelecting;
   }
   public get moveableClasses() {
-    if (this.readonlyMode) { return undefined; }
+    if (this.visualizeMode) { return undefined; }
     if (!this.hasSelectionEnded) { return undefined; }
     if (this.isOnlySelected) { return 'only selected' }
     if (this.isSelected) { return 'selected'; }
@@ -100,7 +100,7 @@ export abstract class EditorBaseElement implements AfterViewInit {
   }
 
   public emitChange(): void {
-    if (this.readonlyMode) { return; }
+    if (this.visualizeMode) { return; }
     this.change.next(this.elementId);
   }
 
