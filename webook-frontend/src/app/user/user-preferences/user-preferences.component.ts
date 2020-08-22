@@ -1,5 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { UserService } from '@oath/services/user.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
@@ -22,6 +23,7 @@ export class UserPreferencesComponent implements OnDestroy {
 
   constructor(
     public userPreferencesService: UserPreferencesService,
+    public userService: UserService,
     public documentService: DocumentService,
     private fb: FormBuilder,
     private nzModal: NzModalService,
@@ -69,18 +71,7 @@ export class UserPreferencesComponent implements OnDestroy {
   }
 
   public deleteAccount(): void {
-    const deleteCallback = () => {
-      // TODO
-      console.log('TODO - Delete Account');
-    };
-    this.nzModal.confirm({
-      nzTitle: 'Você tem certeza que deseja apagar sua conta?',
-      nzContent: 'Sua conta será apagada, bem como todos seus documentos. Contudo as suas ações dentro do site ainda serão mantidas.',
-      nzOkText: 'Sim, tenho certeza',
-      nzOkType: 'danger',
-      nzOnOk: () => deleteCallback(),
-      nzCancelText: 'Cancelar',
-    });
+    this.userService.deleteUser();
   }
 
   public deleteDocuments(): void {

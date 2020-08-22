@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { UserInfo } from 'angular-oauth2-oidc';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SimplifiedUser, UserServiceProxy } from 'src/app/client/authentication';
+import { first } from 'rxjs/operators';
+import { AccountServiceProxy, SimplifiedUser, UserServiceProxy } from 'src/app/client/authentication';
 
 import { OAuthUser } from '../tokens/oauth-user';
 import { OauthManagerService } from './oauth-manager.service';
@@ -20,6 +22,8 @@ export class UserService {
   constructor(
     private authManagerService: OauthManagerService,
     private userServiceProxy: UserServiceProxy,
+    private accountServiceProxy: AccountServiceProxy,
+    private nzModal: NzModalService,
   ) {
     this.getUserInfoAfterLogin();
   }
@@ -57,5 +61,27 @@ export class UserService {
 
   public getUserById(userId: string): Observable<SimplifiedUser> {
     return this.userServiceProxy.userIdGet(userId);
+  }
+  
+  public deleteUser(): Promise<boolean> {
+    return new Promise((res, rej) => {
+      this.nzModal.confirm({
+        nzTitle: 'Você tem certeza que deseja apagar sua conta?',
+        nzContent: 'Sua conta será apagada, bem como todos seus documentos. Contudo as suas ações dentro do site ainda serão mantidas.',
+        nzOkText: 'Sim, tenho certeza',
+        nzOkType: 'danger',
+        nzCancelText: 'Cancelar',
+        nzOnOk: () => {
+          this.accountServiceProxy.accountDeleteAccountDelete()
+          .pipe(first())
+          .subscribe(isDeleted => {
+            if (isDeleted) {
+              this.authManagerService.logOut();
+            }
+            res(isDeleted);
+          }, (e) => rej(e))
+        },
+      });
+    })
   }
 }

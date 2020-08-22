@@ -24,7 +24,6 @@ export class TitleResolverService {
             filter((event) => event instanceof NavigationEnd),
             map(() => {
                 const title = this.getTitle(this.router.routerState, this.router.routerState.root);
-                // TODO: Set Title Correctly (app name)
                 return title ? `${title.trim()} | ${appName}` : appName;
             }))
             .subscribe((title: string) => this.titleService.setTitle(title));

@@ -7,6 +7,7 @@ import { OAuthHttpInterceptor } from '@oath/tokens/oauth-http-interceptor.token'
 import { FaIconsModule } from '@shared/components';
 import { KeyboardShortcutsModule } from 'ng-keyboard-shortcuts';
 import { NZ_I18N, pt_BR } from 'ng-zorro-antd/i18n';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import { UrlConsts } from 'src/environments/url-consts';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -29,6 +30,9 @@ import { AppOAuthModule } from './setup/oauth/oauth.module';
     FaIconsModule,
     HttpClientModule,
     AppOAuthModule,
+
+    NzModalModule,
+
     NavigationContainerModule,
 
     KeyboardShortcutsModule.forRoot(),

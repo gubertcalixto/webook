@@ -55,20 +55,6 @@ namespace IdentityServer
                 .AddDefaultTokenProviders()
                 .AddUserStore<ApplicationUserStore>();
             
-            services.AddAuthentication();
-                // TODO Add Google Authentication
-                // .AddAuthentication(options =>
-                // {
-                //     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                // })
-                // .AddGoogle("Google", options =>
-                // {
-                //     var googleAuthSection = _configuration.GetSection("Authentication:Google");
-                //     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                //     options.ClientId = googleAuthSection[ExternalLoginConfiguration.Google.ClientId];
-                //     options.ClientSecret = googleAuthSection[ExternalLoginConfiguration.Google.ClientSecret];
-                // });
-                
             var migrationsAssembly = typeof(UserContext).GetTypeInfo().Assembly.GetName().Name;
             var connectionString = _configuration.GetConnectionString("DefaultConnection");
             services.AddIdentityServer(opt =>
@@ -100,6 +86,20 @@ namespace IdentityServer
                 })
                 // TODO Production Configuration
                 .AddDeveloperSigningCredential();
+            
+            services.AddAuthentication();
+                // TODO Add Google Authentication
+                // .AddAuthentication(options =>
+                // {
+                //     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                // })
+                // .AddGoogle("Google", options =>
+                // {
+                //     var googleAuthSection = _configuration.GetSection("Authentication:Google");
+                //     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                //     options.ClientId = googleAuthSection[ExternalLoginConfiguration.Google.ClientId];
+                //     options.ClientSecret = googleAuthSection[ExternalLoginConfiguration.Google.ClientSecret];
+                // });
 
             services
                 .AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>()

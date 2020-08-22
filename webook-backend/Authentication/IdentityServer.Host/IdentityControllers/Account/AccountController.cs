@@ -16,6 +16,7 @@ using IdentityServer4.Extensions;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -105,7 +106,7 @@ namespace IdentityServer.IdentityControllers.Account
                 // issue authentication cookie with subject ID and username
                 var userId = userContext.Result.Subject.Claims.FirstOrDefault(x => x.Type == "sub");
                 
-                var user = UserRepository.FirstOrDefault(us => us.Id == Guid.Parse(userId.Value));
+                var user = UserRepository.FirstOrDefault(us => !us.IsDeleted && us.Id == Guid.Parse(userId.Value));
                 
                 if (user != null)
                 {
@@ -141,7 +142,6 @@ namespace IdentityServer.IdentityControllers.Account
             }
         }
         
-        // TODO CHECK IF IS NECESSARY
         [HttpGet]
         public async Task<IActionResult> Logout(string logoutId)
         {
@@ -162,6 +162,23 @@ namespace IdentityServer.IdentityControllers.Account
                 return Redirect(logout.PostLogoutRedirectUri);
 
             return Redirect(IdentityDefaultUrls.LoginAppUrl);
+        }
+
+        [HttpDelete]
+        public async Task<bool> DeleteAccount()
+        {
+            // TODO: User is NEVER authentication
+            if (User?.Identity.IsAuthenticated != true)
+                return false;
+
+            Guid.TryParse(User?.Identity.GetSubjectId(), out var userId);
+            if(userId == Guid.Empty)
+                return false;
+            var user = await UserRepository.FirstAsync(u => u.Id == userId);
+            user.IsDeleted = true;
+            UserRepository.Update(user);
+            await _userContext.SaveChangesAsync();
+            return true;
         }
     }
 }
