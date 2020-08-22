@@ -25,9 +25,10 @@ namespace IdentityServer.IdentityControllers.Profile
             try
             {
                 var user = await UserRepository
-                    .FirstOrDefaultAsync(us => 
-                        us.Email == context.UserName ||
-                        us.Login == context.UserName
+                    .FirstOrDefaultAsync(us =>
+                        !us.IsDeleted &&
+                        (us.Email == context.UserName ||
+                         us.Login == context.UserName)
                     );
                 if (user == null)
                 {
