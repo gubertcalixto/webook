@@ -64,7 +64,6 @@ export class SearchComponent implements OnInit {
   }
 
   public openDocument(documentId: string): void {
-    // TODO FAZER VISUALIZAÇÃO DO DOCUMENTO
     this.router.navigateByUrl(`/document/${documentId}`);
   }
 

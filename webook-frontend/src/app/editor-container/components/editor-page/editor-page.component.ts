@@ -1,9 +1,11 @@
 import { Component, OnDestroy, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '@oath/services/user.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Subscription } from 'rxjs';
 import { EditorDocument } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
+import { RouterHistoryService } from 'src/app/setup/router-history.service';
 
 import {
   EditorConfigurationModalComponent,
@@ -24,10 +26,12 @@ export class EditorPageComponent implements OnDestroy {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private routerHistoryService: RouterHistoryService,
     private documentService: DocumentService,
     private editorPageService: EditorPageService,
     private nzModalService: NzModalService,
-    private viewContainerRef: ViewContainerRef
+    private viewContainerRef: ViewContainerRef,
+    private userService: UserService
   ) {
     this.activatedRoute.params.subscribe(params => {
       const documentId = params.id;
@@ -49,8 +53,7 @@ export class EditorPageComponent implements OnDestroy {
   }
 
   public redirectBack(): void {
-    // TODO Go back to previous route
-    this.router.navigateByUrl('/');
+    this.routerHistoryService.navigateBack();
   }
 
   private getDocument(): void {
@@ -58,6 +61,9 @@ export class EditorPageComponent implements OnDestroy {
       if (!document) {
         this.redirectBack();
         return;
+      }
+      if(document.userId != this.userService.userId ){
+        this.router.navigateByUrl(`/document/${this.documentId}/view`);
       }
       this.document = document;
     },
