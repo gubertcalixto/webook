@@ -7,5 +7,7 @@ namespace Scrapbook.Host.Controllers.Document.Dtos
         public Guid EditorDocumentId { get; set; }
         public int PageNumber { get; set; }
         public string PageData { get; set; }
+        
+        public string PageThumbnail { get; set; }
     }
 }

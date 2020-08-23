@@ -15,5 +15,6 @@ export interface DocumentSavePageInput {
     editorDocumentId?: string;
     pageNumber?: number;
     pageData?: string | null;
+    pageThumbnail?: string | null;
 }
 

@@ -1,16 +1,24 @@
-.document-image {
-  max-width: 100%;
-}
-.document-title-container {
-  flex-wrap: nowrap;
-  a {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  a + div.actions {
-    text-align: right;
-    i[fa="ellipsis-v"] {
-      padding: 0 8px;
+wb-document-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  > nz-card {
+    height: 100%;
+    .document-image {
+      max-width: 100%;
+    }
+    .document-title-container {
+      flex-wrap: nowrap;
+      a {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      a + div.actions {
+        text-align: right;
+        i[fa="ellipsis-v"] {
+          padding: 0 8px;
+        }
+      }
     }
   }
 }
