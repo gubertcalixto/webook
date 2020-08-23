@@ -4,19 +4,19 @@ import { MustBeLoggedAuthGuard } from '@oath-guards/must-be-logged.guard';
 
 const routes: Routes = [
   {
-    path: 'home',
-    loadChildren: () => import('./home-page/home-page.module').then(m => m.HomePageModule),
-    data: { title: 'Home', hasNavigation: true }
+    path: 'welcome',
+    loadChildren: () => import('./welcome-page/welcome-page.module').then(m => m.WelcomePageModule),
+    data: { title: 'Seja Bem Vindo' }
   },
   {
-    path: 'feed',
+    path: 'home',
     loadChildren: () => import('./feed/feed.module').then(m => m.FeedModule),
     data: { title: 'Feed', hasNavigation: true }
   },
   {
-    path: 'welcome',
-    loadChildren: () => import('./welcome-page/welcome-page.module').then(m => m.WelcomePageModule),
-    data: { title: 'Seja Bem Vindo' }
+    path: 'my-documents',
+    loadChildren: () => import('./home-page/my-documents-page.module').then(m => m.MyDocumentsPageModule),
+    data: { title: 'Meus Documentos', hasNavigation: true }
   },
   {
     path: 'document',

@@ -11,12 +11,12 @@ import { DocumentCreationModel } from './tokens/classes/document-creation-model.
 import { documentCreationModels } from './tokens/consts/document-creation-models.const';
 
 @Component({
-  selector: 'wb-home-page',
-  templateUrl: './home-page.component.html',
-  styleUrls: ['./home-page.component.scss'],
+  selector: 'wb-my-documents-page',
+  templateUrl: './my-documents-page.component.html',
+  styleUrls: ['./my-documents-page.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class HomePageComponent implements OnInit, AfterViewInit, OnDestroy {
+export class MyDocumentsPageComponent implements OnInit, AfterViewInit, OnDestroy {
   private subs: Subscription[] = [];
   private maximumCreatDocumenModelSize = 5;
   public isAddContainerOpened = false;
