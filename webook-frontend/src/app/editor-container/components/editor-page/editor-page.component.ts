@@ -5,7 +5,6 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { Subscription } from 'rxjs';
 import { EditorDocument } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
-import { RouterHistoryService } from 'src/app/setup/router-history.service';
 
 import {
   EditorConfigurationModalComponent,
@@ -26,7 +25,6 @@ export class EditorPageComponent implements OnDestroy {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private routerHistoryService: RouterHistoryService,
     private documentService: DocumentService,
     private editorPageService: EditorPageService,
     private nzModalService: NzModalService,
@@ -53,7 +51,7 @@ export class EditorPageComponent implements OnDestroy {
   }
 
   public redirectBack(): void {
-    this.routerHistoryService.navigateBack();
+    this.router.navigateByUrl('/');
   }
 
   private getDocument(): void {
@@ -62,7 +60,7 @@ export class EditorPageComponent implements OnDestroy {
         this.redirectBack();
         return;
       }
-      if(document.userId != this.userService.userId ){
+      if (document.userId != this.userService.userId) {
         this.router.navigateByUrl(`/document/${this.documentId}/view`);
       }
       this.document = document;

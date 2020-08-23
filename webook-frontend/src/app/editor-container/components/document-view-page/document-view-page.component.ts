@@ -1,9 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { EditorDocument } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
-import { RouterHistoryService } from 'src/app/setup/router-history.service';
 
 import { EditorPageService } from '../editor-page/editor-page.service';
 
@@ -19,7 +18,7 @@ export class DocumentViewPageComponent implements OnDestroy {
   public pageIndex = 1;
 
   constructor(
-    private routerHistoryService: RouterHistoryService,
+    private router: Router,
     private activatedRoute: ActivatedRoute,
     private documentService: DocumentService,
     private editorPageService: EditorPageService,
@@ -44,7 +43,7 @@ export class DocumentViewPageComponent implements OnDestroy {
   }
 
   public redirectBack(): void {
-    this.routerHistoryService.navigateBack();
+    this.router.navigateByUrl('/');
   }
 
   private getDocument(): void {

@@ -8,7 +8,7 @@ export class RouterHistoryService {
   private internalRouteHistory: string[] = ['/'];
   private internalPreviousUrl: string = '/';
   private internalCurrentUrl: string;
-  
+
   public get previousUrl(): string { return this.internalPreviousUrl; }
   public get currentUrl(): string { return this.internalCurrentUrl; }
   public get routeHistory(): string[] { return [...this.internalRouteHistory]; }

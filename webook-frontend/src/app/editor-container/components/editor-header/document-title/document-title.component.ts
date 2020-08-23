@@ -1,11 +1,22 @@
-import { Component, ElementRef, EventEmitter, HostBinding, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  Input,
+  OnDestroy,
+  Output,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DocumentService } from 'src/app/services/document.service';
 
 @Component({
   selector: 'wb-editor-document-title',
   templateUrl: './document-title.component.html',
-  styleUrls: ['./document-title.component.scss']
+  styleUrls: ['./document-title.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class EditorDocumentTitleComponent implements OnDestroy {
   private subs: Subscription[] = [];
