@@ -45,13 +45,20 @@ namespace Scrapbook.Host.Controllers.Document
         public async Task SavePage([FromBody] DocumentSavePageInput input)
         {
             var userId = _jwtReader.GetUserId();
-            var documentExists = await _documentRepository
-                .AnyAsync(d => d.Id == input.EditorDocumentId && d.UserId == userId);
-            if (!documentExists)
+            var document = await _documentRepository
+                .FirstOrDefaultAsync(d => d.Id == input.EditorDocumentId && d.UserId == userId);
+            if (document == null)
                 return;
             var pageInDocument = await _pageRepository
                 .FirstOrDefaultAsync(p => p.EditorDocumentId == input.EditorDocumentId
                                && p.PageNumber == input.PageNumber);
+
+            if (input.PageNumber == 1 && !string.IsNullOrEmpty(input.PageThumbnail))
+            {
+                document.Image = input.PageThumbnail;
+                _documentRepository.Update(document);
+            }
+            
             if (pageInDocument == null)
             {
                 var pageToAdd = _mapper.Map<EditorDocumentPage>(input);

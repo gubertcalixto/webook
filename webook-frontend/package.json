@@ -24,6 +24,7 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "angular-oauth2-oidc": "^9.2.2",
     "angular-oauth2-oidc-jwks": "^9.0.0",
+    "html2canvas": "^1.0.0-rc.7",
     "ng-keyboard-shortcuts": "^9.0.0",
     "ng-zorro-antd": "^9.1.2",
     "ngx-moveable": "0.14.2",

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import html2canvas from 'html2canvas';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { debounceTime, first } from 'rxjs/operators';
 
@@ -48,12 +49,16 @@ export class EditorDocumentPageService {
     });
   }
 
-  private doSave(data: IDocumentPageSaveData): void {
+  private async doSave(data: IDocumentPageSaveData): Promise<void> {
     this.emitPageSaveStatus('saving');
+    const thumbnail = data.pageNumber === 1
+      ? await this.getThumbnailImage()
+      : undefined;
     const input: DocumentSavePageInput = {
       editorDocumentId: data.editorDocumentId,
       pageNumber: data.pageNumber,
-      pageData: data.content
+      pageData: data.content,
+      pageThumbnail: thumbnail
     };
     this.documentInstanceService.documentPagePost(input)
       .pipe(first())
@@ -61,5 +66,29 @@ export class EditorDocumentPageService {
         this.savedPageSubject.next();
         this.emitPageSaveStatus('saved');
       });
+  }
+
+  private getThumbnailImage(): Promise<string> {
+    const editorContainerElement = document.querySelector('wb-editor') as HTMLElement;
+    if (editorContainerElement == null) { return undefined; }
+    return html2canvas(editorContainerElement, {
+      ignoreElements: (el) => {
+        let shouldIgnore = false;
+        const elementsToIgnoreTags = ['ngx-selecto'];
+        const elTagName = el.tagName.toUpperCase();
+        for (let i = 0; i < elementsToIgnoreTags.length; i++) {
+          const tagName = elementsToIgnoreTags[i].toUpperCase();
+          shouldIgnore = elTagName === tagName;
+          if (shouldIgnore) {
+            break;
+          }
+        }
+        return shouldIgnore;
+      }
+    }).then(result => {
+      return result.toDataURL();
+    }).catch(error => {
+      return undefined;
+    })
   }
 }
