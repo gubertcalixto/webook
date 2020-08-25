@@ -13,11 +13,11 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 import { DocumentListModule } from '../document-list/document-list.module';
 import { DocumentService } from '../services/document.service';
-import { HomePageRoutingModule } from './home-page-routing.module';
-import { HomePageComponent } from './home-page.component';
+import { HomePageRoutingModule } from './my-documents-page-routing.module';
+import { MyDocumentsPageComponent } from './my-documents-page.component';
 
 @NgModule({
-  declarations: [HomePageComponent],
+  declarations: [MyDocumentsPageComponent],
   imports: [
     CommonModule,
 
@@ -40,4 +40,4 @@ import { HomePageComponent } from './home-page.component';
     DocumentService
   ]
 })
-export class HomePageModule { }
+export class MyDocumentsPageModule { }

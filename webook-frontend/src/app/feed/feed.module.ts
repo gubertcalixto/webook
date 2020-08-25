@@ -11,6 +11,7 @@ import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzStatisticModule } from 'ng-zorro-antd/statistic';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { DocumentListModule } from 'src/app/document-list/document-list.module';
 
 import { FeedRoutingModule } from './feed-routing.module';
@@ -24,18 +25,17 @@ import { FeedService } from './feed.service';
     FaIconsModule,
     DocumentListModule,
 
+    NzAlertModule,
     NzAvatarModule,
     NzButtonModule,
-    NzLayoutModule,
+    NzEmptyModule,
     NzGridModule,
+    NzLayoutModule,
+    NzPaginationModule,
     NzSkeletonModule,
     NzStatisticModule,
     NzSpinModule,
-    NzEmptyModule,
-    NzPaginationModule,
-    NzAlertModule,
-    //ng-alert
-
+    NzTypographyModule,
 
     FeedRoutingModule
   ],

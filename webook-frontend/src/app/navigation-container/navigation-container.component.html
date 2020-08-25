@@ -9,16 +9,16 @@
         <ul class="sidenav-menu" nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed"
           [nzMode]="isCollapsed ? 'vertical' : 'inline'">
           <li nz-menu-item routerLink="/home" [nzMatchRouter]="true">
-            <i fa="home"></i>
-            <span *ngIf="!isCollapsed">Home</span>
-          </li>
-          <li nz-menu-item routerLink="/scrapbooks" [nzMatchRouter]="true">
-            <i fa="book"></i>
-            <span *ngIf="!isCollapsed">Documentos</span>
-          </li>
-          <li nz-menu-item routerLink="/feed" [nzMatchRouter]="true">
             <i fa="newspaper"></i>
             <span *ngIf="!isCollapsed">Feed</span>
+          </li>
+          <li nz-menu-item routerLink="/my-documents" [nzMatchRouter]="true">
+            <i fa="book"></i>
+            <span *ngIf="!isCollapsed">Meus Documentos</span>
+          </li>
+          <li nz-menu-item routerLink="/search" [nzMatchRouter]="true">
+            <i fa="search"></i>
+            <span *ngIf="!isCollapsed">Explorar</span>
           </li>
         </ul>
       </nz-content>
