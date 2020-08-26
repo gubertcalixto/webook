@@ -26,7 +26,7 @@ export class SearchComponent implements OnInit {
   public searchValueChangeSubject: Subject<string> = new Subject<string>();
   public documents: EditorDocumentPagedResultOutput;
 
-  public documentsPageSize = 5;
+  public documentsPageSize = 20;
   public get documentsCurrentPage() { return this.internalDocumentsCurrentPage; }
   public set documentsCurrentPage(value) {
     this.internalDocumentsCurrentPage = value;
