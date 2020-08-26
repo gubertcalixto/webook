@@ -5,6 +5,9 @@ wb-feed {
         padding: 0 16px;
         .feed-documents {
             overflow: auto;
+            wb-document-card {
+                padding: 0 8px 8px;
+            }
         }
         nz-pagination {
             margin-top: 12px;

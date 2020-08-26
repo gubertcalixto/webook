@@ -1,4 +1,4 @@
-wb-home-page {
+wb-my-documents-page {
   .create-document-container {
     .ant-layout-header {
       div[nz-row] {
@@ -55,6 +55,9 @@ wb-home-page {
     max-width: 100%;
     div.my-documents {
       padding: 16px 16px 0;
+      wb-document-card {
+        padding: 0 8px 8px;
+      }
       nz-empty {
         width: 100%;
       }

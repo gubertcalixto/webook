@@ -29,6 +29,7 @@ export class EditorTextElementComponent extends EditorResizeBaseElement {
 
     // Needed to process editing mode
     this.changeDetectorRef.detectChanges();
+    this.moveable.updateRect();
 
     if (this.editing) {
       this.inputToSave.nativeElement.value = this.text;
