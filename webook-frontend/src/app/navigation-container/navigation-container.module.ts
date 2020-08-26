@@ -12,6 +12,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 import { NavigationContainerComponent } from './navigation-container.component';
 
@@ -32,6 +33,7 @@ import { NavigationContainerComponent } from './navigation-container.component';
     NzMenuModule,
     NzPageHeaderModule,
     NzPopoverModule,
+    NzToolTipModule
   ],
   exports: [NavigationContainerComponent],
 })

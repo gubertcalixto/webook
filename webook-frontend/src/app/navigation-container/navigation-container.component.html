@@ -8,15 +8,18 @@
         </a>
         <ul class="sidenav-menu" nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed"
           [nzMode]="isCollapsed ? 'vertical' : 'inline'">
-          <li nz-menu-item routerLink="/home" [nzMatchRouter]="true">
+          <li nz-menu-item routerLink="/home" [nzMatchRouter]="true" nz-tooltip
+            [nzTooltipTitle]="isCollapsed ? 'Feed' : ''" nzTooltipPlacement="right">
             <i fa="newspaper"></i>
             <span *ngIf="!isCollapsed">Feed</span>
           </li>
-          <li nz-menu-item routerLink="/my-documents" [nzMatchRouter]="true">
+          <li nz-menu-item routerLink="/my-documents" [nzMatchRouter]="true" nz-tooltip
+            [nzTooltipTitle]="isCollapsed ? 'Documentos' : ''" nzTooltipPlacement="right">
             <i fa="book"></i>
-            <span *ngIf="!isCollapsed">Meus Documentos</span>
+            <span *ngIf="!isCollapsed">Documentos</span>
           </li>
-          <li nz-menu-item routerLink="/search" [nzMatchRouter]="true">
+          <li nz-menu-item routerLink="/search" [nzMatchRouter]="true" nz-tooltip
+            [nzTooltipTitle]="isCollapsed ? 'Explorar' : ''" nzTooltipPlacement="right">
             <i fa="search"></i>
             <span *ngIf="!isCollapsed">Explorar</span>
           </li>
