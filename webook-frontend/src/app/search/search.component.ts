@@ -30,6 +30,7 @@ export class SearchComponent implements OnInit {
   public get documentsCurrentPage() { return this.internalDocumentsCurrentPage; }
   public set documentsCurrentPage(value) {
     this.internalDocumentsCurrentPage = value;
+    this.search();
   }
   public order: 'asc' | 'desc' = 'asc';
 
