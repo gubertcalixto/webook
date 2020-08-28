@@ -68,7 +68,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
 
   private getDocumentPage(): void {
     this.documentPageService.getPage(this.document.id, this.pageIndex).subscribe(result => {
-      if (result.pageData) {
+      if (result?.pageData) {
         const data: EditorElementHistoryData[] = JSON.parse(result.pageData);
         data.forEach(e => {
           this.instanciateDocument(e.elementId, e.instanceData);
