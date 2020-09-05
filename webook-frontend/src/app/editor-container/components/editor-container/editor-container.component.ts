@@ -10,6 +10,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
+import { ShortcutInput } from 'ng-keyboard-shortcuts';
 import { merge, Subscription } from 'rxjs';
 import { EditorDocument } from 'src/app/client/webook';
 import { EditorDocumentPageService } from 'src/app/editor-container/services/document-page.service';
@@ -20,6 +21,7 @@ import {
 import {
   EditorElementsInstanceManagerService,
 } from '../../services/element/instance/editor-elements-instance-manager.service';
+import { EditorInteractionService } from '../../services/interactions/editor-interaction.service';
 import { EditorElementInstanceData } from '../../tokens/classes/element/instance/editor-element-instance-data.class';
 import { EditorElementHistoryData } from '../../tokens/classes/history/editor-history-pre-serialize.class';
 import { EditorHistoryManager } from '../../tokens/classes/history/editor-history-stack.class';
@@ -39,8 +41,13 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   @Input() public pageIndex = 1;
   @Output() public pageIndexChange = new EventEmitter<number>();
 
+  private subs: Subscription[] = [];
   private windowResizeListenerFn = () => { this.editorElements.forEach(element => { element.instance?.updateFrame(); }); };
   private editorElementChangeSubscription: Subscription;
+  public editorShortcuts: ShortcutInput[] = [
+    { key: ['del', 'backspace'], command: () => { this.deleteEditorSelectedElements(); } },
+    { key: 'ctrl + z', command: () => { this.undo(); } },
+  ];
   public editorHistory = new EditorHistoryManager();
   public editorElements: ComponentRef<EditorBaseElement>[] = [];
   public get toolboxItems() {
@@ -50,7 +57,8 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   constructor(
     private editorElementsManagerService: EditorElementsDefinitionManagerService,
     private instanceManagerService: EditorElementsInstanceManagerService,
-    private documentPageService: EditorDocumentPageService
+    private documentPageService: EditorDocumentPageService,
+    private editorInteractionService: EditorInteractionService
   ) { }
 
   ngOnInit(): void {
@@ -59,23 +67,24 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
 
   ngAfterViewInit(): void {
     this.instanceManagerService.editor = this.editorElement;
+    this.editorInteractionService.init(this, this.editorElement);
     this.getDocumentPage();
   }
 
   ngOnDestroy(): void {
     window.removeEventListener('resize', this.windowResizeListenerFn);
+    this.subs.forEach(s => s.unsubscribe());
   }
 
   private getDocumentPage(): void {
-    this.documentPageService.getPage(this.document.id, this.pageIndex).subscribe(result => {
+    this.subs.push(this.documentPageService.getPage(this.document.id, this.pageIndex).subscribe(result => {
       if (result?.pageData) {
         const data: EditorElementHistoryData[] = JSON.parse(result.pageData);
         data.forEach(e => {
           this.instanciateDocument(e.elementId, e.instanceData);
         });
       }
-    })
-
+    }));
   }
 
   private registerToWindowResize(): void {
@@ -97,6 +106,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
     });
 
     this.instanciateDocument(elementId, instanceData);
+    this.emitDocumentPageSave(true);
   }
 
   private instanciateDocument(elementId: string, data?: EditorElementInstanceData): void {
@@ -113,22 +123,45 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
     event.preventDefault();
   }
 
+  private deleteEditorSelectedElements(): void {
+    const selectedIds = this.editorElement.selectedElementIds;
+    if (selectedIds.length === 0) {
+      return;
+    }
+    const elementRefs = this.editorElements.filter(e => selectedIds.includes(e.instance?.elementId));
+    elementRefs.forEach(element => {
+      element.destroy();
+    });
+    this.editorElements = [...this.editorElements.filter(e => !selectedIds.includes(e.instance?.elementId))];
+    this.editorElement.selectedElementIds = [];
+    this.emitDocumentPageSave();
+  }
+
+  private undo(): void {
+    // TODO
+    console.log('Undo last action');
+  }
+
   private subscribeToElementChanges(): void {
     if (this.visualizeMode) { return; }
     if (this.editorElementChangeSubscription) {
       this.editorElementChangeSubscription.unsubscribe();
     }
     this.editorElementChangeSubscription = merge(...this.editorElements.map(e => e.instance.change)).subscribe((elementId: string) => {
-      const data: EditorElementHistoryData[] = this.editorElements.map(el => {
-        return {
-          elementId: el.instance.elementTypeId,
-          instanceData: {
-            frameProperties: el.instance?.frame.raw(),
-            data: el.instance?.data
-          }
-        }
-      });
-      this.documentPageService.savePage(this.document.id, this.pageIndex, data);
+      this.emitDocumentPageSave();
     })
+  }
+
+  private emitDocumentPageSave(forceNoDebounce = false) {
+    const data: EditorElementHistoryData[] = this.editorElements.map(el => {
+      return {
+        elementId: el.instance.elementTypeId,
+        instanceData: {
+          frameProperties: el.instance?.frame.raw(),
+          data: el.instance?.data
+        }
+      };
+    });
+    this.documentPageService.savePage(this.document.id, this.pageIndex, data, forceNoDebounce);
   }
 }

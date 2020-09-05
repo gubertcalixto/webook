@@ -1,4 +1,5 @@
 import { Component, ElementRef, EventEmitter, HostBinding, Input, Output, ViewEncapsulation } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { SelectoEvents } from 'selecto';
 
 @Component({
@@ -8,11 +9,19 @@ import { SelectoEvents } from 'selecto';
   encapsulation: ViewEncapsulation.None
 })
 export class EditorComponent {
+  private _selectedElementIds: string[] = [];
+
   @HostBinding('class.editing') @Input() public editMode: boolean;
   @Input() public visualizeMode = false;
   @Output() public editModeChange = new EventEmitter<boolean>();
+
   public temporarySelectedElementIds: string[] = [];
-  public selectedElementIds: string[] = [];
+  public get selectedElementIds(): string[] { return this._selectedElementIds; }
+  public set selectedElementIds(value: string[]) {
+    this._selectedElementIds = value;
+    this.selectedElementIdsSubject.next(this._selectedElementIds);
+  }
+  public selectedElementIdsSubject = new BehaviorSubject<string[]>([]);
   public isSelecting = false;
 
   public get moveableTarget() {

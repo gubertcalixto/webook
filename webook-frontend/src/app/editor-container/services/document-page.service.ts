@@ -40,13 +40,18 @@ export class EditorDocumentPageService {
     return this.documentInstanceService.documentDocumentIdPagePageNumberGet(documentId, pageNumber);
   }
 
-  public savePage(editorDocumentId: string, pageNumber: number, content?: EditorElementHistoryData[]): void {
+  public savePage(editorDocumentId: string, pageNumber: number, content?: EditorElementHistoryData[], forceNoDebounce = false): void {
     this.emitPageSaveStatus('waitingDebounce');
-    this.savePageSubject.next({
+    const data = {
       editorDocumentId,
       pageNumber,
       content: JSON.stringify(content)
-    });
+    };
+    if (!forceNoDebounce) {
+      this.savePageSubject.next(data);
+    } else {
+      this.doSave(data);
+    }
   }
 
   private async doSave(data: IDocumentPageSaveData): Promise<void> {

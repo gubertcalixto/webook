@@ -1,0 +1,12 @@
+<h4 nz-typography>Background</h4>
+<div class="color-picker-container">
+    <input class="color-picker-input" [colorPicker]="backgroundColor" (colorPickerChange)="setBackground('color', $event)" [style.background]="backgroundColor"
+        [value]="backgroundColor" readonly />
+</div>
+
+<nz-upload nzType="drag" [nzMultiple]="false" (nzChange)="setBackground('color', $event)" nzAccept="image/*">
+    <p class="ant-upload-drag-icon">
+        <i fa="image" faSize="3"></i>
+    </p>
+    <p class="ant-upload-text">Selecione uma imagem</p>
+</nz-upload>
