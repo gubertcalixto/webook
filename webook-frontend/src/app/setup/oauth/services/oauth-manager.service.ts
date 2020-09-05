@@ -1,5 +1,6 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { OAuthService, OAuthSuccessEvent, UserInfo } from 'angular-oauth2-oidc';
+import { OAuthErrorEvent, OAuthService, OAuthSuccessEvent, UserInfo } from 'angular-oauth2-oidc';
 import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -43,7 +44,7 @@ export class OauthManagerService {
       this.oauthService.setupAutomaticSilentRefresh();
       this.finishedLoading = true;
       this.finishedLoadingSubject.next(true);
-     
+
       return success;
     }
     catch (e) {
@@ -55,7 +56,13 @@ export class OauthManagerService {
   private clearHashAfterLogin() {
     // Makes sure hash was used successfully
     this.oauthService.events.subscribe(oauthEvent => {
-      if (oauthEvent instanceof OAuthSuccessEvent) {
+      if (oauthEvent instanceof OAuthErrorEvent) {
+        const errorReason = (oauthEvent.reason as HttpErrorResponse);
+        if (!errorReason.ok && errorReason.status !== 404) {
+          localStorage.removeItem('access_token');
+          window.location.reload();
+        }
+      } else if (oauthEvent instanceof OAuthSuccessEvent) {
         setTimeout(() => {
           if (location.hash) {
             location.hash = '';

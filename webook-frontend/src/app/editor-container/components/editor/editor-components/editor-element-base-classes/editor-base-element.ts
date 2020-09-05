@@ -1,5 +1,16 @@
-import { AfterViewInit, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  Input,
+  OnDestroy,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { NgxMoveableComponent } from 'ngx-moveable';
+import { Subject, Subscription } from 'rxjs';
 import { Frame } from 'scenejs';
 import {
   EditorElementInstanceFrame,
@@ -8,9 +19,10 @@ import { v4 as uuid } from 'uuid';
 
 import { EditorComponent } from '../../editor.component';
 
-export abstract class EditorBaseElement implements AfterViewInit {
+export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
   public abstract readonly elementTypeId: string;
 
+  protected subs: Subscription[] = [];
   protected preUpdateFrame = new Map<string, () => any>();
   protected postUpdateFrame = new Map<string, () => any>();
 
@@ -20,6 +32,7 @@ export abstract class EditorBaseElement implements AfterViewInit {
   public elementId = uuid();
   public forceMoveableEnable = false;
   public isLoading = true;
+  public dataChanged = new Subject<void>();
 
   @HostBinding('class') public readonly defaultClasses = 'editor-element';
   // #region MoveableEvents
@@ -80,6 +93,10 @@ export abstract class EditorBaseElement implements AfterViewInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.subs.forEach(s => s.unsubscribe());
+  }
+
   /**
    * Update element frame
    * @param target Target Element
@@ -91,7 +108,7 @@ export abstract class EditorBaseElement implements AfterViewInit {
     this.updateTransformationStyle();
     setTimeout(() => {
       if (!this.frameSnapshot || this.frameSnapshot !== JSON.stringify(this.frame.properties)) {
-        this.moveable.updateRect();
+        this.moveable?.updateRect();
         if (!ignoreEmitChange) {
           this.emitChange();
         }

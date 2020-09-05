@@ -84,7 +84,8 @@ export class EditorDocumentPageService {
           }
         }
         return shouldIgnore;
-      }
+      },
+      logging: false
     }).then(result => {
       return result.toDataURL();
     }).catch(error => {
