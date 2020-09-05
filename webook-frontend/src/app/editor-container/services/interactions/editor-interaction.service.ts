@@ -34,7 +34,7 @@ export class EditorInteractionService implements OnDestroy {
   }
 
   private getEditorElementById(elementId: string): EditorBaseElement {
-    return this.editorContainer.editorElements.find(e => e.instance.elementId = elementId)?.instance;
+    return this.editorContainer.editorElements.find(e => e.instance.elementId === elementId)?.instance;
   }
 
   private emitSelectElementData(elementData: EditorInteractionSelectedElementData): void {
