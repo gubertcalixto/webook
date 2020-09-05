@@ -12,7 +12,7 @@
     class="site-page-header">
     <nz-page-header-extra class="page-navigation-container">
       <wb-editor-document-page-navigation [(pageIndex)]="pageIndex" [totalCount]="pageTotalCount"
-        [(pageSelectionExpanded)]="pageSelectionExpanded">
+        [(pageSelectionExpanded)]="pageSelectionExpanded" (addPage)="emitToAddPage()">
       </wb-editor-document-page-navigation>
     </nz-page-header-extra>
     <nz-page-header-extra class="actions-container">

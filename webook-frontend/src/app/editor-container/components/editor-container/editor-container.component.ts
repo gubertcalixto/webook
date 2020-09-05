@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { ShortcutInput } from 'ng-keyboard-shortcuts';
 import { merge, Subscription } from 'rxjs';
-import { EditorDocument } from 'src/app/client/webook';
+import { DocumentOutput } from 'src/app/client/webook';
 import { EditorDocumentPageService } from 'src/app/editor-container/services/document-page.service';
 
 import {
@@ -34,11 +34,19 @@ import { EditorComponent } from '../editor/editor.component';
   styleUrls: ['./editor-container.component.scss']
 })
 export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _pageIndex = 1;
+
   @ViewChild('editor', { static: false }) private editorElement: EditorComponent;
   @ViewChild('editorContainer', { read: ViewContainerRef }) editorContainer: ViewContainerRef;
-  @Input() public document: EditorDocument;
+  @Input() public document: DocumentOutput;
   @Input() public visualizeMode = false;
-  @Input() public pageIndex = 1;
+
+  @Input()
+  public get pageIndex() { return this._pageIndex; }
+  public set pageIndex(value) {
+    this._pageIndex = value;
+    this.getDocumentPage();
+  }
   @Output() public pageIndexChange = new EventEmitter<number>();
 
   private subs: Subscription[] = [];
@@ -68,7 +76,6 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   ngAfterViewInit(): void {
     this.instanceManagerService.editor = this.editorElement;
     this.editorInteractionService.init(this, this.editorElement);
-    this.getDocumentPage();
   }
 
   ngOnDestroy(): void {
@@ -77,6 +84,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private getDocumentPage(): void {
+    this.resetEditorElements();
     this.subs.push(this.documentPageService.getPage(this.document.id, this.pageIndex).subscribe(result => {
       if (result?.pageData) {
         const data: EditorElementHistoryData[] = JSON.parse(result.pageData);
@@ -85,6 +93,13 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
         });
       }
     }));
+  }
+
+  private resetEditorElements(): void {
+    this.editorElements.forEach(elements => {
+      elements.destroy();
+    });
+    this.editorElements = [];
   }
 
   private registerToWindowResize(): void {

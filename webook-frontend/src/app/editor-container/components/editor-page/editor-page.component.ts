@@ -4,7 +4,7 @@ import { UserService } from '@oath/services/user.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { EditorDocument } from 'src/app/client/webook';
+import { DocumentOutput } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
 
 import {
@@ -19,7 +19,7 @@ import { EditorPageService } from './editor-page.service';
 })
 export class EditorPageComponent implements OnDestroy {
   private subs: Subscription[] = [];
-  public document: EditorDocument;
+  public document: DocumentOutput;
   public documentId: string;
   public pageIndex = 1;
 

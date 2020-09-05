@@ -67,7 +67,7 @@ namespace Scrapbook.Host.Controllers.Document
             }
             else
             {
-                pageInDocument.PageData = Encoding.ASCII.GetBytes(input.PageData);
+                pageInDocument.PageData = Encoding.UTF8.GetBytes(input.PageData);
                 _pageRepository.Update(pageInDocument);
                 await _context.SaveChangesAsync();
             }

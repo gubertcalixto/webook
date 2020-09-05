@@ -16,8 +16,11 @@ namespace Scrapbook.Host.Controllers.Document
 {
     public class DocumentController: CrudBaseController<EditorDocument>
     {
+        private DbSet<EditorDocumentPage> _editorDocumentPage;
+
         public DocumentController(DefaultContext context, IMapper mapper, IJwtReader jwtReader) : base(context, context.Documents, mapper, jwtReader)
         {
+            _editorDocumentPage = context.DocumentPages;
         }
         
         [HttpPost("/document")]
@@ -65,9 +68,13 @@ namespace Scrapbook.Host.Controllers.Document
         }
 
         [HttpGet("/document/{id}")]
-        public new async Task<EditorDocument> Get(Guid id)
+        public async Task<DocumentOutput> GetDocumentWithMetadata(Guid id)
         {
-            return await base.Get(id);
+            var getResult = await base.Get(id);
+            var pageCount = await _editorDocumentPage.CountAsync(p => p.EditorDocumentId == id);
+            var output = Mapper.Map<DocumentOutput>(getResult);
+            output.PageNumber = pageCount;
+            return output;
         }
         
         [HttpPut("/document/{id}")]

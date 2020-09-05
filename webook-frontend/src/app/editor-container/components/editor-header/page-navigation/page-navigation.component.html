@@ -7,5 +7,7 @@
   <i *ngIf="pageSelectionExpanded" (click)="togglePageSelectionExpanded(false, $event)" fa="angle-up"
     class="page-selection-expand"></i>
 </div>
-<button *ngIf="!pageSelectionExpanded" [disabled]="pageIndex == totalCount" nz-button nzType="link"
+<button *ngIf="!pageSelectionExpanded && pageIndex !== totalCount" nz-button nzType="link"
   (click)="goToNextPage()"><i fa="chevron-right"></i></button>
+<button *ngIf="!pageSelectionExpanded && pageIndex === totalCount" nz-button nzType="link"
+  (click)="emitToaddPage()"><i fa="plus"></i></button>

@@ -17,6 +17,7 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
+import { DocumentOutput } from '../model/models';
 import { EditorDocument } from '../model/models';
 import { EditorDocumentAllowedAccess } from '../model/models';
 
@@ -132,9 +133,9 @@ export class DocumentServiceProxy {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public documentIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocument>;
-    public documentIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocument>>;
-    public documentIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocument>>;
+    public documentIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<DocumentOutput>;
+    public documentIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<DocumentOutput>>;
+    public documentIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<DocumentOutput>>;
     public documentIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling documentIdGet.');
@@ -162,7 +163,7 @@ export class DocumentServiceProxy {
             responseType = 'text';
         }
 
-        return this.httpClient.get<EditorDocument>(`${this.configuration.basePath}/document/${encodeURIComponent(String(id))}`,
+        return this.httpClient.get<DocumentOutput>(`${this.configuration.basePath}/document/${encodeURIComponent(String(id))}`,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,

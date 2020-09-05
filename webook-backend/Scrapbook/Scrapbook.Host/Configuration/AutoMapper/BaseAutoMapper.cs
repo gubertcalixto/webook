@@ -26,11 +26,12 @@ namespace Scrapbook.Host.Configuration.AutoMapper
             CreateMap<DocumentSavePageInput, EditorDocumentPage>()
                 .ForMember(f => f.PageData, 
                     opt => opt
-                        .MapFrom(r => Encoding.ASCII.GetBytes(r.PageData)));
+                        .MapFrom(r => Encoding.UTF8.GetBytes(r.PageData)));
             CreateMap<EditorDocumentPage, DocumentPageOutput>()
                 .ForMember(f => f.PageData, 
                     opt => opt
-                        .MapFrom(r => Encoding.ASCII.GetString(r.PageData)));
+                        .MapFrom(r => Encoding.UTF8.GetString(r.PageData)));
+            CreateMap<EditorDocument, DocumentOutput>();
         }
 
         private void CreateUserPreferencesMap()

@@ -11,6 +11,7 @@ export class EditorDocumentPageNavigationComponent {
   @Input() public totalCount: number;
   @Output() public pageIndexChange = new EventEmitter<number>();
   @Output() public pageSelectionExpandedChange = new EventEmitter<boolean>();
+  @Output() public addPage = new EventEmitter<void>();
 
   public togglePageSelectionExpanded(state?: boolean, event?: MouseEvent): void {
     if (typeof state === 'undefined') {
@@ -26,6 +27,10 @@ export class EditorDocumentPageNavigationComponent {
 
   public goToNextPage(): void {
     this.pageChange(this.pageIndex + 1);
+  }
+
+  public emitToaddPage(): void {
+    this.addPage.next();
   }
 
   public goToPreviousPage(): void {
