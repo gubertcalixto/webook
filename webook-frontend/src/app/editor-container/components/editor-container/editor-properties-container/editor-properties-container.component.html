@@ -3,7 +3,7 @@
     <div class="container" [ngSwitch]="currentElementType">
         <div *ngSwitchCase="'text'">
             <h4>Texto</h4>
-            <input [ngModel]="currentElementSelectedData.text" (ngModelChange)="setDataProperty('text', $event)" placeholder="text" />
+            <input [ngModel]="currentElementSelectedData.text" (ngModelChange)="setDataProperty('text', $event)" placeholder="Escreva o texto aqui" />
         </div>
         <wb-page-properties *ngSwitchDefault></wb-page-properties>
     </div>

@@ -10,6 +10,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
+import { ShortcutInput } from 'ng-keyboard-shortcuts';
 import { merge, Subscription } from 'rxjs';
 import { EditorDocument } from 'src/app/client/webook';
 import { EditorDocumentPageService } from 'src/app/editor-container/services/document-page.service';
@@ -43,6 +44,10 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   private subs: Subscription[] = [];
   private windowResizeListenerFn = () => { this.editorElements.forEach(element => { element.instance?.updateFrame(); }); };
   private editorElementChangeSubscription: Subscription;
+  public editorShortcuts: ShortcutInput[] = [
+    { key: ['del', 'backspace'], command: () => { this.deleteEditorSelectedElements(); } },
+    { key: 'ctrl + z', command: () => { this.undo(); } },
+  ];
   public editorHistory = new EditorHistoryManager();
   public editorElements: ComponentRef<EditorBaseElement>[] = [];
   public get toolboxItems() {
@@ -101,6 +106,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
     });
 
     this.instanciateDocument(elementId, instanceData);
+    this.emitDocumentPageSave(true);
   }
 
   private instanciateDocument(elementId: string, data?: EditorElementInstanceData): void {
@@ -117,22 +123,45 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
     event.preventDefault();
   }
 
+  private deleteEditorSelectedElements(): void {
+    const selectedIds = this.editorElement.selectedElementIds;
+    if (selectedIds.length === 0) {
+      return;
+    }
+    const elementRefs = this.editorElements.filter(e => selectedIds.includes(e.instance?.elementId));
+    elementRefs.forEach(element => {
+      element.destroy();
+    });
+    this.editorElements = [...this.editorElements.filter(e => !selectedIds.includes(e.instance?.elementId))];
+    this.editorElement.selectedElementIds = [];
+    this.emitDocumentPageSave();
+  }
+
+  private undo(): void {
+    // TODO
+    console.log('Undo last action');
+  }
+
   private subscribeToElementChanges(): void {
     if (this.visualizeMode) { return; }
     if (this.editorElementChangeSubscription) {
       this.editorElementChangeSubscription.unsubscribe();
     }
     this.editorElementChangeSubscription = merge(...this.editorElements.map(e => e.instance.change)).subscribe((elementId: string) => {
-      const data: EditorElementHistoryData[] = this.editorElements.map(el => {
-        return {
-          elementId: el.instance.elementTypeId,
-          instanceData: {
-            frameProperties: el.instance?.frame.raw(),
-            data: el.instance?.data
-          }
-        }
-      });
-      this.documentPageService.savePage(this.document.id, this.pageIndex, data);
+      this.emitDocumentPageSave();
     })
+  }
+
+  private emitDocumentPageSave(forceNoDebounce = false) {
+    const data: EditorElementHistoryData[] = this.editorElements.map(el => {
+      return {
+        elementId: el.instance.elementTypeId,
+        instanceData: {
+          frameProperties: el.instance?.frame.raw(),
+          data: el.instance?.data
+        }
+      };
+    });
+    this.documentPageService.savePage(this.document.id, this.pageIndex, data, forceNoDebounce);
   }
 }
