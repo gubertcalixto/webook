@@ -47,6 +47,7 @@ export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
   @HostListener('mousedown') private onElementClick() {
     if (!this.hasSelectionEnded || this.editor.selectedElementIds.length > 0) { return; }
     this.editor.selectedElementIds.push(this.elementId);
+    this.editor.selectedElementIdsSubject.next(this.editor.selectedElementIds);
   }
   // #endregion MoveableEvents
   @ViewChild('moveable', { static: false }) moveable: NgxMoveableComponent;
@@ -116,8 +117,8 @@ export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
     });
   }
 
-  public emitChange(): void {
-    if (this.visualizeMode) { return; }
+  public emitChange(forceEmit = false): void {
+    if (!forceEmit && this.visualizeMode) { return; }
     this.change.next(this.elementId);
   }
 

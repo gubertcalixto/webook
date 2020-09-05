@@ -16,6 +16,15 @@ export class EditorTextElementComponent extends EditorResizeBaseElement {
 
   constructor(public elementRef: ElementRef<HTMLElement>, private changeDetectorRef: ChangeDetectorRef) {
     super(elementRef);
+    this.subs.push(this.dataChanged.subscribe(() => {
+      if (!this.data) {
+        return;
+      }
+      if (this.data.text !== this.text) {
+        this.text = this.data.text;
+      }
+      this.emitChange(true);
+    }));
   }
 
   ngAfterViewInit(): void {

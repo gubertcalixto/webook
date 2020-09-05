@@ -12,4 +12,8 @@
     flex-direction: column;
     border: 1px dotted #ccc;
   }
+  wb-editor-properties-container {
+    display: flex;
+    flex: initial;
+  }
 }

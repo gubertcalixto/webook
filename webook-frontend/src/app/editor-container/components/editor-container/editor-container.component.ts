@@ -20,6 +20,7 @@ import {
 import {
   EditorElementsInstanceManagerService,
 } from '../../services/element/instance/editor-elements-instance-manager.service';
+import { EditorInteractionService } from '../../services/interactions/editor-interaction.service';
 import { EditorElementInstanceData } from '../../tokens/classes/element/instance/editor-element-instance-data.class';
 import { EditorElementHistoryData } from '../../tokens/classes/history/editor-history-pre-serialize.class';
 import { EditorHistoryManager } from '../../tokens/classes/history/editor-history-stack.class';
@@ -39,6 +40,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   @Input() public pageIndex = 1;
   @Output() public pageIndexChange = new EventEmitter<number>();
 
+  private subs: Subscription[] = [];
   private windowResizeListenerFn = () => { this.editorElements.forEach(element => { element.instance?.updateFrame(); }); };
   private editorElementChangeSubscription: Subscription;
   public editorHistory = new EditorHistoryManager();
@@ -50,7 +52,8 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   constructor(
     private editorElementsManagerService: EditorElementsDefinitionManagerService,
     private instanceManagerService: EditorElementsInstanceManagerService,
-    private documentPageService: EditorDocumentPageService
+    private documentPageService: EditorDocumentPageService,
+    private editorInteractionService: EditorInteractionService
   ) { }
 
   ngOnInit(): void {
@@ -59,23 +62,24 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
 
   ngAfterViewInit(): void {
     this.instanceManagerService.editor = this.editorElement;
+    this.editorInteractionService.init(this, this.editorElement);
     this.getDocumentPage();
   }
 
   ngOnDestroy(): void {
     window.removeEventListener('resize', this.windowResizeListenerFn);
+    this.subs.forEach(s => s.unsubscribe());
   }
 
   private getDocumentPage(): void {
-    this.documentPageService.getPage(this.document.id, this.pageIndex).subscribe(result => {
+    this.subs.push(this.documentPageService.getPage(this.document.id, this.pageIndex).subscribe(result => {
       if (result?.pageData) {
         const data: EditorElementHistoryData[] = JSON.parse(result.pageData);
         data.forEach(e => {
           this.instanciateDocument(e.elementId, e.instanceData);
         });
       }
-    })
-
+    }));
   }
 
   private registerToWindowResize(): void {

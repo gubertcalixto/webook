@@ -1,0 +1,10 @@
+<h2 nz-typography>Propriedades</h2>
+<ng-container *ngIf="!isLoading">
+    <div class="container" [ngSwitch]="currentElementType">
+        <div *ngSwitchCase="'text'">
+            <h4>Texto</h4>
+            <input [ngModel]="currentElementSelectedData.text" (ngModelChange)="setDataProperty('text', $event)" placeholder="text" />
+        </div>
+        <wb-page-properties *ngSwitchDefault></wb-page-properties>
+    </div>
+</ng-container>
