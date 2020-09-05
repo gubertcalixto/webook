@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '@oath/services/user.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { EditorDocument } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
 
@@ -38,7 +39,10 @@ export class EditorPageComponent implements OnDestroy {
         return;
       }
       this.documentId = documentId;
-      this.getDocument();
+      // Waits for user be resolved
+      this.subs.push(this.userService.userSubject.pipe(filter(u => Boolean(u))).subscribe(() => {
+        this.getDocument();
+      }));
     });
 
     this.subs.push(this.editorPageService.documentChangedSubject.subscribe(() => {
