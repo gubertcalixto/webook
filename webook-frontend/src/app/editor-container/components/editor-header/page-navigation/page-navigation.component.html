@@ -9,5 +9,5 @@
 </div>
 <button *ngIf="!pageSelectionExpanded && pageIndex !== totalCount" nz-button nzType="link"
   (click)="goToNextPage()"><i fa="chevron-right"></i></button>
-<button *ngIf="!pageSelectionExpanded && pageIndex === totalCount" nz-button nzType="link"
-  (click)="emitToaddPage()"><i fa="plus"></i></button>
+<button *ngIf="!visualizeMode && !pageSelectionExpanded && pageIndex === totalCount" nz-button nzType="link"
+  (click)="emitToAddPage()"><i fa="plus"></i></button>

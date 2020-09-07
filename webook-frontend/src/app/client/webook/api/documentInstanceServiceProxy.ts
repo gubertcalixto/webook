@@ -135,6 +135,65 @@ export class DocumentInstanceServiceProxy {
     }
 
     /**
+     * @param documentId 
+     * @param skipCount 
+     * @param pageSize 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public documentDocumentIdPagesThumbnailsGet(documentId: string, skipCount?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<{ [key: string]: string; }>;
+    public documentDocumentIdPagesThumbnailsGet(documentId: string, skipCount?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<{ [key: string]: string; }>>;
+    public documentDocumentIdPagesThumbnailsGet(documentId: string, skipCount?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<{ [key: string]: string; }>>;
+    public documentDocumentIdPagesThumbnailsGet(documentId: string, skipCount?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+        if (documentId === null || documentId === undefined) {
+            throw new Error('Required parameter documentId was null or undefined when calling documentDocumentIdPagesThumbnailsGet.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (skipCount !== undefined && skipCount !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>skipCount, 'SkipCount');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pageSize, 'PageSize');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'text/plain',
+                'application/json',
+                'text/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.get<{ [key: string]: string; }>(`${this.configuration.basePath}/document/${encodeURIComponent(String(documentId))}/pages/thumbnails`,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
      * @param documentSavePageInput 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.

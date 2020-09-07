@@ -8,6 +8,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class EditorDocumentPageNavigationComponent {
   @Input() public pageIndex = 1;
   @Input() public pageSelectionExpanded = false;
+  @Input() public visualizeMode = false;
   @Input() public totalCount: number;
   @Output() public pageIndexChange = new EventEmitter<number>();
   @Output() public pageSelectionExpandedChange = new EventEmitter<boolean>();
@@ -29,7 +30,10 @@ export class EditorDocumentPageNavigationComponent {
     this.pageChange(this.pageIndex + 1);
   }
 
-  public emitToaddPage(): void {
+  public emitToAddPage(): void {
+    if (this.visualizeMode) {
+      return;
+    }
     this.addPage.next();
   }
 

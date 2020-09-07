@@ -2,34 +2,26 @@
 <div nz-row class="page-selection-expanded-area">
   <div class="selection-spacer" nz-col nzXs="0" nzSm="1" nzMd="3" nzLg="4" nzXl="4"></div>
   <div nz-col nzXs="4" nzSm="3" nzMd="3" nzLg="2" nzXl="2" class="arrow-navigation-container left">
-    <button nz-button nzType="link" [disabled]="pageIndex <= 1" (click)="goToFirstPage()"><i
+    <button nz-button nzType="link" [disabled]="pageNavigationIndex <= 1" (click)="goToFirstPage()"><i
         fa="arrow-left"></i></button>
-    <button nz-button nzType="link" [disabled]="pageIndex <= 1" (click)="goToPreviousPage()"><i
+    <button nz-button nzType="link" [disabled]="pageNavigationIndex <= 1" (click)="goToPreviousPage()"><i
         fa="chevron-left"></i></button>
   </div>
   <div nz-col nzXs="16" nzSm="16" nzMd="12" nzLg="12" nzXl="12">
-    <div nz-row>
-      <div nz-col nzFlex="1" class="page-container">
-        <button class="page">
-          <img src="https://cdn4.iconfinder.com/data/icons/evil-icons-user-interface/64/picture-512.png" alt="Page X">
-        </button>
-      </div>
-      <div nz-col nzFlex="1" class="page-container">
-        <button class="page">
-          <img src="https://cdn4.iconfinder.com/data/icons/evil-icons-user-interface/64/picture-512.png" alt="Page X">
-        </button>
-      </div>
-      <div nz-col nzFlex="1" class="page-container">
-        <button class="page">
-          <img src="https://cdn4.iconfinder.com/data/icons/evil-icons-user-interface/64/picture-512.png" alt="Page X">
+    <nz-spin *ngIf="isGettingThumbnails" class="page-container-loader" nzSimple nzSize="large"></nz-spin>
+    <div *ngIf="!isGettingThumbnails" nz-row>
+      <div *ngFor="let thumbnailData of currentPageThumbnails" nz-col nzFlex="1" class="page-container">
+        <button class="page" [disabled]="thumbnailData.index === pageIndex" (click)="pageIndexChanged(thumbnailData.index)">
+          <img *ngIf="thumbnailData.thumbnail" [src]="thumbnailData.thumbnail" [alt]="'Página ' + thumbnailData.index">
+          <span *ngIf="!thumbnailData.thumbnail">{{'Página ' + thumbnailData.index}}</span>
         </button>
       </div>
     </div>
   </div>
   <div nz-col nzXs="4" nzSm="3" nzMd="3" nzLg="2" nzXl="2" class="arrow-navigation-container right">
-    <button nz-button nzType="link" [disabled]="pageIndex >= totalCount" (click)="goToNextPage()"><i
+    <button nz-button nzType="link" [disabled]="pageNavigationIndex >= maxNavigationIndex" (click)="goToNextPage()"><i
         fa="chevron-right"></i></button>
-    <button nz-button nzType="link" [disabled]="pageIndex >= totalCount" (click)="goToLastPage()"><i
+    <button nz-button nzType="link" [disabled]="pageNavigationIndex >= maxNavigationIndex" (click)="goToLastPage()"><i
         fa="arrow-right"></i></button>
   </div>
   <div class="selection-spacer" nz-col nzXs="0" nzSm="1" nzMd="3" nzLg="4" nzXl="4"></div>

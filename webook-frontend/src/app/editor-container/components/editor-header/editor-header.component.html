@@ -11,7 +11,7 @@
   <nz-page-header (nzBack)="redirectBack.next()" [nzTitle]="headerTitle" [nzBackIcon]="headerBack"
     class="site-page-header">
     <nz-page-header-extra class="page-navigation-container">
-      <wb-editor-document-page-navigation [(pageIndex)]="pageIndex" [totalCount]="pageTotalCount"
+      <wb-editor-document-page-navigation [(pageIndex)]="pageIndex" [totalCount]="pageTotalCount"  [visualizeMode]="visualizeMode"
         [(pageSelectionExpanded)]="pageSelectionExpanded" (addPage)="emitToAddPage()">
       </wb-editor-document-page-navigation>
     </nz-page-header-extra>
@@ -28,7 +28,7 @@
       </ng-container>
     </nz-page-header-extra>
     <nz-page-header-content *ngIf="pageSelectionExpanded">
-      <wb-editor-document-page-expanded-navigation [(pageIndex)]="pageIndex" [totalCount]="pageTotalCount"
+      <wb-editor-document-page-expanded-navigation [documentId]="document.id" [(pageIndex)]="pageIndex" [totalCount]="pageTotalCount"
         (pageSelected)="pageSelectionExpanded = false" [visualizeMode]="visualizeMode"></wb-editor-document-page-expanded-navigation>
     </nz-page-header-content>
   </nz-page-header>

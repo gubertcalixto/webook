@@ -9,6 +9,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { DocumentService } from 'src/app/services/document.service';
 
 import { EditorConfigurationModule } from '../editor-configuration/editor-configuration.module';
@@ -39,7 +40,8 @@ import { EditorDocumentPageNavigationComponent } from './page-navigation/page-na
     NzModalModule,
     NzPageHeaderModule,
     NzPaginationModule,
-    NzSpaceModule
+    NzSpaceModule,
+    NzSpinModule
   ],
   providers: [
     DocumentService

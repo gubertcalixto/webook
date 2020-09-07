@@ -40,6 +40,10 @@ export class EditorDocumentPageService {
     return this.documentInstanceService.documentDocumentIdPagePageNumberGet(documentId, pageNumber);
   }
 
+  public getPageThumbnails(documentId: string, skipCount: number, pageSize: number): Observable<{ [key: string]: string; }> {
+    return this.documentInstanceService.documentDocumentIdPagesThumbnailsGet(documentId, skipCount, pageSize);
+  }
+
   public savePage(editorDocumentId: string, pageNumber: number, content?: EditorElementHistoryData[], forceNoDebounce = false): void {
     this.emitPageSaveStatus('waitingDebounce');
     const data = {
@@ -56,9 +60,7 @@ export class EditorDocumentPageService {
 
   private async doSave(data: IDocumentPageSaveData): Promise<void> {
     this.emitPageSaveStatus('saving');
-    const thumbnail = data.pageNumber === 1
-      ? await this.getThumbnailImage()
-      : undefined;
+    const thumbnail = await this.getThumbnailImage();
     const input: DocumentSavePageInput = {
       editorDocumentId: data.editorDocumentId,
       pageNumber: data.pageNumber,

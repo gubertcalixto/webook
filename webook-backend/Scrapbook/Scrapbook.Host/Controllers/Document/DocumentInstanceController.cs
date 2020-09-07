@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,6 +42,27 @@ namespace Scrapbook.Host.Controllers.Document
                 : _mapper.Map<DocumentPageOutput>(page);
         }
 
+
+        [HttpGet("/document/{documentId}/pages/thumbnails")]
+        public async Task<Dictionary<string, string>> GetPagesThumbnails(DocumentPagesThumbnailInput input)
+        {
+            var pagesThumbnails = await _pageRepository
+                .Where(d => d.EditorDocumentId == input.DocumentId)
+                .Skip(input.SkipCount)
+                .Take(input.PageSize)
+                .Select(p => new
+                {
+                    p.PageNumber,
+                    p.PreviewImage
+                })
+                .ToListAsync();
+            var pageThumbDictionary = pagesThumbnails.ToDictionary(
+                p => p.PageNumber.ToString(), 
+                p => p.PreviewImage ?? "");
+            return pageThumbDictionary;
+        }
+        
+
         [HttpPost("/document/page")]
         public async Task SavePage([FromBody] DocumentSavePageInput input)
         {
@@ -62,11 +84,13 @@ namespace Scrapbook.Host.Controllers.Document
             if (pageInDocument == null)
             {
                 var pageToAdd = _mapper.Map<EditorDocumentPage>(input);
+                pageToAdd.PreviewImage = input.PageThumbnail;
                 await _pageRepository.AddAsync(pageToAdd);
                 await _context.SaveChangesAsync();
             }
             else
             {
+                pageInDocument.PreviewImage = input.PageThumbnail;
                 pageInDocument.PageData = Encoding.UTF8.GetBytes(input.PageData);
                 _pageRepository.Update(pageInDocument);
                 await _context.SaveChangesAsync();

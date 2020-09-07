@@ -11,6 +11,12 @@
       place-content: flex-start;
     }
   }
+  nz-spin.page-container-loader {
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   div.page-container {
     display: flex;
     place-content: center;
