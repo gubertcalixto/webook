@@ -58,11 +58,6 @@ export class SignUpComponent implements OnInit, OnDestroy {
     }
   }
 
-  public forgotPassword(): void {
-    // TODO: forgotPassword
-    console.log('forgotPassword called');
-  }
-
   public submitForm(): void {
     if (this.form.pristine || this.form.invalid) {
       return;
