@@ -3,11 +3,13 @@ using System.Linq;
 using System.Reflection;
 using AutoMapper;
 using IdentityServer.Domain.Entities;
+using IdentityServer.IdentityControllers.Account.Dtos.ForgotPassword;
 using IdentityServer.IdentityControllers.Profile;
 using IdentityServer.IdentityControllers.RedirectUrls;
 using IdentityServer.IdentityServerConfig;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
 using IdentityServer.Mapper;
+using IdentityServer.Services;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Services;
@@ -101,12 +103,16 @@ namespace IdentityServer
                 //     options.ClientSecret = googleAuthSection[ExternalLoginConfiguration.Google.ClientSecret];
                 // });
 
+            services.Configure<MailSettings>(_configuration.GetSection("MailSettings"));
+
             services
                 .AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>()
                 .AddTransient<IProfileService, IdentityClaimsProfileService>()
                 .AddTransient<IRedirectUriValidator, RedirectUriValidator>()
+                .AddTransient<IMailTemplateService, MailTemplateService>()
+                .AddTransient<IMailService, MailService>()
                 .AddSingleton(CreatMapperConfig());
-                
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddSwaggerGen(c =>
             {

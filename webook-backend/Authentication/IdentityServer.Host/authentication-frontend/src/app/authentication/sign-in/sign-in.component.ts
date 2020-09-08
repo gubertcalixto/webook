@@ -65,8 +65,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   public forgotPassword(): void {
-    // TODO: forgotPassword
-    console.log('forgotPassword called');
+    this.router.navigateByUrl('/forgot-password');
   }
 
   public submitForm(): void {
