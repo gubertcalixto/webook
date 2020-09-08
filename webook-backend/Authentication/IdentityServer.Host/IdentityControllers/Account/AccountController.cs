@@ -210,7 +210,7 @@ namespace IdentityServer.IdentityControllers.Account
             {
                 ExpirationTime = DateTime.Now.AddHours(48), // 2 dias
                 UserId = user.Id,
-                Hash = PasswordManager.PasswordSaltInBase64()
+                Hash = Guid.NewGuid().ToString()
             }; 
             await ForgotPasswordInfoRepository.AddAsync(forgotPasswordInfo);
             await _userContext.SaveChangesAsync();
@@ -248,8 +248,8 @@ namespace IdentityServer.IdentityControllers.Account
         public async Task<IActionResult> UpdatePassword([FromBody] ForgotPasswordInput input)
         {
             var forgotPasswordInfo = await ForgotPasswordInfoRepository
-                .FirstOrDefaultAsync(f => f.Hash == input.Hash && f.ExpirationTime <= DateTime.Now);
-            if (forgotPasswordInfo.Hash != input.Hash) return NoContent();
+                .FirstOrDefaultAsync(f => f.Hash == input.Hash && f.ExpirationTime >= DateTime.Now);
+            if (forgotPasswordInfo == null || forgotPasswordInfo.Hash != input.Hash) return NoContent();
             
             var user = await UserRepository.FindAsync(forgotPasswordInfo.UserId);
             if (user == null) return NoContent();

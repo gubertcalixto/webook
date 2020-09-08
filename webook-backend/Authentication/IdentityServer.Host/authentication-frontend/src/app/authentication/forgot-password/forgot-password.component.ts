@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { Subscription } from 'rxjs';
+import { validate as uuidValidate } from 'uuid';
 
 import { AuthenticationService } from '../services/authentication.service';
 
@@ -26,12 +28,19 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private modal: NzModalService
   ) { }
 
   ngOnInit(): void {
     this.subs.push(this.activatedRoute.params.subscribe((params) => {
       if (params.forgotPasswordHash) {
+        // Validate if hash is in correct format
+        if (!uuidValidate(params.forgotPasswordHash)) {
+          this.redirectToSignIn();
+          return;
+        }
+        // Validate if hash exists
         this.authenticationService.doesForgotPasswordInfoExists(params.forgotPasswordHash).subscribe(doesExists => {
           if (!doesExists) {
             this.redirectToSignIn();
@@ -56,7 +65,20 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 
   public submitRequestResetForm(): void {
     const email = this.requestResetForm.get('email').value;
-    this.subs.push(this.authenticationService.requestForgotPassord(email).subscribe());
+    this.subs.push(this.authenticationService.requestForgotPassord(email)
+      .subscribe(hasEmailBeenSent => {
+        if (hasEmailBeenSent) {
+          this.modal.success({
+            nzTitle: 'Email Enviado',
+            nzContent: 'Acabamos de enviar um email para você com um link para recuperar sua senha'
+          });
+        } else {
+          this.modal.error({
+            nzTitle: 'Email não enviado',
+            nzContent: 'Não conseguimos te enviar um email, mas não se preocupe, você pode tentar depois'
+          });
+        }
+      }));
   }
 
   public submitUpdateForm(): void {

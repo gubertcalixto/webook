@@ -5,6 +5,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { FaIconsModule } from 'src/app/shared/fa-icons/fa-icons.module';
@@ -29,6 +30,7 @@ import { ForgotPasswordComponent } from './forgot-password.component';
     NzDividerModule,
     NzFormModule,
     NzInputModule,
+    NzModalModule,
     NzToolTipModule,
     NzTypographyModule,
 
