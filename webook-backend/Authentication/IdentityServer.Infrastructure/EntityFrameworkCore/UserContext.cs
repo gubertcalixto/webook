@@ -13,6 +13,7 @@ namespace IdentityServer.Infrastructure.EntityFrameworkCore
             _configuration = configuration;
         }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<ForgotPasswordInfo> ForgotPasswordInfos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

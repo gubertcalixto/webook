@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {SignUpComponent} from './sign-up/sign-up.component';
-import {SignInComponent} from './sign-in/sign-in.component';
+
+import { SignInComponent } from './sign-in/sign-in.component';
+import { SignUpComponent } from './sign-up/sign-up.component';
 
 const routes: Routes = [
   {
@@ -15,7 +16,14 @@ const routes: Routes = [
     path: 'sign-up',
     component: SignUpComponent,
     data: {
-      title: 'Cadastro'
+      title: 'Cadastro',
+    }
+  },
+  {
+    path: 'forgot-password',
+    loadChildren: () => import('./forgot-password/forgot-password.module').then(m => m.ForgotPasswordModule),
+    data: {
+      title: 'Esqueceu a senha'
     }
   },
   { path: '**', redirectTo: 'sign-in' }

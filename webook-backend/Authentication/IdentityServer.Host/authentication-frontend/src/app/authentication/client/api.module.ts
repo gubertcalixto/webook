@@ -4,13 +4,15 @@ import { HttpClient } from '@angular/common/http';
 
 
 import { AccountServiceProxy } from './api/accountServiceProxy';
+import { UserServiceProxy } from './api/userServiceProxy';
 
 @NgModule({
   imports:      [],
   declarations: [],
   exports:      [],
   providers: [
-    AccountServiceProxy ]
+    AccountServiceProxy,
+    UserServiceProxy ]
 })
 export class ApiModule {
     public static forRoot(configurationFactory: () => Configuration): ModuleWithProviders<ApiModule> {

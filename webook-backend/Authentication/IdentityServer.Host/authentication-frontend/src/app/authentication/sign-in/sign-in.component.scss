@@ -6,7 +6,7 @@ app-login {
 
   > div.ant-row {
     height: 100%;
-    padding:$border-spacing;
+    padding: $border-spacing;
 
     #sign-in-content {
       overflow: auto;
@@ -29,6 +29,7 @@ app-login {
         justify-content: center;
 
         #sign-in-create-account-redirect {
+          height: unset;
           padding: 0;
         }
       }
@@ -45,4 +46,3 @@ app-login {
     }
   }
 }
-

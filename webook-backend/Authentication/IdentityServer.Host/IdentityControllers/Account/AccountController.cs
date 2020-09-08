@@ -4,13 +4,16 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using AutoMapper;
+using IdentityServer.Domain.Dtos.Mail;
 using IdentityServer.Domain.Entities;
 using IdentityServer.Domain.Utils;
+using IdentityServer.IdentityControllers.Account.Dtos.ForgotPassword;
 using IdentityServer.IdentityControllers.Account.Dtos.Login;
 using IdentityServer.IdentityControllers.Account.Dtos.Logout;
 using IdentityServer.IdentityControllers.Account.Dtos.Register;
 using IdentityServer.IdentityServerConfig;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
+using IdentityServer.Services;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Services;
@@ -20,27 +23,36 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Utilities;
 
 namespace IdentityServer.IdentityControllers.Account
 {
     [ApiController]
     [Route("/[controller]/[action]")]
-    public class AccountController: ControllerBase
+    public class AccountController : ControllerBase
     {
         private readonly IResourceOwnerPasswordValidator _usersValidator;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IEventService _events;
         private readonly IMapper _mapper;
         private readonly UserContext _userContext;
+        private readonly IMailService _mailService;
+        private readonly IMailTemplateService _mailTemplateService;
         private DbSet<ApplicationUser> UserRepository => _userContext.ApplicationUsers;
+        private DbSet<ForgotPasswordInfo> ForgotPasswordInfoRepository => _userContext.ForgotPasswordInfos;
 
-        public AccountController(UserContext userContext, IEventService events, IIdentityServerInteractionService interaction, IResourceOwnerPasswordValidator usersValidator, IMapper mapper)
+        public AccountController(UserContext userContext, IEventService events,
+            IIdentityServerInteractionService interaction, IResourceOwnerPasswordValidator usersValidator,
+            IMapper mapper, IMailService mailService, IMailTemplateService mailTemplateService)
         {
             _events = events;
             _interaction = interaction;
             _usersValidator = usersValidator;
             _mapper = mapper;
             _userContext = userContext;
+            _mailService = mailService;
+            _mailTemplateService = mailTemplateService;
         }
         
         [HttpPost]
@@ -149,7 +161,7 @@ namespace IdentityServer.IdentityControllers.Account
         }
 
         [HttpPost]
-        public async Task<IActionResult> Logout(IdentityLogoutInput  model)
+        public async Task<IActionResult> Logout(IdentityLogoutInput model)
         {
             if (User?.Identity.IsAuthenticated == true)
             {
@@ -179,6 +191,76 @@ namespace IdentityServer.IdentityControllers.Account
             UserRepository.Update(user);
             await _userContext.SaveChangesAsync();
             return true;
+        }
+        
+        [HttpPost]
+        public async Task<bool> ForgotPassword([FromBody] ForgotPasswordInput passwordInput)
+        {
+            var user = UserRepository.FirstOrDefault(u => u.NormalizedEmail == Strings.ToUpperCase(passwordInput.Email));
+            if (user == null) return false;
+
+            if (await ForgotPasswordInfoRepository.AnyAsync(f => f.UserId == user.Id))
+            {
+                var infosToDelete = await ForgotPasswordInfoRepository.Where(f => f.UserId == user.Id).ToListAsync();
+                ForgotPasswordInfoRepository.RemoveRange(infosToDelete);
+                await _userContext.SaveChangesAsync();
+            }
+
+            var forgotPasswordInfo = new ForgotPasswordInfo
+            {
+                ExpirationTime = DateTime.Now.AddHours(48), // 2 dias
+                UserId = user.Id,
+                Hash = Guid.NewGuid().ToString()
+            }; 
+            await ForgotPasswordInfoRepository.AddAsync(forgotPasswordInfo);
+            await _userContext.SaveChangesAsync();
+
+            dynamic templateArgs = new JObject();
+            templateArgs.PasswordHash = forgotPasswordInfo.Hash;
+            EmailTemplate template = _mailTemplateService.GetTemplate("welcome", templateArgs);
+
+            var request = new MailRequest
+            {
+                ToEmail = passwordInput.Email,
+                Subject = template.Subject,
+                Body = template.Body
+            };
+
+            try
+            {
+                await _mailService.SendEmailAsync(request);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        
+        [HttpGet]
+        public async Task<bool> DoesForgotPasswordInfoExists(string forgotHash)
+        {
+            return !string.IsNullOrEmpty(forgotHash)
+                   && await ForgotPasswordInfoRepository.AnyAsync(f => f.Hash == forgotHash);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword([FromBody] ForgotPasswordInput input)
+        {
+            var forgotPasswordInfo = await ForgotPasswordInfoRepository
+                .FirstOrDefaultAsync(f => f.Hash == input.Hash && f.ExpirationTime >= DateTime.Now);
+            if (forgotPasswordInfo == null || forgotPasswordInfo.Hash != input.Hash) return NoContent();
+            
+            var user = await UserRepository.FindAsync(forgotPasswordInfo.UserId);
+            if (user == null) return NoContent();
+                
+            PasswordManager.CreatePasswordSaltAndHash(input.Password, out var passwordSalt, out var passwordHash);
+            user.PasswordSalt = passwordSalt;
+            user.PasswordHash = passwordHash;
+            UserRepository.Update(user);
+            ForgotPasswordInfoRepository.Remove(forgotPasswordInfo);
+            await _userContext.SaveChangesAsync();
+            return Ok();
         }
     }
 }

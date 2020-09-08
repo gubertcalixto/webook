@@ -44,7 +44,7 @@
           <span nz-typography nzType="danger">Ocorreu um erro. Tente mais tarde</span>
         </nz-form-item>
         <div nz-col nzSpan="24" class="forgot-password-container">
-          <button nz-button nzType="link" (click)="forgotPassword()">Esqueceu a senha?</button>
+          <button type="button" nz-button nzType="link" (click)="forgotPassword()">Esqueceu a senha?</button>
         </div>
       </nz-form-item>
       <div id="sign-in-footer">
@@ -52,7 +52,7 @@
           [disabled]="form.pristine || form.invalid">
           Logar
         </button>
-        <span>or <button id="sign-in-create-account-redirect" nz-button nzType="link"
+        <span>ou <button id="sign-in-create-account-redirect" nz-button nzType="link"
             (click)="redirectToCreateAccount()">Criar Conta</button></span>
       </div>
     </form>
