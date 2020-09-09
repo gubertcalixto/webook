@@ -1,4 +1,5 @@
 export * from './contactFormSubjectType';
+export * from './documentCreateOrUpdateInput';
 export * from './documentOutput';
 export * from './documentPageOutput';
 export * from './documentSavePageInput';
@@ -6,5 +7,6 @@ export * from './editorDocument';
 export * from './editorDocumentAllowedAccess';
 export * from './editorDocumentPagedResultOutput';
 export * from './myEditorDocument';
+export * from './tags';
 export * from './userPreferenceInput';
 export * from './userPreferenceOutput';

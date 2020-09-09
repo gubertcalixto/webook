@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Scrapbook.Host.Services.User;
 using Scrapbook.Host.Utils;
 using Scrapbook.Infrastructure;
 
@@ -51,8 +52,9 @@ namespace Scrapbook.Host
             });
             
             services
-                .AddSingleton<IHttpContextAccessor,HttpContextAccessor>()
-                .AddSingleton<IJwtReader, JwtReader>();
+                .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
+                .AddSingleton<IJwtReader, JwtReader>()
+                .AddTransient<IUserService, UserService>();
             
             services.AddSwaggerGen(c =>
                 c.SwaggerDoc(SwaggerVersion, new OpenApiInfo {Title = SwaggerTitle, Version = SwaggerVersion}));

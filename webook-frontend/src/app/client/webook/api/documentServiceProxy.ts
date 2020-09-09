@@ -17,9 +17,11 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
+import { DocumentCreateOrUpdateInput } from '../model/models';
 import { DocumentOutput } from '../model/models';
 import { EditorDocument } from '../model/models';
 import { EditorDocumentAllowedAccess } from '../model/models';
+import { Tags } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -176,32 +178,16 @@ export class DocumentServiceProxy {
 
     /**
      * @param id 
-     * @param title 
-     * @param description 
-     * @param allowedAccess 
+     * @param documentCreateOrUpdateInput 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public documentIdPut(id: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocument>;
-    public documentIdPut(id: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocument>>;
-    public documentIdPut(id: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocument>>;
-    public documentIdPut(id: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+    public documentIdPost(id: string, documentCreateOrUpdateInput?: DocumentCreateOrUpdateInput, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocument>;
+    public documentIdPost(id: string, documentCreateOrUpdateInput?: DocumentCreateOrUpdateInput, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocument>>;
+    public documentIdPost(id: string, documentCreateOrUpdateInput?: DocumentCreateOrUpdateInput, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocument>>;
+    public documentIdPost(id: string, documentCreateOrUpdateInput?: DocumentCreateOrUpdateInput, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling documentIdPut.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (title !== undefined && title !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>title, 'Title');
-        }
-        if (description !== undefined && description !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>description, 'Description');
-        }
-        if (allowedAccess !== undefined && allowedAccess !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>allowedAccess, 'AllowedAccess');
+            throw new Error('Required parameter id was null or undefined when calling documentIdPost.');
         }
 
         let headers = this.defaultHeaders;
@@ -221,15 +207,25 @@ export class DocumentServiceProxy {
         }
 
 
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'text/json',
+            'application/_*+json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
         let responseType: 'text' | 'json' = 'json';
         if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
             responseType = 'text';
         }
 
-        return this.httpClient.put<EditorDocument>(`${this.configuration.basePath}/document/${encodeURIComponent(String(id))}`,
-            null,
+        return this.httpClient.post<EditorDocument>(`${this.configuration.basePath}/document/${encodeURIComponent(String(id))}`,
+            documentCreateOrUpdateInput,
             {
-                params: queryParameters,
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -302,13 +298,14 @@ export class DocumentServiceProxy {
      * @param title 
      * @param description 
      * @param allowedAccess 
+     * @param tags 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocument>;
-    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocument>>;
-    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocument>>;
-    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, tags?: Array<Tags>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocument>;
+    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, tags?: Array<Tags>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocument>>;
+    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, tags?: Array<Tags>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocument>>;
+    public documentPost(id?: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, tags?: Array<Tags>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
         if (id !== undefined && id !== null) {
@@ -326,6 +323,12 @@ export class DocumentServiceProxy {
         if (allowedAccess !== undefined && allowedAccess !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
             <any>allowedAccess, 'AllowedAccess');
+        }
+        if (tags) {
+            tags.forEach((element) => {
+                queryParameters = this.addToHttpParams(queryParameters,
+                  <any>element, 'Tags');
+            })
         }
 
         let headers = this.defaultHeaders;

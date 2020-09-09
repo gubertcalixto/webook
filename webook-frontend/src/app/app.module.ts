@@ -1,5 +1,6 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import pt from '@angular/common/locales/pt';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -16,6 +17,8 @@ import { ApiModule as AuthenticationClientModule, BASE_PATH as AUTH_BASE_PATH } 
 import { ApiModule as WebookBackendClientModule, BASE_PATH as BACK_BASE_PATH } from './client/webook';
 import { NavigationContainerModule } from './navigation-container/navigation-container.module';
 import { AppOAuthModule } from './setup/oauth/oauth.module';
+
+registerLocaleData(pt);
 
 @NgModule({
   declarations: [

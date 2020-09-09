@@ -8,6 +8,7 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
@@ -29,6 +30,7 @@ import { EditorConfigurationModalComponent } from './editor-configuration-modal/
     NzModalModule,
     NzPopoverModule,
     NzTypographyModule,
+    NzSelectModule
   ],
   providers: [
   ],

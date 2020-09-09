@@ -1,0 +1,13 @@
+﻿using System;
+
+namespace Scrapbook.Host.Services.User.Dtos
+{
+    public class SimplifiedUser
+    {
+        public Guid Id { get; set; }
+        public string FirstName { get; set; }
+        public string SecondName { get; set; }
+        public string UrlImg { get; set; }
+        public string Email { get; set; }
+    }
+}

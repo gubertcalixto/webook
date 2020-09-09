@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Scrapbook.Domain.Entities.Editor.Document;
 using Scrapbook.Domain.Enums.Editor;
 using Scrapbook.Domain.Interfaces.User;
 
@@ -15,5 +17,6 @@ namespace Scrapbook.Host.Controllers.Document.Dtos
         public DateTime? CreationTime { get; set; }
         public DateTime? LastUpdateTime { get; set; }
         public int PageNumber { get; set; }
+        public List<Tags> Tags { get; set; }
     }
 }

@@ -13,16 +13,11 @@ import { EditorDocumentAllowedAccess } from './editorDocumentAllowedAccess';
 import { Tags } from './tags';
 
 
-export interface DocumentOutput { 
-    id?: string;
+export interface DocumentCreateOrUpdateInput { 
+    id?: string | null;
     title?: string | null;
     description?: string | null;
-    documentAccess?: EditorDocumentAllowedAccess;
-    image?: string | null;
-    userId?: string;
-    creationTime?: string | null;
-    lastUpdateTime?: string | null;
-    pageNumber?: number;
+    allowedAccess?: EditorDocumentAllowedAccess;
     tags?: Array<Tags> | null;
 }
 

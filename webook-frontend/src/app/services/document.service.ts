@@ -7,6 +7,7 @@ import {
   EditorDocument,
   EditorDocumentAllowedAccess,
   EditorDocumentPagedResultOutput,
+  Tags,
 } from '../client/webook';
 
 @Injectable()
@@ -25,8 +26,8 @@ export class DocumentService {
     return this.documentsServiceProxy.documentsMyUserGet(searchQuery);
   }
 
-  public getAllDocuments(filter?: string, skipCount?: number, pageSize?: number, order?: string): Observable<EditorDocumentPagedResultOutput> {
-    return this.documentsServiceProxy.documentsSearchGet(skipCount, pageSize, filter, order);
+  public getAllDocuments(filter?: string, skipCount?: number, pageSize?: number, order?: string, user?: string, tags?: Array<Tags>): Observable<EditorDocumentPagedResultOutput> {
+    return this.documentsServiceProxy.documentsSearchGet(skipCount, pageSize, filter, order, user, tags);
   }
 
   public getUserDocuments(userId: string, skipCount?: number, pageSize?: number, filter?: string): Observable<EditorDocumentPagedResultOutput> {
@@ -49,8 +50,14 @@ export class DocumentService {
     return this.documentServiceProxy.documentIdTitlePost(title, id);
   }
 
-  public updateDocument(id: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess)
+  public updateDocument(id: string, title?: string, description?: string, allowedAccess?: EditorDocumentAllowedAccess, tags?: Array<Tags>)
     : Observable<EditorDocument> {
-    return this.documentServiceProxy.documentIdPut(id, title, description, allowedAccess);
+    return this.documentServiceProxy.documentIdPost(id, {
+      id,
+      title,
+      description,
+      allowedAccess,
+      tags
+    });
   }
 }
