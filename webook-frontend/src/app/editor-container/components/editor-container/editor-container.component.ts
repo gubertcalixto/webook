@@ -80,6 +80,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
 
   ngOnDestroy(): void {
     window.removeEventListener('resize', this.windowResizeListenerFn);
+    this.editorInteractionService.destroyInstance();
     this.subs.forEach(s => s.unsubscribe());
   }
 

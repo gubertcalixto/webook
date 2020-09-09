@@ -18,7 +18,7 @@ export class EditorInteractionService implements OnDestroy {
   public currentSelectedElementDataSubject = new BehaviorSubject<EditorInteractionSelectedElementData>(undefined);
 
   ngOnDestroy(): void {
-    this.subs.forEach(s => s.unsubscribe());
+    this.destroyInstance();
   }
 
   public init(editorContainer: EditorContainerComponent, editor: EditorComponent): void {
@@ -28,9 +28,18 @@ export class EditorInteractionService implements OnDestroy {
     this.editorContainer = editorContainer;
     this.editor = editor;
     this.hasAlreadyStarted = true;
-    this.editor.selectedElementIdsSubject.subscribe(res => {
+    this.editor.selectedElementIdsSubject.subscribe(() => {
       this.updateSelectedElement();
     });
+  }
+
+  public destroyInstance(): void {
+    this.hasAlreadyStarted = false;
+    this.editor = undefined;
+    this.editorContainer = undefined;
+    this.currentSelectedElementData = undefined;
+    this.currentSelectedElementDataSubject = new BehaviorSubject<EditorInteractionSelectedElementData>(undefined);
+    this.subs.forEach(s => s.unsubscribe());
   }
 
   private getEditorElementById(elementId: string): EditorBaseElement {
