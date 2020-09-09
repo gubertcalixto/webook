@@ -90,18 +90,19 @@ namespace IdentityServer
                 .AddDeveloperSigningCredential();
             
             services.AddAuthentication();
-                // TODO Add Google Authentication
-                // .AddAuthentication(options =>
-                // {
-                //     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                // })
-                // .AddGoogle("Google", options =>
-                // {
-                //     var googleAuthSection = _configuration.GetSection("Authentication:Google");
-                //     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                //     options.ClientId = googleAuthSection[ExternalLoginConfiguration.Google.ClientId];
-                //     options.ClientSecret = googleAuthSection[ExternalLoginConfiguration.Google.ClientSecret];
-                // });
+               .AddGoogle("Google", options =>
+                {
+                    var googleOptions = GetGoogleExternalAuthenticationOptions(services);
+                    options.SignInScheme = googleOptions.SignInScheme;
+                    options.ClientId = googleOptions.ClientId;
+                    options.ClientSecret = googleOptions.ClientSecret;
+                    options.CallbackPath = googleOptions.CallbackPath;
+                    options.AccessDeniedPath = googleOptions.AccessDeniedPath;
+                    options.SaveTokens = googleOptions.SaveTokens;
+                    options.AccessType = googleOptions.AccessType;
+                    foreach (var scope in googleOptions.Scope.Distinct().Where(scope => !options.Scope.Contains(scope)))
+                        options.Scope.Add(scope);
+                });
 
             services.Configure<MailSettings>(_configuration.GetSection("MailSettings"));
 
