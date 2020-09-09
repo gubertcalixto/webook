@@ -16,6 +16,14 @@
       <textarea nz-input formControlName="description" placeholder="Descrição do Documento"></textarea>
     </nz-form-control>
   </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzSpan="24" nzFor="title">Tags</nz-form-label>
+    <nz-input-group nzSpan="24">
+      <nz-select class="expand-width" formControlName="tags" nzMode="tags" [nzTokenSeparators]="[',', ';', ' ']"
+        nzPlaceHolder="Insira aqui suas tags" [nzOpen]="false" [nzShowArrow]="false" [nzOptionOverflowSize]="0">
+      </nz-select>
+    </nz-input-group>
+  </nz-form-item>
   <nz-form-item class="document-access-field">
     <nz-form-control>
       <div class="switch-container">
@@ -28,7 +36,7 @@
       </div>
     </nz-form-control>
   </nz-form-item>
-  <span class="document-access-info" *ngIf="form.get('documentAccess').dirty && !form.get('documentAccess').value"
+  <span *ngIf="form.get('documentAccess').dirty && !form.get('documentAccess').value" class="document-access-info"
     nz-typography nzType="secondary">
     Este documento não será visivel para outras pessoas
   </span>

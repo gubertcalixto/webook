@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Scrapbook.Domain.Entities.Editor.Document;
 using Scrapbook.Domain.Enums.Editor;
 using Scrapbook.Host.Controllers.Document.Dtos;
@@ -41,6 +42,13 @@ namespace Scrapbook.Host.Controllers.Document
             }
 
             itemToInsert.UserId = JwtReader.GetUserId();
+            if (input.Tags != null) {
+                itemToInsert.Tags = input.Tags.Select(t =>
+                {
+                    t.TagName = t.TagName.ToLower();
+                    return t;
+                }).ToList();
+            }
             itemToInsert.DocumentAccess ??= EditorDocumentAllowedAccess.Private;
             itemToInsert.CreationTime = DateTime.Now;
 
@@ -70,20 +78,20 @@ namespace Scrapbook.Host.Controllers.Document
         [HttpGet("/document/{id}")]
         public async Task<DocumentOutput> GetDocumentWithMetadata(Guid id)
         {
-            var getResult = await base.Get(id);
+            var getResult = await Repository.Include(d => d.Tags).FirstOrDefaultAsync(d => d.Id == id);
             var pageCount = await _editorDocumentPage.CountAsync(p => p.EditorDocumentId == id);
             var output = Mapper.Map<DocumentOutput>(getResult);
             output.PageNumber = pageCount;
             return output;
         }
         
-        [HttpPut("/document/{id}")]
-        public async Task<EditorDocument> Update(DocumentCreateOrUpdateInput input)
+        [HttpPost("/document/{id}")]
+        public async Task<EditorDocument> Update([FromBody] DocumentCreateOrUpdateInput input)
         {
             if(!input.Id.HasValue || input.Id == Guid.Empty)
                 throw new ArgumentException(nameof(input.Id));
             
-            var item = await Get(input.Id.Value);
+            var item = await Repository.Include(d => d.Tags).FirstOrDefaultAsync(d => d.Id == input.Id.Value);
             item.Title = input.Title;
             if (!input.Title.Equals(item.Title))
             {
@@ -97,7 +105,15 @@ namespace Scrapbook.Host.Controllers.Document
             item.Description = input.Description;
             item.DocumentAccess = input.AllowedAccess ?? EditorDocumentAllowedAccess.Private;
             item.LastUpdateTime = DateTime.Now;
-            
+
+            input.Tags ??= new List<Tags>();
+            item.Tags ??= new List<Tags>();
+            var tagsToAdd = input.Tags.Where(t => !item.Tags.Any(ct => ct.TagName.Equals(t.TagName))).ToList();
+            foreach (var tag in tagsToAdd)
+                item.Tags.Add(tag);
+            var tagsToRemove = item.Tags.Where(t => !input.Tags.Any(ct => ct.TagName.Equals(t.TagName))).ToList();
+            foreach (var tag in tagsToRemove)
+                item.Tags.Remove(tag);
             var result = Repository.Update(item);
             await Context.SaveChangesAsync();
             return result.Entity;

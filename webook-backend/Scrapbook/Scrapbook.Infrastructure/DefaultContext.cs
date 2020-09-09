@@ -37,6 +37,7 @@ namespace Scrapbook.Infrastructure
         #region Editor
         public DbSet<EditorDocument> Documents { get; set; }
         public DbSet<EditorDocumentPage> DocumentPages { get; set; }
+        public DbSet<Tags> DocumentTags { get; set; }
         #endregion Editor
 
         #region EditorArea

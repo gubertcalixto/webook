@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Scrapbook.Domain.Enums.Editor;
 using Scrapbook.Domain.Interfaces.User;
 using Scrapbook.Domain.Shared;
@@ -14,5 +15,6 @@ namespace Scrapbook.Domain.Entities.Editor.Document
         public Guid UserId { get; set; }
         public DateTime? CreationTime { get; set; }
         public DateTime? LastUpdateTime { get; set; }
+        public List<Tags> Tags { get; set; }
     }
 }

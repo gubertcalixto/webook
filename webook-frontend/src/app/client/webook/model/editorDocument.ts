@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 import { EditorDocumentAllowedAccess } from './editorDocumentAllowedAccess';
+import { Tags } from './tags';
 
 
 export interface EditorDocument { 
@@ -20,6 +21,7 @@ export interface EditorDocument {
     userId?: string;
     creationTime?: string | null;
     lastUpdateTime?: string | null;
+    tags?: Array<Tags> | null;
     id?: string;
 }
 

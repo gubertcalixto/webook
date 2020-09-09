@@ -17,8 +17,6 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { EditorDocumentPagedResultOutput } from '../model/models';
-import { Tags } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -26,7 +24,7 @@ import { Configuration }                                     from '../configurat
 
 
 @Injectable()
-export class FeedServiceProxy {
+export class DocumentTagServiceProxy {
 
     protected basePath = 'http://localhost';
     public defaultHeaders = new HttpHeaders();
@@ -85,46 +83,29 @@ export class FeedServiceProxy {
     }
 
     /**
+     * @param tagName 
      * @param skipCount 
      * @param pageSize 
-     * @param filter 
-     * @param order 
-     * @param usernameFilter 
-     * @param tagFilter 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public feedGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, usernameFilter?: string, tagFilter?: Array<Tags>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocumentPagedResultOutput>;
-    public feedGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, usernameFilter?: string, tagFilter?: Array<Tags>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocumentPagedResultOutput>>;
-    public feedGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, usernameFilter?: string, tagFilter?: Array<Tags>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocumentPagedResultOutput>>;
-    public feedGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, usernameFilter?: string, tagFilter?: Array<Tags>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+    public documentsTagsGet(tagName?: string, skipCount?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<Array<string>>;
+    public documentsTagsGet(tagName?: string, skipCount?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<Array<string>>>;
+    public documentsTagsGet(tagName?: string, skipCount?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<Array<string>>>;
+    public documentsTagsGet(tagName?: string, skipCount?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
+        if (tagName !== undefined && tagName !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>tagName, 'tagName');
+        }
         if (skipCount !== undefined && skipCount !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
-            <any>skipCount, 'SkipCount');
+            <any>skipCount, 'skipCount');
         }
         if (pageSize !== undefined && pageSize !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
-            <any>pageSize, 'PageSize');
-        }
-        if (filter !== undefined && filter !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>filter, 'Filter');
-        }
-        if (order !== undefined && order !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>order, 'Order');
-        }
-        if (usernameFilter !== undefined && usernameFilter !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>usernameFilter, 'UsernameFilter');
-        }
-        if (tagFilter) {
-            tagFilter.forEach((element) => {
-                queryParameters = this.addToHttpParams(queryParameters,
-                  <any>element, 'TagFilter');
-            })
+            <any>pageSize, 'pageSize');
         }
 
         let headers = this.defaultHeaders;
@@ -149,7 +130,7 @@ export class FeedServiceProxy {
             responseType = 'text';
         }
 
-        return this.httpClient.get<EditorDocumentPagedResultOutput>(`${this.configuration.basePath}/feed`,
+        return this.httpClient.get<Array<string>>(`${this.configuration.basePath}/documents/tags`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

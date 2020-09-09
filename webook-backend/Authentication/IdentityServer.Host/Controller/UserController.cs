@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using IdentityServer.Domain.Dtos;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer.Controller
 {
@@ -25,5 +28,18 @@ namespace IdentityServer.Controller
                 throw new ArgumentException(nameof(id));
             return _mapper.Map<SimplifiedUser>(await _userContext.ApplicationUsers.FindAsync(id));
         }
+
+          [HttpGet("/users/{username}")]
+          public async Task<List<SimplifiedUser>> GetUsersByUsername(string userName, int skipCount = 0, int pageSize = 20)
+          {
+              if (string.IsNullOrEmpty(userName))
+                  throw new ArgumentException(nameof(userName));
+
+              return _mapper.Map<List<SimplifiedUser>>(await _userContext.ApplicationUsers
+                  .Where(b => b.UserName.Contains(userName))
+                  .Skip(skipCount)
+                  .Take(pageSize)
+                  .ToListAsync());
+          }
     }
 }

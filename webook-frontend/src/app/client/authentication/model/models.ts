@@ -1,3 +1,4 @@
+export * from './forgotPasswordInput';
 export * from './identityLoginInput';
 export * from './identityLoginOutput';
 export * from './identityLogoutInput';

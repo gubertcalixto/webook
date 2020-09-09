@@ -10,17 +10,15 @@
  * Do not edit the class manually.
  */
 /* tslint:disable:no-unused-variable member-ordering */
+import { HttpClient, HttpEvent, HttpHeaders, HttpParameterCodec, HttpParams, HttpResponse } from '@angular/common/http';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { Observable } from 'rxjs';
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
-import { Observable }                                        from 'rxjs';
-
+import { Configuration } from '../configuration';
+import { CustomHttpParameterCodec } from '../encoder';
 import { SimplifiedUser } from '../model/models';
+import { BASE_PATH } from '../variables';
 
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { Configuration }                                     from '../configuration';
 
 
 
@@ -32,7 +30,7 @@ export class UserServiceProxy {
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+    constructor(protected httpClient: HttpClient, @Optional() @Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
         if (configuration) {
             this.configuration = configuration;
         }
@@ -63,16 +61,16 @@ export class UserServiceProxy {
 
         if (typeof value === "object") {
             if (Array.isArray(value)) {
-                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
+                (value as any[]).forEach(elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
             } else if (value instanceof Date) {
                 if (key != null) {
                     httpParams = httpParams.append(key,
                         (value as Date).toISOString().substr(0, 10));
                 } else {
-                   throw Error("key may not be null if value is Date");
+                    throw Error("key may not be null if value is Date");
                 }
             } else {
-                Object.keys(value).forEach( k => httpParams = this.addToHttpParamsRecursive(
+                Object.keys(value).forEach(k => httpParams = this.addToHttpParamsRecursive(
                     httpParams, value[k], key != null ? `${key}.${k}` : k));
             }
         } else if (key != null) {
@@ -88,10 +86,10 @@ export class UserServiceProxy {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public userIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<SimplifiedUser>;
-    public userIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<SimplifiedUser>>;
-    public userIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<SimplifiedUser>>;
-    public userIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+    public userIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<SimplifiedUser>;
+    public userIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpResponse<SimplifiedUser>>;
+    public userIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpEvent<SimplifiedUser>>;
+    public userIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling userIdGet.');
         }
@@ -114,12 +112,71 @@ export class UserServiceProxy {
 
 
         let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
             responseType = 'text';
         }
 
         return this.httpClient.get<SimplifiedUser>(`${this.configuration.basePath}/user/${encodeURIComponent(String(id))}`,
             {
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param userName 
+     * @param skipCount 
+     * @param pageSize 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public usersUsernameGet(userName: string, skipCount?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<Array<SimplifiedUser>>;
+    public usersUsernameGet(userName: string, skipCount?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpResponse<Array<SimplifiedUser>>>;
+    public usersUsernameGet(userName: string, skipCount?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpEvent<Array<SimplifiedUser>>>;
+    public usersUsernameGet(userName: string, skipCount?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<any> {
+        if (userName === null || userName === undefined) {
+            throw new Error('Required parameter userName was null or undefined when calling usersUsernameGet.');
+        }
+
+        let queryParameters = new HttpParams({ encoder: this.encoder });
+        if (skipCount !== undefined && skipCount !== null) {
+            queryParameters = this.addToHttpParams(queryParameters,
+                <any>skipCount, 'skipCount');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+            queryParameters = this.addToHttpParams(queryParameters,
+                <any>pageSize, 'pageSize');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'text/plain',
+                'application/json',
+                'text/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.get<Array<SimplifiedUser>>(`${this.configuration.basePath}/users/${encodeURIComponent(String(userName))}`,
+            {
+                params: queryParameters,
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,

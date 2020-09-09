@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { Subscription } from 'rxjs';
-import { EditorDocumentAllowedAccess } from 'src/app/client/webook';
+import { EditorDocument, EditorDocumentAllowedAccess, Tags } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
 
 @Component({
@@ -33,7 +33,7 @@ export class EditorConfigurationModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subs.forEach(s => s.unsubscribe());
+    this.subs.forEach((s) => s.unsubscribe());
   }
 
   public documentAccessToggle(): void {
@@ -42,13 +42,15 @@ export class EditorConfigurationModalComponent implements OnInit, OnDestroy {
   }
 
   private getDocument(): void {
-    this.subs.push(this.documentService.getDocument(this.documentId).subscribe(doc => {
+    this.subs.push(this.documentService.getDocument(this.documentId).subscribe((doc: EditorDocument) => {
+      const tagNames = doc.tags ? doc.tags.map((t: Tags) => t.tagName) : [];
       this.form = this.fb.group({
         title: [doc.title, [Validators.required]],
         description: [doc.description, [Validators.maxLength(250)]],
+        tags: [tagNames],
         // TODO: SET DOCUMENT IMAGE
         // image: [doc.image, Validators.nullValidator],
-        documentAccess: [Boolean(doc.documentAccess), Validators.nullValidator]
+        documentAccess: [Boolean(doc.documentAccess)]
       });
     }));
   }
@@ -65,12 +67,19 @@ export class EditorConfigurationModalComponent implements OnInit, OnDestroy {
     this.isUpdating = true;
     const title = this.form.get('title').value;
     const description = this.form.get('description').value;
+    const tags: string[] = this.form.get('tags').value;
+    const normalizedTags: Tags[] = [];
+    if (tags && tags.length > 0) {
+      tags.forEach((tag) => {
+        normalizedTags.push({ tagName: tag });
+      });
+    }
     // const image = this.form.get('image').value;
     const documentAccess = Boolean(this.form.get('documentAccess').value)
       ? EditorDocumentAllowedAccess.NUMBER_1 // public
       : EditorDocumentAllowedAccess.NUMBER_0; // private
 
-    this.subs.push(this.documentService.updateDocument(this.documentId, title, description, documentAccess).subscribe(res => {
+    this.subs.push(this.documentService.updateDocument(this.documentId, title, description, documentAccess, normalizedTags).subscribe((res) => {
       this.modalRef.close(true);
     }, () => {
       this.isUpdating = false;
