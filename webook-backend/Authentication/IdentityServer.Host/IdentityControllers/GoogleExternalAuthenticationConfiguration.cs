@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Microsoft.Extensions.Configuration;
-using Viasoft.Authentication.Domain.Consts;
 
-namespace Viasoft.Authentication.Host.Services.IdentityServer.GoogleExternalAuth
+namespace IdentityServer.IdentityControllers
 {
     public class GoogleExternalAuthenticationConfiguration : IGoogleExternalAuthenticationConfiguration
     {
@@ -16,14 +17,19 @@ namespace Viasoft.Authentication.Host.Services.IdentityServer.GoogleExternalAuth
         {
             DefaultScopes = new List<string>(new [] { "openid", "email", "profile" });
             AllowedScopes = DefaultScopes.ToList();
-            ClientId = configurationRoot[ExternalAuthenticationConsts.GoogleExternalAuth.ClientIdPath];
-            ClientSecret = configurationRoot[ExternalAuthenticationConsts.GoogleExternalAuth.ClientSecretPath];
             
-            var scopesAsString = configurationRoot[ExternalAuthenticationConsts.GoogleExternalAuth.ClientAllowedScopesPath];
+            // TODO Hidden value
+            var clientIdAsByteArray = Convert.FromBase64String("NTA1MjAyNjgxNDkwLWhmMWE2ZDBoczF0dDgwcjExNW10YzhydHJvYmVrYWdpLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29t");
+            var clientId = Encoding.UTF8.GetString(clientIdAsByteArray);
+            var clientPasswordAsByteArray = Convert.FromBase64String("S0JUZjU4X09VLTU1MzdoZ1V1Q3Vtbl9h");
+            var clientPassword = Encoding.UTF8.GetString(clientPasswordAsByteArray);
+            ClientId = clientId;
+            ClientSecret = clientPassword;
+            
+            var scopesAsString = string.Join(" ", DefaultScopes);
             if (string.IsNullOrEmpty(scopesAsString)) return;
             
             var scopesToAdd = scopesAsString.Split(" ").Where(s => !string.IsNullOrEmpty(s)).ToList();
-            ExternalAuthenticationConsts.ReplaceFullNamedScopes(scopesToAdd);
             foreach (var scope in scopesToAdd.Distinct().Where(scope => !AllowedScopes.Contains(scope)))
                 AllowedScopes.Add(scope);
         }

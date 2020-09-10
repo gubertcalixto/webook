@@ -1,96 +1,84 @@
-﻿using IdentityModel;
-using IdentityServer4;
-using IdentityServer4.Events;
-using IdentityServer4.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
-using IdentityServer4.EntityFramework.Entities;
-using IdentityServer4.EntityFramework.Interfaces;
+using IdentityModel;
+using IdentityServer.Domain.Dtos;
+using IdentityServer.Domain.Entities;
+using IdentityServer.IdentityServerConfig;
+using IdentityServer.Infrastructure.EntityFrameworkCore;
+using IdentityServer4;
+using IdentityServer4.Events;
+using IdentityServer4.Extensions;
+using IdentityServer4.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Viasoft.Authentication.Domain.Consts;
-using Viasoft.Authentication.Domain.Entities;
-using Viasoft.Authentication.Domain.Model;
-using Viasoft.Authentication.Host.Services;
-using Viasoft.Authentication.Host.Services.IdentityServer.GoogleExternalAuth;
-using Viasoft.Authentication.Infrastructure.Config;
-using Viasoft.Core.DDD.Repositories;
-using Viasoft.Core.Identity.Abstractions.Users;
 
-namespace Viasoft.Authentication.Host.Controllers
+namespace IdentityServer.IdentityControllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
-    public class ExternalController: Controller
+    public class ExternalController: Microsoft.AspNetCore.Mvc.Controller
     {
-        private readonly IRepository<ApplicationUser> _userRepository;
-        private readonly IRepository<ExternalAuthenticationLink> _externalAuthLinkRepository;
-        private readonly DbSet<Client> _clientRepository;
+        private readonly UserContext _context;
+        private readonly DbSet<ApplicationUser> _userRepository;
+        private readonly DbSet<ExternalAuthenticationLink> _externalAuthLinkRepository;
         private readonly IEventService _events;
-        private readonly ICurrentUser _currentUser;
         private readonly IGoogleExternalAuthenticationConfiguration _googleExternalAuthenticationConfiguration;
 
-        public ExternalController(IEventService events, IRepository<ApplicationUser> userRepository, IConfigurationDbContext configurationDbContext, IRepository<ExternalAuthenticationLink> externalAuthLinkRepository, ICurrentUser currentUser, IGoogleExternalAuthenticationConfiguration googleExternalAuthenticationConfiguration)
+        public ExternalController(UserContext context, IGoogleExternalAuthenticationConfiguration googleExternalAuthenticationConfiguration, IEventService events)
         {
-            _userRepository = userRepository;
-            _externalAuthLinkRepository = externalAuthLinkRepository;
-            _clientRepository = configurationDbContext.Clients;
-            _events = events;
-            _currentUser = currentUser;
             _googleExternalAuthenticationConfiguration = googleExternalAuthenticationConfiguration;
+            _events = events;
+            _context = context;
+            _userRepository = context.ApplicationUsers;
+            _externalAuthLinkRepository = context.ExternalAuthenticationLinks;
         }
+
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Challenge(string scheme = "", string returnUrl = "", string clientId = "", string customScopes = "", string fallbackUrl = "", bool forceConsent = false)
+        public async Task<IActionResult> Challenge(string scheme = "", string returnUrl = "", string fallbackUrl = "", bool forceConsent = false)
         {
-            if (string.IsNullOrEmpty(returnUrl)) returnUrl = ExternalAuthenticationConsts.DefaultRedirectUrl;
-            if (string.IsNullOrEmpty(fallbackUrl)) fallbackUrl = ExternalAuthenticationConsts.LoginBaseRedirectUrl;
-            if (string.IsNullOrEmpty(scheme)) scheme = ExternalAuthenticationConsts.DefaultScheme;
-            if (string.IsNullOrEmpty(clientId)) clientId = ExternalAuthenticationConsts.DefaultKorpClientId;
+            // TODO: Production
+            if (string.IsNullOrEmpty(returnUrl)) returnUrl = "http://localhost:4200";
+            if (string.IsNullOrEmpty(fallbackUrl)) fallbackUrl = "/oauth/app/login";
+            if (string.IsNullOrEmpty(scheme)) scheme = "Google";
+            // TODO Remove clientId from her;
+            var clientId = Encoding.UTF8.GetString(Convert.FromBase64String("NTA1MjAyNjgxNDkwLWhmMWE2ZDBoczF0dDgwcjExNW10YzhydHJvYmVrYWdpLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29t"));
 
-            if (!ExternalAuthenticationConsts.GoogleExternalAuth.IsSignInEnabled())
+            if (!await IsReturnUrlValid(returnUrl, fallbackUrl))
             {
-                var userId = GetAuthenticatedUserId();
-                if (userId == null || userId.Value == Guid.Empty)
-                    return BadRequest($"Argument Exception: {nameof(userId)}");
-            }
-
-            if (!await IsReturnUrlValid(clientId, returnUrl, fallbackUrl))
-            {
-                return Redirect($"{fallbackUrl}" +
-                                $"?{ExternalAuthenticationConsts.LoginErrors.ParamKey}={ExternalAuthenticationConsts.LoginErrors.InvalidReturnUrlError}" +
-                                $"&{ExternalAuthenticationConsts.LoginExternalProviderParamKey}={scheme}");
+                return Redirect($"{fallbackUrl}?errors=invalidRedirectUrl");
             }
             
-            var scopes = GetChallengeScopes(customScopes);
+            var scopes = "openid email profile";
             var props = new AuthenticationProperties
             {
                 RedirectUri = Path.Combine($"/oauth{Url.Action(nameof(Callback))}?clientId={clientId}&addedScopes={scopes}&{nameof(fallbackUrl)}={fallbackUrl}"),
                 Items =
                 {
-                    { ClaimsConsts.ReturnUrl, returnUrl }, 
-                    { ClaimsConsts.Scheme, scheme },
-                    { ClaimsConsts.Scope, scopes },
-                    { ClaimsConsts.ResponseType, "code" },
-                    { ClaimsConsts.IncludeGrantedScopes, "true"}
+                    { "return_url", returnUrl }, 
+                    { "scheme", scheme },
+                    { "scope",  scopes},
+                    { "response_type", "code" },
+                    { "include_granted_scopes", "true"}
                 }
             };
 
             // Force user to consent permissions
             if (forceConsent)
-                props.Items.Add(ClaimsConsts.Prompt, "consent");
+                props.Items.Add("prompt", "consent");
 
             return Challenge(props, scheme);
         }
@@ -114,42 +102,41 @@ namespace Viasoft.Authentication.Host.Controllers
 
             if (string.IsNullOrEmpty(fallbackUrl))
             {
-                fallbackUrl = ExternalAuthenticationConsts.LoginBaseRedirectUrl;
+                fallbackUrl = "/oauth/app/login";
                 var loggedUserId = GetAuthenticatedUserId();
                 if (loggedUserId != null)
-                    fallbackUrl = ExternalAuthenticationConsts.DefaultRedirectUrl;
+                    // TODO: Production
+                    fallbackUrl = "http://localhost:4200";
             }
 
             if (result?.Succeeded != true)
-                return Redirect($"{fallbackUrl}" +
-                                $"?{ExternalAuthenticationConsts.LoginErrors.ParamKey}={ExternalAuthenticationConsts.LoginErrors.ExternalAuthenticationError}");
+                return Redirect($"{fallbackUrl}?errors=externalAuthenticationError");
 
             // Find user by External Provider
             var (user, provider, providerUserId, externalTokens, externalClaims) = await GetInfoFromExternalProvider(result);
 
             // User wasn't found
             if (user == null)
-                return Redirect($"{fallbackUrl}" +
-                                $"?{ExternalAuthenticationConsts.LoginErrors.ParamKey}={ExternalAuthenticationConsts.LoginErrors.NoKorpAccountError}" +
-                                $"&{ExternalAuthenticationConsts.LoginExternalProviderParamKey}={provider}");
+            {
+                // TODO: Create User
+            }
             
             if (externalTokens == null || !externalTokens.Any())
                 return Redirect($"{fallbackUrl}" +
-                                $"?{ExternalAuthenticationConsts.LoginErrors.ParamKey}={ExternalAuthenticationConsts.LoginErrors.ExternalAuthenticationError}" +
-                                $"&{ExternalAuthenticationConsts.LoginExternalProviderParamKey}={provider}");
+                                $"?errors=externalAuthenticationError");
             
             var externalLink = await CreateOrUpdateExternalLink(user, externalTokens, addedScopes);
-            var returnUrl = result.Properties.Items[ClaimsConsts.ReturnUrl] ?? ExternalAuthenticationConsts.DefaultRedirectUrl;
+            var returnUrl = result.Properties.Items["return_url"] ?? "http://localhost:4200";
             
             // Refresh Token wasn't save, forcing consent
             if (string.IsNullOrEmpty(externalLink?.RefreshToken))
             {
-                var scheme = result.Properties.Items.FirstOrDefault(item => item.Key == ClaimsConsts.Scheme).Value;
-                return await Challenge(scheme, returnUrl, clientId, externalLink?.Scopes, fallbackUrl, true);
+                var scheme = result.Properties.Items.FirstOrDefault(item => item.Key == "scheme").Value;
+                return await Challenge(scheme, returnUrl, fallbackUrl, true);
             }
 
-            if (ExternalAuthenticationConsts.GoogleExternalAuth.IsSignInEnabled())
-                await LoginWithExternalAuth(result, user, provider, providerUserId);
+            // TODO: Testar
+            await LoginWithExternalAuth(result, user, provider, providerUserId);
 
             // Delete temporary cookie used during external authentication
             await HttpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
@@ -166,7 +153,7 @@ namespace Viasoft.Authentication.Host.Controllers
             var externalLink = await GetExternalAuthLink(userId.Value);
             if (externalLink == null)
                 return Ok(null);
-            if (externalLink.AccessTokenExpiresDate > DateTime.UtcNow.AddMinutes(ExternalAuthenticationConsts.GoogleExternalAuth.RefreshClockSkew))
+            if (externalLink.AccessTokenExpiresDate > DateTime.UtcNow.AddMinutes(10))
                 return Ok(externalLink.AccessToken);
             
             return Ok((await UpdateExternalAccessToken(externalLink.RefreshToken, externalLink))?.AccessToken); 
@@ -194,13 +181,14 @@ namespace Viasoft.Authentication.Host.Controllers
             var externalLink = await GetExternalAuthLink(userId.Value);
             if(externalLink == null)
                 return BadRequest("User has no external authentication");
-            var revokeUrl = $"{ExternalAuthenticationConsts.GoogleExternalAuth.RevokeTokenEndpoint}?token={externalLink.RefreshToken}";
+            var revokeUrl = $"https://oauth2.googleapis.com/revoke?token={externalLink.RefreshToken}";
             using (var client = new HttpClient())
             using (var response = await client.PostAsync(revokeUrl, null))
             {
                 if (response?.StatusCode != HttpStatusCode.OK)
                     return Problem("Error in Google Api Request");
-                await _externalAuthLinkRepository.DeleteAsync(externalLink);
+                _externalAuthLinkRepository.Remove(externalLink);
+                await _context.SaveChangesAsync();
                 return Ok();
             }
         }
@@ -214,37 +202,6 @@ namespace Viasoft.Authentication.Host.Controllers
             
             var hasExternalLink = await _externalAuthLinkRepository.AnyAsync(u => u.UserId == userId);
             return Ok(hasExternalLink);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetScopes()
-        {
-            var userId = GetAuthenticatedUserId();
-            if (userId == null || userId.Value == Guid.Empty)
-                return BadRequest($"Argument Exception: {nameof(userId)}");
-            
-            var externalLink = await GetExternalAuthLink(userId.Value);
-            if (externalLink == null)
-                return NoContent();
-
-            return Ok(externalLink.Scopes.Split(" "));
-        }
-        
-        [HttpGet]
-        public async Task<IActionResult> HasScope(string scope)
-        {
-            if (string.IsNullOrEmpty(scope))
-                return BadRequest($"Argument Exception: {nameof(scope)}");
-            var userId = GetAuthenticatedUserId();
-            if (userId == null || userId.Value == Guid.Empty)
-                return BadRequest($"Argument Exception: {nameof(userId)}");
-            
-            var externalLink = await GetExternalAuthLink(userId.Value);
-            if (externalLink == null)
-                return NoContent();
-
-            var scopes = externalLink.Scopes.Split(" ");
-            return Ok(scopes.Any(s => s.Equals(scope)));
         }
 
         private async Task LoginWithExternalAuth(AuthenticateResult result, ApplicationUser user, string provider, string providerUserId)
@@ -262,35 +219,22 @@ namespace Viasoft.Authentication.Host.Controllers
                 user.Email));
             await HttpContext.SignInAsync(identityServerUser, signInProps);
         }
-        
-        private string GetChallengeScopes(string customScopes)
-        {
-            var defaultScopes = _googleExternalAuthenticationConfiguration.DefaultScopes;
-            var scopes = defaultScopes.ToList();
-            if (!string.IsNullOrEmpty(customScopes))
-                scopes.AddRange(customScopes.Split(" "));
-            ExternalAuthenticationConsts.ReplaceFullNamedScopes(scopes);
 
-            if (scopes.Any(s => !_googleExternalAuthenticationConfiguration.AllowedScopes.Contains(s)))
-                throw new Exception("Not Allowed scopes added");
-            
-            return string.Join(' ', scopes.Distinct().ToArray());
-        }
-
-        private async Task<bool> IsReturnUrlValid(string clientId, params string[] returnUrls)
+        private async Task<bool> IsReturnUrlValid(params string[] returnUrls)
         {
             var isUrlsValid = returnUrls.Any(r => !string.IsNullOrEmpty(r));
             if (!isUrlsValid)
                 return false;
 
-            var redirectUris = await (from c in _clientRepository
-                where c.ClientId == clientId && c.Enabled
-                select c.RedirectUris).SelectMany(list => list).Select(uri => uri.RedirectUri).Distinct().ToListAsync();
-            
             // Add default redirect Urls
-            redirectUris.Add(ExternalAuthenticationConsts.LoginBaseRedirectUrl);
-            redirectUris.Add(ExternalAuthenticationConsts.DefaultRedirectUrl);
-                
+            // TODO: Production
+            var redirectUris = new List<string>
+            {
+                "/oauth/app/login",
+                "http://localhost:4200",
+                "http://localhost:4200/*"
+            };
+
             foreach (var returnUrl in returnUrls)
             {
                 var isValid = false; 
@@ -319,23 +263,23 @@ namespace Viasoft.Authentication.Host.Controllers
             IReadOnlyCollection<AuthenticationToken> externalTokens, string scopes)
         {
             var externalLink = await GetExternalAuthLink(user.Id);
-            var accessToken = externalTokens.FirstOrDefault(x => x.Name == ClaimsConsts.AccessToken)?.Value;
-            var refreshToken = externalTokens.FirstOrDefault(x => x.Name == ClaimsConsts.RefreshToken)?.Value;
-            var accessTokenExpiresDate = externalTokens.FirstOrDefault(x => x.Name == ClaimsConsts.ExpiresAt)?.Value;
+            var accessToken = externalTokens.FirstOrDefault(x => x.Name == "access_token")?.Value;
+            var refreshToken = externalTokens.FirstOrDefault(x => x.Name == "refresh_token")?.Value;
+            var accessTokenExpiresDate = externalTokens.FirstOrDefault(x => x.Name == "expires_at")?.Value;
             var normalizedAccessTokenExpiresDate = string.IsNullOrEmpty(accessTokenExpiresDate)
-                ? DateTime.UtcNow.AddMinutes(ExternalAuthenticationConsts.GoogleExternalAuth.DefaultAccessTokenDuration)
+                ? DateTime.UtcNow.AddMinutes(60)
                 : DateTime.Parse(accessTokenExpiresDate).ToUniversalTime();
             if (externalLink == null)
             {
-                externalLink = await _externalAuthLinkRepository.InsertAsync(new ExternalAuthenticationLink
+                externalLink = (await _externalAuthLinkRepository.AddAsync(new ExternalAuthenticationLink
                 {
                     Id = Guid.NewGuid(),
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
                     UserId = user.Id,
                     AccessTokenExpiresDate = normalizedAccessTokenExpiresDate,
-                    Scopes = GetChallengeScopes(scopes)
-                });
+                })).Entity;
+                await _context.SaveChangesAsync();
             }
             else
                 UpdateExternalAuthLink(externalLink, accessToken, normalizedAccessTokenExpiresDate, scopes, refreshToken);
@@ -350,10 +294,10 @@ namespace Viasoft.Authentication.Host.Controllers
             
             var httpContent = new FormUrlEncodedContent(new[]
             {
-                new KeyValuePair<string, string>(ClaimsConsts.ClientId, _googleExternalAuthenticationConfiguration.ClientId),
-                new KeyValuePair<string, string>(ClaimsConsts.ClientSecret, _googleExternalAuthenticationConfiguration.ClientSecret),
-                new KeyValuePair<string, string>(ClaimsConsts.GrantType, IdentityServerConstants.PersistedGrantTypes.RefreshToken),
-                new KeyValuePair<string, string>(ClaimsConsts.RefreshToken, refreshToken)
+                new KeyValuePair<string, string>("client_id", _googleExternalAuthenticationConfiguration.ClientId),
+                new KeyValuePair<string, string>("client_secret", _googleExternalAuthenticationConfiguration.ClientSecret),
+                new KeyValuePair<string, string>("grant_type", IdentityServerConstants.PersistedGrantTypes.RefreshToken),
+                new KeyValuePair<string, string>("refresh_token", refreshToken)
             });
 
             ExternalAuthenticationAccessTokenUpdateResponse refreshResponse = null;
@@ -383,10 +327,6 @@ namespace Viasoft.Authentication.Host.Controllers
             externalAuthenticationLink.AccessTokenExpiresDate = expiresDate;
             if (!string.IsNullOrEmpty(refreshToken))
                 externalAuthenticationLink.RefreshToken = refreshToken;
-            
-            var scopes = externalAuthenticationLink.Scopes?.Split(" ").ToList() ?? new List<string>();
-            scopes.AddRange(GetChallengeScopes(scopesToAdd).Split(" "));
-            externalAuthenticationLink.Scopes = string.Join(" ", scopes.Distinct());
         }
 
         private async Task<(ApplicationUser user, string provider, string providerUserId, List<AuthenticationToken> tokens, IEnumerable<Claim> claims)> GetInfoFromExternalProvider(AuthenticateResult result)
@@ -404,7 +344,7 @@ namespace Viasoft.Authentication.Host.Controllers
             var claims = externalUser.Claims.ToList();
             claims.Remove(userIdClaim);
 
-            var provider = result.Properties.Items[ClaimsConsts.Scheme];
+            var provider = result.Properties.Items["scheme"];
             var providerUserId = userIdClaim.Value;
             
             var loggedUserId = GetAuthenticatedUserId();
@@ -422,12 +362,17 @@ namespace Viasoft.Authentication.Host.Controllers
                 localClaims.Add(new Claim(JwtClaimTypes.SessionId, sid.Value));
 
             // Needed for signout
-            var idToken = externalResult.Properties.GetTokenValue(ClaimsConsts.IdToken);
+            var idToken = externalResult.Properties.GetTokenValue("id_token");
             if (idToken != null)
-                localSignInProps.StoreTokens(new[] { new AuthenticationToken { Name = ClaimsConsts.IdToken, Value = idToken } });
+                localSignInProps.StoreTokens(new[] { new AuthenticationToken { Name = "id_token", Value = idToken } });
             
             // Add OUR custom claims
-            localClaims.AddRange(CustomClaimsManagerService.GetCustomClaims(user));
+            localClaims.AddRange(new[]
+            {
+                new Claim(IdentityClaims.Email, user.Email),
+                new Claim(IdentityClaims.FirstName, user.FirstName),
+                new Claim(IdentityClaims.LastName, user.SecondName)
+            });
         }
 
         private async Task<ExternalAuthenticationLink> GetExternalAuthLink(Guid userId)
@@ -439,9 +384,9 @@ namespace Viasoft.Authentication.Host.Controllers
         
         private Guid? GetAuthenticatedUserId()
         {
-            if (_currentUser.User?.Id == null || _currentUser.User.Id == Guid.Empty)
+            if (HttpContext.User == null)
                 return null;
-            return _currentUser.User.Id;
+            return Guid.Parse(HttpContext.User.GetSubjectId());
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Viasoft.Authentication.Host.Services.IdentityServer.GoogleExternalAuth
+namespace IdentityServer.IdentityControllers
 {
     public interface IGoogleExternalAuthenticationConfiguration
     {

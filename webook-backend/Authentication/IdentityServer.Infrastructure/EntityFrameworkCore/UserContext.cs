@@ -14,6 +14,8 @@ namespace IdentityServer.Infrastructure.EntityFrameworkCore
         }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<ForgotPasswordInfo> ForgotPasswordInfos { get; set; }
+        
+        public DbSet<ExternalAuthenticationLink> ExternalAuthenticationLinks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
