@@ -1,6 +1,7 @@
 <ng-container *ngIf="document">
   <ng-template #headerTitle>
-    <wb-editor-document-title [documentId]="document.id" [(documentTitle)]="document.title" [visualizeMode]="visualizeMode">
+    <wb-editor-document-title [documentId]="document.id" [(documentTitle)]="document.title"
+      [visualizeMode]="visualizeMode">
     </wb-editor-document-title>
     <span *ngIf="!visualizeMode && showPageSaveStatus" class="page-saved-status"
       [class.waiting]="documentPageService.pageSaveStatus === 'waitingDebounce'">{{pageSaveStatusLabel.get(documentPageService.pageSaveStatus)}}</span>
@@ -11,8 +12,8 @@
   <nz-page-header (nzBack)="redirectBack.next()" [nzTitle]="headerTitle" [nzBackIcon]="headerBack"
     class="site-page-header">
     <nz-page-header-extra class="page-navigation-container">
-      <wb-editor-document-page-navigation [(pageIndex)]="pageIndex" [totalCount]="pageTotalCount"  [visualizeMode]="visualizeMode"
-        [(pageSelectionExpanded)]="pageSelectionExpanded" (addPage)="emitToAddPage()">
+      <wb-editor-document-page-navigation [(pageIndex)]="pageIndex" [totalCount]="pageTotalCount"
+        [visualizeMode]="visualizeMode" [(pageSelectionExpanded)]="pageSelectionExpanded" (addPage)="emitToAddPage()">
       </wb-editor-document-page-navigation>
     </nz-page-header-extra>
     <nz-page-header-extra class="actions-container">
@@ -21,15 +22,16 @@
         <button nz-button nzType="link"><i fa="undo-alt"></i></button>
         <button nz-button nzType="link"><i fa="redo"></i></button>
         <button (click)="openDocumentConfiguration.next()" nz-button nzType="primary"
-        nzShape="round">Configurações</button>
+          nzShape="round">Configurações</button>
       </ng-container>
       <ng-container *ngIf="visualizeMode">
         <!-- TODO: Visualize Mode Actions -->
       </ng-container>
     </nz-page-header-extra>
     <nz-page-header-content *ngIf="pageSelectionExpanded">
-      <wb-editor-document-page-expanded-navigation [documentId]="document.id" [(pageIndex)]="pageIndex" [totalCount]="pageTotalCount"
-        (pageSelected)="pageSelectionExpanded = false" [visualizeMode]="visualizeMode"></wb-editor-document-page-expanded-navigation>
+      <wb-editor-document-page-expanded-navigation [documentId]="document.id" [(pageIndex)]="pageIndex"
+        [totalCount]="pageTotalCount" (pageSelected)="pageSelectionExpanded = false" [visualizeMode]="visualizeMode">
+      </wb-editor-document-page-expanded-navigation>
     </nz-page-header-content>
   </nz-page-header>
 </ng-container>

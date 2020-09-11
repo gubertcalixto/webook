@@ -40,6 +40,10 @@
     nz-typography nzType="secondary">
     Este documento não será visivel para outras pessoas
   </span>
+  <div *ngIf="form.get('image').value" class="document-image-preview-container">
+    <img [src]="form.get('image').value" [alt]="form.get('title').value" class="document-image-preview" />
+    <span>Imagem de Preview</span>
+  </div>
   <span *ngIf="errorDuringUpdate" nz-typography nzType="danger">Ocorreu um erro ao salvar, tente novamente</span>
 </form>
 

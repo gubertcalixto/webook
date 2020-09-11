@@ -42,14 +42,14 @@ export class EditorConfigurationModalComponent implements OnInit, OnDestroy {
   }
 
   private getDocument(): void {
+
     this.subs.push(this.documentService.getDocument(this.documentId).subscribe((doc: EditorDocument) => {
       const tagNames = doc.tags ? doc.tags.map((t: Tags) => t.tagName) : [];
       this.form = this.fb.group({
         title: [doc.title, [Validators.required]],
         description: [doc.description, [Validators.maxLength(250)]],
         tags: [tagNames],
-        // TODO: SET DOCUMENT IMAGE
-        // image: [doc.image, Validators.nullValidator],
+        image: [doc.image, Validators.nullValidator],
         documentAccess: [Boolean(doc.documentAccess)]
       });
     }));

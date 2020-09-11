@@ -18,10 +18,12 @@ namespace Scrapbook.Host.Controllers.Document
     public class DocumentController: CrudBaseController<EditorDocument>
     {
         private DbSet<EditorDocumentPage> _editorDocumentPage;
+        private DbSet<Tags> _tagsRepository;
 
         public DocumentController(DefaultContext context, IMapper mapper, IJwtReader jwtReader) : base(context, context.Documents, mapper, jwtReader)
         {
             _editorDocumentPage = context.DocumentPages;
+            _tagsRepository = context.DocumentTags;
         }
         
         [HttpPost("/document")]
@@ -123,10 +125,22 @@ namespace Scrapbook.Host.Controllers.Document
         public new async Task Delete(Guid id)
         {
             var document = await Repository
+                .Include(d => d.Tags)
                 .Where(d => d.UserId == JwtReader.GetUserId())
                 .FirstOrDefaultAsync(d => d.Id == id);
-            if(document != null)
-                await base.Delete(document);
+            if (document == null)
+                return;
+            if(document.Tags != null && document.Tags.Count > 0)
+                _tagsRepository.RemoveRange(document.Tags);
+            
+            var pages = await _editorDocumentPage
+                .Where(p => p.EditorDocumentId == document.Id)
+                .ToListAsync();
+            if(pages != null && pages.Count > 0)
+                _editorDocumentPage.RemoveRange(pages);
+            
+            Repository.Remove(document);
+            await Context.SaveChangesAsync();
         }
 
         private async Task<bool> HasSameTitleDocument(string itemTitle)

@@ -126,8 +126,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   public deleteDocument(documentId: string): void {
-    // TODO
-    console.log('deleteDocument')
+    this.subs.push(this.documentService.deleteDocument(documentId)
+      .subscribe(() => {
+        this.getProfileDocuments();
+      }));
   }
 
   public createDocument(): void {
