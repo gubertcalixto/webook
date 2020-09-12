@@ -3,5 +3,5 @@ export const environment = {
   // TODO: Setup prod
   authServerUrl: 'http://localhost:5000',
   // TODO: Setup prod
-  defaultRedirectUrl: 'http://localhost:4200'
+  defaultRedirectUrl: 'http://localhost:4200#forceLogin=true'
 };
