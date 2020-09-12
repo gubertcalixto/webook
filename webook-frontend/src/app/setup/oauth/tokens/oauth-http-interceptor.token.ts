@@ -8,10 +8,10 @@ export class OAuthHttpInterceptor implements HttpInterceptor {
   constructor(private oauthManagerService: OauthManagerService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const accessTokenExpirationAsString = localStorage.get('expires_at');
+    const accessTokenExpirationAsString = localStorage.getItem('expires_at');
     if (
       !accessTokenExpirationAsString
-      || new Date(accessTokenExpirationAsString) < new Date()
+      || new Date() > new Date(accessTokenExpirationAsString)
       || !this.oauthManagerService.accessToken
     ) {
       return next.handle(request);
