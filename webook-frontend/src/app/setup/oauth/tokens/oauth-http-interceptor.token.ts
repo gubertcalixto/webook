@@ -8,7 +8,12 @@ export class OAuthHttpInterceptor implements HttpInterceptor {
   constructor(private oauthManagerService: OauthManagerService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (!this.oauthManagerService.accessToken) {
+    const accessTokenExpirationAsString = localStorage.get('expires_at');
+    if (
+      !accessTokenExpirationAsString
+      || new Date(accessTokenExpirationAsString) < new Date()
+      || !this.oauthManagerService.accessToken
+    ) {
       return next.handle(request);
     }
     const dupReq = request.clone({

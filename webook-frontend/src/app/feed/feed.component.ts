@@ -2,6 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { OauthManagerService } from '@oath/services/oauth-manager.service';
 import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { EditorDocument } from 'src/app/client/webook';
 
 import { FeedService } from './feed.service';
@@ -24,7 +25,15 @@ export class FeedComponent implements OnInit {
     private router: Router,
     private feedService: FeedService,
     public oauthManagerService: OauthManagerService,
-  ) { }
+  ) {
+    this.subs.push(oauthManagerService.finishedLoadingSubject
+      .pipe(switchMap(() => oauthManagerService.hasValidToken()))
+      .subscribe((res) => {
+        if (!res) {
+          this.router.navigateByUrl('/welcome');
+        }
+      }));
+  }
 
   ngOnInit(): void {
     this.getFeed();

@@ -15,8 +15,9 @@ const routes: Routes = [
   },
   {
     path: 'my-documents',
-    loadChildren: () => import('./home-page/my-documents-page.module').then(m => m.MyDocumentsPageModule),
-    data: { title: 'Meus Documentos', hasNavigation: true }
+    loadChildren: () => import('./my-documents/my-documents-page.module').then(m => m.MyDocumentsPageModule),
+    data: { title: 'Meus Documentos', hasNavigation: true },
+    canActivate: [MustBeLoggedAuthGuard]
   },
   {
     path: 'document',
