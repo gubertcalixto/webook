@@ -2,9 +2,10 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { OauthManagerService } from '@oath/services/oauth-manager.service';
 import { Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { first, switchMap } from 'rxjs/operators';
 import { EditorDocument } from 'src/app/client/webook';
 
+import { DocumentService } from '../services/document.service';
 import { FeedService } from './feed.service';
 
 @Component({
@@ -24,6 +25,7 @@ export class FeedComponent implements OnInit {
   constructor(
     private router: Router,
     private feedService: FeedService,
+    private documentService: DocumentService,
     public oauthManagerService: OauthManagerService,
   ) {
     this.subs.push(oauthManagerService.finishedLoadingSubject
@@ -57,5 +59,12 @@ export class FeedComponent implements OnInit {
 
   public openDocument(documentId: string): void {
     this.router.navigateByUrl(`/document/${documentId}`);
+  }
+  public deleteDocument(documentId: string): void {
+    this.documentService.deleteDocument(documentId)
+      .pipe(first())
+      .subscribe(() => {
+        this.getFeed()
+      });
   }
 }
