@@ -115,11 +115,11 @@ namespace IdentityServer
 
             services
                 .AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>()
+                .AddTransient<IGoogleExternalAuthenticationConfiguration, GoogleExternalAuthenticationConfiguration>()
                 .AddTransient<IProfileService, IdentityClaimsProfileService>()
                 .AddTransient<IRedirectUriValidator, RedirectUriValidator>()
                 .AddTransient<IMailTemplateService, MailTemplateService>()
                 .AddTransient<IMailService, MailService>()
-                .AddTransient<IGoogleExternalAuthenticationConfiguration, GoogleExternalAuthenticationConfiguration>()
                 .AddSingleton(CreatMapperConfig());
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);

@@ -54,7 +54,7 @@ namespace IdentityServer.IdentityControllers
             if (string.IsNullOrEmpty(returnUrl)) returnUrl = "http://localhost:4200";
             if (string.IsNullOrEmpty(fallbackUrl)) fallbackUrl = "/oauth/app/login";
             if (string.IsNullOrEmpty(scheme)) scheme = "Google";
-            // TODO Remove clientId from her;
+            // TODO: Production - Remove clientId from here;
             var clientId = Encoding.UTF8.GetString(Convert.FromBase64String("NTA1MjAyNjgxNDkwLWhmMWE2ZDBoczF0dDgwcjExNW10YzhydHJvYmVrYWdpLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29t"));
 
             if (!await IsReturnUrlValid(returnUrl, fallbackUrl))
@@ -220,11 +220,11 @@ namespace IdentityServer.IdentityControllers
             await HttpContext.SignInAsync(identityServerUser, signInProps);
         }
 
-        private async Task<bool> IsReturnUrlValid(params string[] returnUrls)
+        private Task<bool> IsReturnUrlValid(params string[] returnUrls)
         {
             var isUrlsValid = returnUrls.Any(r => !string.IsNullOrEmpty(r));
             if (!isUrlsValid)
-                return false;
+                return Task.FromResult(false);
 
             // Add default redirect Urls
             // TODO: Production
@@ -256,7 +256,7 @@ namespace IdentityServer.IdentityControllers
                 break;
             }
 
-            return isUrlsValid;
+            return Task.FromResult(isUrlsValid);
         }
         
         private async Task<ExternalAuthenticationLink> CreateOrUpdateExternalLink(ApplicationUser user,
