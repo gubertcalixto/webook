@@ -90,7 +90,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
       if (result?.pageData) {
         const data: EditorElementHistoryData[] = JSON.parse(result.pageData);
         data.forEach(e => {
-          this.instanciateDocument(e.elementId, e.instanceData);
+          this.instanciateDocument(e.elementTypeId, e.instanceData, e.elementId);
         });
       }
     }));
@@ -125,11 +125,12 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
     this.emitDocumentPageSave(true);
   }
 
-  private instanciateDocument(elementId: string, data?: EditorElementInstanceData): void {
+  private instanciateDocument(elementTypeId: string, data?: EditorElementInstanceData, elementId?: string): void {
     this.editorElements.push(this.instanceManagerService.instanciateElement(
-      elementId,
+      elementTypeId,
       this.editorContainer,
-      data
+      data,
+      elementId
     ));
     this.subscribeToElementChanges();
   }
@@ -171,7 +172,8 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   private emitDocumentPageSave(forceNoDebounce = false) {
     const data: EditorElementHistoryData[] = this.editorElements.map(el => {
       return {
-        elementId: el.instance.elementTypeId,
+        elementId: el.instance?.elementId,
+        elementTypeId: el.instance?.elementTypeId,
         instanceData: {
           frameProperties: el.instance?.frame.raw(),
           data: el.instance?.data

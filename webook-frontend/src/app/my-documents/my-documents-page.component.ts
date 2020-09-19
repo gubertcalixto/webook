@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild, Vi
 import { Router } from '@angular/router';
 import { OauthManagerService } from '@oath/services/oauth-manager.service';
 import { Subscription } from 'rxjs';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 
 import { EditorDocument } from '../client/webook';
 import { NavigationService } from '../navigation/navigation.service';
@@ -25,7 +25,6 @@ export class MyDocumentsPageComponent implements OnInit, AfterViewInit, OnDestro
   public myDocuments: EditorDocument[] = [];
   public isLoadingMyDocuments = true;
   public hasSearchFilterActivated: boolean;
-  public isLoading = true;
   @ViewChild('addDocumentTemplate') private addDocumentTemplate: TemplateRef<any>;
 
   public get createDocumentModels() {
@@ -41,15 +40,6 @@ export class MyDocumentsPageComponent implements OnInit, AfterViewInit, OnDestro
     private documentService: DocumentService,
     private router: Router
   ) {
-    this.subs.push(this.oAuthManagerService.finishedLoadingSubject
-      .pipe(switchMap(() => this.oAuthManagerService.hasValidToken()))
-      .subscribe((res) => {
-        if (!res) {
-          this.router.navigateByUrl('/welcome');
-        } else {
-          this.isLoading = false;
-        }
-      }));
   }
 
   ngOnInit(): void {

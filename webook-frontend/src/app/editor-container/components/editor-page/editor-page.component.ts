@@ -78,6 +78,11 @@ export class EditorPageComponent implements OnDestroy {
     const modal = this.nzModalService.create({
       nzContent: EditorConfigurationModalComponent,
       nzViewContainerRef: this.viewContainerRef,
+      nzStyle: {
+        top: '2.5vh',
+        'padding-top': '2.5vh',
+        'padding-bottom': '2.5vh'
+      },
       nzComponentParams: {
         documentId: this.documentId
       }

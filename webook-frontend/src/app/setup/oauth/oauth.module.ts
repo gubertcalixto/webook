@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { isDevMode, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { OAuthModule, OAuthStorage } from 'angular-oauth2-oidc';
 import { environment } from 'src/environments/environment';
 
@@ -25,8 +25,12 @@ export function storageFactory(): OAuthStorage {
 })
 export class AppOAuthModule {
   constructor(authManagerService: OauthManagerService) {
-    if (!isDevMode() || environment.tryLoginAtStart) {
-      authManagerService.init(false);
+    const forceLogin = location.hash === '#forceLogin=true';
+    if (forceLogin) {
+      location.hash = '';
+    }
+    if (environment.tryLoginAtStart) {
+      authManagerService.init(forceLogin);
     }
   }
 }

@@ -1,0 +1,34 @@
+/* quicksand-300 - latin */
+@font-face {
+    font-family: "Quicksand";
+    font-style: normal;
+    font-weight: 300;
+    src: local(""), url("/assets/fonts/quicksand-v21-latin-300.woff2") format("woff2"),
+        url("/assets/fonts/quicksand-v21-latin-300.woff") format("woff");
+}
+/* quicksand-regular - latin */
+@font-face {
+    font-family: "Quicksand";
+    font-style: normal;
+    font-weight: 400;
+    src: local(""), url("/assets/fonts/quicksand-v21-latin-regular.woff2") format("woff2"),
+        url("/assets/fonts/quicksand-v21-latin-regular.woff") format("woff");
+}
+/* quicksand-700 - latin */
+@font-face {
+    font-family: "Quicksand";
+    font-style: normal;
+    font-weight: 700;
+    src: local(""), url("/assets/fonts/quicksand-v21-latin-700.woff2") format("woff2"),
+        url("/assets/fonts/quicksand-v21-latin-700.woff") format("woff");
+}
+
+/* lobster-regular - latin */
+@font-face {
+    font-family: "Lobster";
+    font-style: normal;
+    font-weight: 400;
+    src: local("Lobster Regular"), local("Lobster-Regular"),
+        url("/assets/fonts/lobster-v23-latin-regular.woff2") format("woff2"),
+        url("/assets/fonts/lobster-v23-latin-regular.woff") format("woff");
+}
