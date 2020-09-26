@@ -2,8 +2,10 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '@oath/services/user.service';
 import { OAuthUser } from '@oath/tokens/oauth-user';
+import { image } from 'html2canvas/dist/types/css/types/image';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { EditorDocument } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
 import { ProfileService } from 'src/app/services/profile.service';
@@ -28,6 +30,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   public userDocumentsPageIndex = 1;
   public isFollowingUserLoading = true;
   public isFollowingUser = false;
+  public isUserImageLoading = true;
+  public userImage: string;
 
   constructor(
     private router: Router,
@@ -93,6 +97,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.getFollowersNumber();
     this.getDocumentsNumber();
     this.getProfileDocuments();
+    this.getUserImage();
   }
 
   public getFollowersNumber(): void {
@@ -153,5 +158,33 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.nzNotification.info('Você parou de seguir este usuário', '', { nzPlacement: 'bottomRight', nzDuration: 2500 });
       this.getFollowersNumber();
     }));
+  }
+
+  public onEditUserImage(event: any): void {
+    if (!this.isMyUser || event?.target?.files?.length !== 1) {
+      return;
+    }
+    this.isUserImageLoading = true;
+    const imageToUpload = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(imageToUpload);
+    reader.onload = () => {
+      const base64Image = 'data:image/png;base64,' + reader.result.toString().split(',')[1];
+      this.updateUserImage(base64Image);
+    };
+  }
+
+  private getUserImage(): void {
+    this.userService.getUserImage(this.userId).pipe(first()).subscribe(resultImage => {
+      this.userImage = resultImage;
+      this.isUserImageLoading = false;
+    });
+  }
+
+  private updateUserImage(image: string): void {
+    this.userService.updateUserImage(image).pipe(first()).subscribe(resultImage => {
+      this.userImage = resultImage;
+      this.isUserImageLoading = false;
+    });
   }
 }

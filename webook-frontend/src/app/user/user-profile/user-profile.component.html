@@ -1,7 +1,18 @@
 <ng-container *ngIf="user">
   <nz-row class="profile-header" [nzGutter]="16">
-    <nz-col class="avatar-container" nzFlex="auto">
-      <nz-avatar [nzSize]="96" [nzText]="userService.getUserInitials(user.firstName, user.lastName)"></nz-avatar>
+    <nz-col class="avatar-wrapper" nzFlex="auto">
+      <div class="avatar-container">
+        <ng-container *ngIf="!isUserImageLoading">
+          <input #uploadImageInput hidden type="file" accept="image/*" (change)="onEditUserImage($event)">
+          <button *ngIf="isMyUser" tabindex="-1" class="profile-image-edit-button" (click)="uploadImageInput.click()" nz-tooltip nzTooltipTitle="Alterar foto de perfil">
+            <i fa="pen"></i>
+          </button>
+          <nz-avatar [nzSize]="96" [nzText]="!userImage ? userService.getUserInitials(user.firstName, user.lastName) : undefined"
+          [nzSrc]="userImage">
+          </nz-avatar>
+        </ng-container>
+        <nz-skeleton-element *ngIf="isUserImageLoading" nzType="avatar" [nzActive]="true" [nzSize]="96" nzShape="circle"></nz-skeleton-element>
+      </div>
     </nz-col>
     <nz-col nzXs="24" nzSm="24" nzMd="16">
       <nz-row>

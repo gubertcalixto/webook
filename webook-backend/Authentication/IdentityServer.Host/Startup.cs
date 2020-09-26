@@ -6,6 +6,7 @@ using System.Text;
 using AutoMapper;
 using IdentityServer.Domain.Entities;
 using IdentityServer.IdentityControllers;
+using Microsoft.Extensions.DependencyInjection;
 using IdentityServer.IdentityControllers.Account.Dtos.ForgotPassword;
 using IdentityServer.IdentityControllers.Profile;
 using IdentityServer.IdentityControllers.RedirectUrls;
@@ -25,7 +26,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
@@ -110,8 +110,9 @@ namespace IdentityServer
                     options.SaveTokens = true;
                     options.AccessType = "offline";
                 });
-
             services.Configure<MailSettings>(_configuration.GetSection("MailSettings"));
+            
+            services.AddHttpContextAccessor();
 
             services
                 .AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>()
@@ -119,6 +120,7 @@ namespace IdentityServer
                 .AddTransient<IProfileService, IdentityClaimsProfileService>()
                 .AddTransient<IRedirectUriValidator, RedirectUriValidator>()
                 .AddTransient<IMailTemplateService, MailTemplateService>()
+                .AddTransient<ICurrentUserService, CurrentUserService>()
                 .AddTransient<IMailService, MailService>()
                 .AddSingleton(CreatMapperConfig());
 
@@ -144,16 +146,17 @@ namespace IdentityServer
             AuthenticationFrontendSetup(app);
             InitializeDatabase(app);
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityServer API v.1.0.0"); });
-            
             app.UseRouting();
             app.UseCors(CorsDefinition);
             app.UseIdentityServer();
             app.UseAuthorization();
+            
+            app.UseSwagger();
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityServer API v.1.0.0"); });
+            
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
             });
         }
 

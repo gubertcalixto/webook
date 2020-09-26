@@ -4,21 +4,21 @@
     <nz-layout class="sider-container">
       <nz-content>
         <a routerLink="/home" class="logo">
-          <h1 nz-typography>{{isCollapsed ? 'Wb' : 'Webook'}}</h1>
+          <img src="/assets/logos/text.png" alt="Webook Logo">
         </a>
         <ul class="sidenav-menu" nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed"
           [nzMode]="isCollapsed ? 'vertical' : 'inline'">
-          <li nz-menu-item routerLink="/home" [nzMatchRouter]="true" nz-tooltip
+          <li (keyup.enter)="router.navigateByUrl('/home')" nz-menu-item routerLink="/home" [nzMatchRouter]="true" nz-tooltip
             [nzTooltipTitle]="isCollapsed ? 'Feed' : ''" nzTooltipPlacement="right">
             <i fa="newspaper"></i>
             <span *ngIf="!isCollapsed">Feed</span>
           </li>
-          <li nz-menu-item routerLink="/my-documents" [nzMatchRouter]="true" nz-tooltip
+          <li (keyup.enter)="router.navigateByUrl('/my-documents')" nz-menu-item routerLink="/my-documents" [nzMatchRouter]="true" nz-tooltip
             [nzTooltipTitle]="isCollapsed ? 'Documentos' : ''" nzTooltipPlacement="right">
             <i fa="book"></i>
             <span *ngIf="!isCollapsed">Documentos</span>
           </li>
-          <li nz-menu-item routerLink="/search" [nzMatchRouter]="true" nz-tooltip
+          <li (keyup.enter)="router.navigateByUrl('/search')" nz-menu-item routerLink="/search" [nzMatchRouter]="true" nz-tooltip
             [nzTooltipTitle]="isCollapsed ? 'Explorar' : ''" nzTooltipPlacement="right">
             <i fa="search"></i>
             <span *ngIf="!isCollapsed">Explorar</span>
@@ -51,10 +51,11 @@
                 <i fa="bell"></i>
               </nz-badge>
             </button>
-            <button class="avatar-btn" nz-popover [nzPopoverTitle]="avatarMenuHeaderTemplate"
+            <button *ngIf="!isLoadingUserImage" class="avatar-btn" nz-popover [nzPopoverTitle]="avatarMenuHeaderTemplate"
               [nzPopoverContent]="avatarMenuContentTemplate" nzPopoverPlacement="bottomRight">
-              <nz-avatar nzSize="large" [nzText]="userService.getUserInitials()"></nz-avatar>
+              <nz-avatar nzSize="large" [nzText]="userImage ? undefined : userService.getUserInitials()" [nzSrc]="userImage"></nz-avatar>
             </button>
+            <nz-skeleton-element *ngIf="isLoadingUserImage" nzType="avatar" [nzActive]="true" nzShape="circle"></nz-skeleton-element>
             <ng-template #avatarMenuHeaderTemplate>
               <h4 nz-typography>Olá, {{userService?.user?.userName}}</h4>
             </ng-template>

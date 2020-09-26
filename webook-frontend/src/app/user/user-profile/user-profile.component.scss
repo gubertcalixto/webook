@@ -1,10 +1,35 @@
 wb-user-profile {
   .profile-header {
     padding: 0 16px;
-    .avatar-container {
+    .avatar-wrapper {
       display: flex;
       align-items: center;
       place-content: center;
+      .avatar-container {
+        position: relative;
+        button.profile-image-edit-button {
+          $edit-profile-image-button-size: 50px;
+          position: absolute;
+          height: $edit-profile-image-button-size;
+          width: $edit-profile-image-button-size;
+          left: calc(50% - #{$edit-profile-image-button-size / 2});
+          top: calc(50% - #{$edit-profile-image-button-size / 2});
+          cursor: pointer;
+          background: none;
+          border: none;
+          outline: none;
+          z-index: 2;
+          opacity: 0;
+          font-size: 200%;
+          text-shadow: 4px 4px 4px #808080;
+          transition: opacity .25s;
+        }
+        &:hover {
+          button.profile-image-edit-button {
+            opacity: 1;
+          }
+        }
+      }
     }
     .profile-user-name {
       margin-bottom: 0;
