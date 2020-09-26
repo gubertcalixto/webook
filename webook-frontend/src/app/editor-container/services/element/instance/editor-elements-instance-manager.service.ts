@@ -34,6 +34,9 @@ export class EditorElementsInstanceManagerService {
       componentRef.instance.frame = new Frame(normalizedData.frameProperties);
       componentRef.instance.data = normalizedData.data;
       componentRef.instance.visualizeMode = this.editor.visualizeMode;
+      setTimeout(() => {
+        componentRef.instance.hasFinishedDataEntry = true;
+      }, 1);
     }
     return componentRef;
   }
