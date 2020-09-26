@@ -21,9 +21,13 @@ export class NavigationContainerComponent {
     public oAuthManagerService: OauthManagerService,
     public userService: UserService,
     public navigationService: NavigationService,
-    private router: Router
+    public router: Router
   ) {
     this.startNavigationResolver();
+  }
+
+  log(e) {
+    console.log(e)
   }
 
   public startNavigationResolver(): void {

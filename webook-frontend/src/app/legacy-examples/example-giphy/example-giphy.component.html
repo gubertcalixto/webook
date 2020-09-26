@@ -2,7 +2,7 @@
 <div *ngIf="result" class="result-container">
     <ng-container *ngFor="let item of result.data">
         <img class="result-item" [title]="item.user?.display_name + ' | ' + item.title"
-            [src]="item.images?.fixed_width?.url">
+            [src]="item.images?.fixed_width?.url" [alt]="item.user?.display_name + ' | ' + item.title">
     </ng-container>
 </div>
 <div *ngIf="!result">

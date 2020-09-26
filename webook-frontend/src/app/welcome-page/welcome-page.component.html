@@ -1,8 +1,10 @@
 <nz-layout>
   <nz-header [class.is-at-top-scroll]="isScrollOnTop">
     <div nz-row>
-      <div nz-col nzFlex="initial">
-        <h1>Webook</h1>
+      <div nz-col nzFlex="initial" class="logo-container">
+        <a (click)="goToSection('presentation')">
+          <img src="/assets/logos/text.png" class="logo" alt="Webook Logo">
+        </a>
       </div>
       <div nz-col nzFlex="auto">
         <ul class="navigation" nz-menu nzMode="horizontal">
@@ -172,7 +174,7 @@
         <nz-result *ngIf="contactFormSent" nzStatus="success" nzTitle="Formulário enviado com sucesso">
         </nz-result>
         <div class="image-container">
-          <img src="/assets/welcome/things_to_say.svg" />
+          <img src="/assets/welcome/things_to_say.svg" alt="Suggestion or Question Form Image" />
         </div>
       </div>
     </section>

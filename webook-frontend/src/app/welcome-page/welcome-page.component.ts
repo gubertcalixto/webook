@@ -102,10 +102,6 @@ export class WelcomePageComponent implements OnDestroy {
       return;
     }
     elementToScroll.scrollIntoView({ block: 'start', behavior: 'smooth' });
-    this.currentSection = sectionId;
-    setTimeout(() => {
-      location.hash = sectionId;
-    }, 750);
   }
 
   public sendForm(): void {
