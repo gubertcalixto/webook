@@ -62,7 +62,15 @@ export class UserService {
   public getUserById(userId: string): Observable<SimplifiedUser> {
     return this.userServiceProxy.userIdGet(userId);
   }
-  
+
+  public getUserImage(userId: string = this.userId): Observable<string> {
+    return this.userServiceProxy.userIdImageGet(userId);
+  }
+
+  public updateUserImage(base64Image: string): Observable<string> {
+    return this.userServiceProxy.userIdImagePut(base64Image);
+  }
+
   public deleteUser(): Promise<boolean> {
     return new Promise((res, rej) => {
       this.nzModal.confirm({

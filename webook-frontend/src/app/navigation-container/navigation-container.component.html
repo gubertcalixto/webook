@@ -51,10 +51,11 @@
                 <i fa="bell"></i>
               </nz-badge>
             </button>
-            <button class="avatar-btn" nz-popover [nzPopoverTitle]="avatarMenuHeaderTemplate"
+            <button *ngIf="!isLoadingUserImage" class="avatar-btn" nz-popover [nzPopoverTitle]="avatarMenuHeaderTemplate"
               [nzPopoverContent]="avatarMenuContentTemplate" nzPopoverPlacement="bottomRight">
-              <nz-avatar nzSize="large" [nzText]="userService.getUserInitials()"></nz-avatar>
+              <nz-avatar nzSize="large" [nzText]="userImage ? undefined : userService.getUserInitials()" [nzSrc]="userImage"></nz-avatar>
             </button>
+            <nz-skeleton-element *ngIf="isLoadingUserImage" nzType="avatar" [nzActive]="true" nzShape="circle"></nz-skeleton-element>
             <ng-template #avatarMenuHeaderTemplate>
               <h4 nz-typography>Olá, {{userService?.user?.userName}}</h4>
             </ng-template>

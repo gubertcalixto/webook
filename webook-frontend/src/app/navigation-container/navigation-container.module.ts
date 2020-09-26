@@ -12,6 +12,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 import { NavigationContainerComponent } from './navigation-container.component';
@@ -30,6 +31,7 @@ import { NavigationContainerComponent } from './navigation-container.component';
     NzGridModule,
     NzInputModule,
     NzLayoutModule,
+    NzSkeletonModule,
     NzMenuModule,
     NzPageHeaderModule,
     NzPopoverModule,

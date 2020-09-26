@@ -34,6 +34,7 @@ namespace Scrapbook.Host
                 .AddJwtBearer("Bearer", options =>
                 {
                     options.Authority = "http://localhost:5000";
+                    // TODO: Production
                     options.RequireHttpsMetadata = false;
 
                     options.Audience = "webook-backend";

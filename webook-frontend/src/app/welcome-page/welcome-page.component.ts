@@ -17,7 +17,7 @@ export class WelcomePageComponent implements OnDestroy {
   private subs: Subscription[] = [];
   public form: FormGroup;
   public searchValue: string;
-  public currentSection: string;
+  public currentSection = 'presentation';
   public contactFormSent: boolean;
   public isScrollOnTop = true;
   public isNavigationCompactModeEnabled = false;

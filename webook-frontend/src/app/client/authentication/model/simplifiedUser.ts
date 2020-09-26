@@ -15,7 +15,6 @@ export interface SimplifiedUser {
     id?: string;
     firstName?: string | null;
     secondName?: string | null;
-    urlImg?: string | null;
     email?: string | null;
 }
 
