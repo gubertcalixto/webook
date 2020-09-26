@@ -1,10 +1,34 @@
 <nz-layout>
-  <nz-header>
+  <nz-header [class.is-at-top-scroll]="isScrollOnTop">
     <div nz-row>
       <div nz-col nzFlex="initial">
         <h1>Webook</h1>
       </div>
-      <div nz-col nzFlex="auto"></div>
+      <div nz-col nzFlex="auto">
+        <ul class="navigation" nz-menu nzMode="horizontal">
+          <li nz-menu-item nzMatchRouter [nzSelected]="currentSection === 'presentation'"
+           nz-tooltip nzTooltipPlacement="bottom" [nzTooltipTitle]="isNavigationCompactModeEnabled ? 'Início' : undefined">
+            <a (click)="goToSection('presentation')">
+              <i fa="home"></i>
+              <span *ngIf="!isNavigationCompactModeEnabled">Início</span>
+            </a>
+          </li>
+          <li nz-menu-item nzMatchRouter [nzSelected]="currentSection === 'what-is-webook'"
+           nz-tooltip nzTooltipPlacement="bottom" [nzTooltipTitle]="isNavigationCompactModeEnabled ? 'O que é Webook' : undefined">
+            <a (click)="goToSection('what-is-webook')">
+              <i fa="book-open"></i>
+              <span *ngIf="!isNavigationCompactModeEnabled">O que é Webook?</span>
+            </a>
+          </li>
+          <li nz-menu-item nzMatchRouter [nzSelected]="currentSection === 'suggestion-or-question-form'"
+           nz-tooltip nzTooltipPlacement="bottom" [nzTooltipTitle]="isNavigationCompactModeEnabled ? 'Deixe sua dúvida / sugestão' : undefined">
+            <a (click)="goToSection('suggestion-or-question-form')">
+              <i fa="bullhorn"></i>
+              <span *ngIf="!isNavigationCompactModeEnabled">Deixe sua dúvida / sugestão</span>
+            </a>
+          </li>
+        </ul>
+      </div>
       <div nz-col nzFlex="initial">
         <button nz-button nzType="primary" (click)="login()">
           Cadastrar / Logar
@@ -12,8 +36,8 @@
       </div>
     </div>
   </nz-header>
-  <nz-content>
-    <section nz-row class="presentation">
+  <nz-content #welcomeContentElement>
+    <section id="presentation" nz-row class="presentation">
       <video autoplay loop src="/assets/welcome/back-img.mp4"></video>
       <div class="background-shadow"></div>
       <div nz-col class="content">
@@ -38,7 +62,7 @@
         </ng-template>
       </div>
     </section>
-    <section class="what-is-webook">
+    <section id="what-is-webook" class="what-is-webook">
       <h1 nz-typography>O Webook</h1>
       <p class="webook-description" nz-typography>
         Webook é uma plataforma onde se pode criar scrapboks ou bullets journals
@@ -49,7 +73,7 @@
         sua criação.
       </p>
     </section>
-    <section class="features">
+    <section id="features" class="features">
       <h2 nz-typography>Uma plataforma para Criadores</h2>
       <h4 nz-typography>
         O Webook foi criado especialmente para você. Ele é muito prático e
@@ -81,71 +105,76 @@
       </div>
     </section>
     <nz-divider></nz-divider>
-    <section class="form">
+    <section id="suggestion-or-question-form" class="form-section">
       <div nz-row>
         <h2 nz-col nz-typography>Deixe aqui sua dúvida ou sugestão</h2>
       </div>
-      <form *ngIf="form && !contactFormSend" [formGroup]="form" nz-form nzLayout="vertical">
-        <nz-form-item>
-          <nz-form-label>Nome</nz-form-label>
-          <nz-form-control [nzErrorTip]="userErrorTpl">
-            <input nz-input formControlName="userName" placeholder="Digite seu nome" />
-            <ng-template #userErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">
-                Por favor, inclua seu nome
-              </ng-container>
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label>E-mail</nz-form-label>
-          <nz-form-control [nzErrorTip]="emailErrorTpl">
-            <input nz-input formControlName="email" placeholder="Digite seu email" type="email" />
-            <ng-template #emailErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('email')">
-                Esse e-mail não é valido
-              </ng-container>
-              <ng-container *ngIf="control.hasError('required')">
-                Por favor, inclua seu e-mail
-              </ng-container>
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label>Assunto</nz-form-label>
-          <nz-form-control>
-            <nz-select formControlName="subject">
-              <nz-option [nzValue]="0" nzLabel="Elogio"></nz-option>
-              <nz-option [nzValue]="1" nzLabel="Reclamação"></nz-option>
-              <nz-option [nzValue]="2" nzLabel="Dúvida"></nz-option>
-              <nz-option [nzValue]="3" nzLabel="Outro"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label>Mensagem</nz-form-label>
-          <nz-form-control [nzErrorTip]="messageErrorTpl">
-            <textarea nz-input formControlName="message" rows="4"
-              placeholder="Escreva aqui sua dúvida ou sugestão"></textarea>
-            <ng-template #messageErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required') || control.hasError('minlength')">
-                Este campo é obrigatório e deve ter mais que 5 caracteres
-              </ng-container>
-              <ng-container *ngIf="control.hasError('maxlength')">
-                Este campo deve ter menos de 500 caracteres
-              </ng-container>
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
-        <div class="actions">
-          <button nz-button [disabled]="form.invalid || form.pending || form.pristine" (click)="sendForm()"
-            nzType="primary">
-            Enviar
-          </button>
+      <div class="form-container">
+        <form *ngIf="form && !contactFormSent" [formGroup]="form" nz-form nzLayout="vertical">
+          <nz-form-item>
+            <nz-form-label>Nome</nz-form-label>
+            <nz-form-control [nzErrorTip]="userErrorTpl">
+              <input nz-input formControlName="userName" placeholder="Digite seu nome" />
+              <ng-template #userErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  Por favor, inclua seu nome
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>E-mail</nz-form-label>
+            <nz-form-control [nzErrorTip]="emailErrorTpl">
+              <input nz-input formControlName="email" placeholder="Digite seu email" type="email" />
+              <ng-template #emailErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('email')">
+                  Esse e-mail não é valido
+                </ng-container>
+                <ng-container *ngIf="control.hasError('required')">
+                  Por favor, inclua seu e-mail
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>Assunto</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="subject">
+                <nz-option [nzValue]="0" nzLabel="Elogio"></nz-option>
+                <nz-option [nzValue]="1" nzLabel="Reclamação"></nz-option>
+                <nz-option [nzValue]="2" nzLabel="Dúvida"></nz-option>
+                <nz-option [nzValue]="3" nzLabel="Outro"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>Mensagem</nz-form-label>
+            <nz-form-control [nzErrorTip]="messageErrorTpl">
+              <textarea nz-input formControlName="message" rows="4"
+                placeholder="Escreva aqui sua dúvida ou sugestão"></textarea>
+              <ng-template #messageErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required') || control.hasError('minlength')">
+                  Este campo é obrigatório e deve ter mais que 5 caracteres
+                </ng-container>
+                <ng-container *ngIf="control.hasError('maxlength')">
+                  Este campo deve ter menos de 500 caracteres
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <div class="actions">
+            <button nz-button [disabled]="form.invalid || form.pending || form.pristine" (click)="sendForm()"
+              nzType="primary">
+              Enviar
+            </button>
+          </div>
+        </form>
+        <nz-result *ngIf="contactFormSent" nzStatus="success" nzTitle="Formulário enviado com sucesso">
+        </nz-result>
+        <div class="image-container">
+          <img src="/assets/welcome/things_to_say.svg" />
         </div>
-      </form>
-      <nz-result *ngIf="contactFormSend" nzStatus="success" nzTitle="Formulário enviado com sucesso">
-      </nz-result>
+      </div>
     </section>
   </nz-content>
 </nz-layout>

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OauthManagerService } from '@oath/services/oauth-manager.service';
@@ -17,7 +17,12 @@ export class WelcomePageComponent implements OnDestroy {
   private subs: Subscription[] = [];
   public form: FormGroup;
   public searchValue: string;
-  contactFormSend: boolean;
+  public currentSection: string;
+  public contactFormSent: boolean;
+  public isScrollOnTop = true;
+  public isNavigationCompactModeEnabled = false;
+
+  @ViewChild('welcomeContentElement', { static: false, read: ElementRef }) private welcomeContentEl: ElementRef<HTMLElement>;
 
   constructor(
     public oAuthManagerService: OauthManagerService,
@@ -40,6 +45,44 @@ export class WelcomePageComponent implements OnDestroy {
     })
   }
 
+  ngAfterViewInit(): void {
+    const setIsNavigationCompactModeEnabled = () => {
+      this.isNavigationCompactModeEnabled = document.body.clientWidth <= 1000;
+    };
+    setIsNavigationCompactModeEnabled();
+    window.onresize = () => {
+      setIsNavigationCompactModeEnabled();
+    };
+    this.welcomeContentEl.nativeElement.onscroll = () => {
+      const isElementOnScreen = (elementid: string) => {
+        const element = document.getElementById(elementid);
+        if (!element) {
+          return false;
+        }
+        const rect = element.getBoundingClientRect();
+        return (
+          rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+        );
+      };
+      this.isScrollOnTop = this.welcomeContentEl.nativeElement.scrollTop === 0;
+      const presentationOnScreen = isElementOnScreen('presentation');
+      const whatIsWebookOnScreen = isElementOnScreen('what-is-webook') || isElementOnScreen('features');
+      const formOnScreen = isElementOnScreen('suggestion-or-question-form');
+      if (formOnScreen) {
+        this.currentSection = 'suggestion-or-question-form';
+      } else if (whatIsWebookOnScreen) {
+        this.currentSection = 'what-is-webook';
+      } else if (presentationOnScreen || this.isScrollOnTop) {
+        this.currentSection = 'presentation';
+      } else {
+        this.currentSection = undefined;
+      }
+    };
+    if (this.isScrollOnTop) {
+      this.currentSection = 'presentation';
+    }
+  }
+
   ngOnDestroy(): void {
     this.subs.forEach((s) => s.unsubscribe());
   }
@@ -53,13 +96,25 @@ export class WelcomePageComponent implements OnDestroy {
     this.router.navigateByUrl(url);
   }
 
+  public goToSection(sectionId: string): void {
+    const elementToScroll = document.getElementById(sectionId);
+    if (!elementToScroll) {
+      return;
+    }
+    elementToScroll.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    this.currentSection = sectionId;
+    setTimeout(() => {
+      location.hash = sectionId;
+    }, 750);
+  }
+
   public sendForm(): void {
     const userName = this.form.get('userName').value;
     const email = this.form.get('email').value;
     const subject = this.form.get('subject').value;
     const message = this.form.get('message').value;
     this.subs.push(this.contactFormService.sendContactForm(userName, email, message, subject).subscribe(() => {
-      this.contactFormSend = true;
+      this.contactFormSent = true;
     }));
   }
 }

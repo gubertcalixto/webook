@@ -8,7 +8,30 @@ wb-welcome-page {
       position: fixed;
       width: 100%;
       background-color: #fff;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+      z-index: 5;
+
+      &:not(.is-at-top-scroll) {
+        box-shadow: 0 0 12px rgba(0, 0, 0, .6);
+      }
+
+      > div.ant-row {
+        height: 100%;
+        > div.ant-col {
+          height: 100%;
+        }
+      }
+      
+      ul.navigation {
+        border: none;
+        height: 100%;
+        margin-left: 16px;
+        li.ant-menu-item {
+          top: 0;
+          span {
+            margin-left: 12px;
+          }
+        }
+      }
     }
     > nz-content {
       overflow: auto;
@@ -117,13 +140,29 @@ wb-welcome-page {
           }
         }
       }
-      section.form {
-        nz-form-item.ant-form-item {
-          margin-bottom: 0;
-        }
-        .actions {
-          margin-top: 1em;
-          text-align: right;
+      section.form-section {
+        .form-container {
+          display: flex;
+          form {
+            flex: auto;
+            nz-form-item.ant-form-item {
+              margin-bottom: 0;
+            }
+            .actions {
+              margin-top: 1em;
+              text-align: right;
+            }
+          }
+          .image-container {
+            display: flex;
+            flex: initial;
+            align-items: center;
+            justify-content: center;
+            padding: 0 8px 0 16px;
+            img {
+              max-width: 35vw;
+            }
+          }
         }
       }
     }
@@ -145,6 +184,11 @@ wb-welcome-page {
 @media (max-width: 700px) {
   wb-welcome-page {
     > nz-layout {
+      > nz-header {
+        ul.navigation {
+          display: none;
+        }
+      }
       > nz-content {
         section.presentation {
           height: unset;
@@ -154,6 +198,14 @@ wb-welcome-page {
             width: unset;
             min-width: 100%;
             min-height: 100%;
+          }
+        }
+
+        section.form-section {
+          .form-container {
+            .image-container {
+              display: none;
+            }
           }
         }
       }
