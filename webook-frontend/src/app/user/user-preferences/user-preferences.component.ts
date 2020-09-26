@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserService } from '@oath/services/user.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -11,7 +11,8 @@ import { UserPreferencesService } from './user-preferences.service';
 @Component({
   selector: 'wb-user-preferences',
   templateUrl: './user-preferences.component.html',
-  styleUrls: ['./user-preferences.component.scss']
+  styleUrls: ['./user-preferences.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class UserPreferencesComponent implements OnDestroy {
   private subs: Subscription[] = [];
