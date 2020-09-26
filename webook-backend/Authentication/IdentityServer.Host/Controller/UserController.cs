@@ -7,7 +7,6 @@ using AutoMapper;
 using IdentityServer.Domain.Dtos;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
 using IdentityServer.Services;
-using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

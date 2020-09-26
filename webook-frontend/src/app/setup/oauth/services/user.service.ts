@@ -71,7 +71,7 @@ export class UserService {
     return this.userServiceProxy.userIdImagePut(base64Image);
   }
 
-  public deleteUser(): Promise<boolean> {
+  public deleteUser(customFn: () => Observable<any>): Promise<boolean> {
     return new Promise((res, rej) => {
       this.nzModal.confirm({
         nzTitle: 'Você tem certeza que deseja apagar sua conta?',
@@ -84,7 +84,9 @@ export class UserService {
           .pipe(first())
           .subscribe(isDeleted => {
             if (isDeleted) {
-              this.authManagerService.logOut();
+              customFn().pipe(first()).subscribe(() => {
+                this.authManagerService.logOut();
+              });
             }
             res(isDeleted);
           }, (e) => rej(e))
