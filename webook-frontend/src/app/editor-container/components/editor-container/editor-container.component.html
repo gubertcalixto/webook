@@ -6,10 +6,12 @@
   </ng-container>
   <ng-container *ngIf="!visualizeMode">
     <wb-editor-toolbox [items]="toolboxItems"></wb-editor-toolbox>
-    <wb-editor #editor (drop)="editorDropElement($event)" (dragover)="editorDragOver($event)"
-      [visualizeMode]="visualizeMode">
-      <ng-container #editorContainer></ng-container>
-    </wb-editor>
+    <div class="editor-container">
+      <wb-editor #editor (drop)="editorDropElement($event)" (dragover)="editorDragOver($event)"
+        [visualizeMode]="visualizeMode">
+        <ng-container #editorContainer></ng-container>
+      </wb-editor>
+    </div>
     <wb-editor-properties-container></wb-editor-properties-container>
   </ng-container>
 </div>

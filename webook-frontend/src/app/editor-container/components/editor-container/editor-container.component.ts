@@ -58,6 +58,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   ];
   public editorHistory = new EditorHistoryManager();
   public editorElements: ComponentRef<EditorBaseElement>[] = [];
+
   public get toolboxItems() {
     return this.editorElementsManagerService?.items;
   }

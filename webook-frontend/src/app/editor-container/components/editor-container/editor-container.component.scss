@@ -1,19 +1,29 @@
-.content-wrapper {
-  display: flex;
-  flex: auto;
-  wb-editor-toolbox {
-    display: flex;
-    flex: initial;
-    flex-direction: column;
-  }
-  wb-editor {
+:host {
+  overflow: auto;
+  .content-wrapper {
     display: flex;
     flex: auto;
-    flex-direction: column;
-    border: 1px dotted #ccc;
-  }
-  wb-editor-properties-container {
-    display: flex;
-    flex: initial;
+    overflow: auto;
+    wb-editor-toolbox {
+      display: flex;
+      flex: initial;
+      flex-direction: column;
+    }
+    div.editor-container {
+      display: flex;
+      flex: auto;
+      flex-direction: column;
+      border: 1px dotted #ccc;
+      overflow: auto;
+      wb-editor {
+        display: flex;
+        flex: auto;
+        flex-direction: column;
+      }
+    }
+    wb-editor-properties-container {
+      display: flex;
+      flex: initial;
+    }
   }
 }
