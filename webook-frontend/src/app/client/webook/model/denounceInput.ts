@@ -9,10 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { DocumentDenounceEnum } from './documentDenounceEnum';
 
 
-export interface Tags { 
-    id?: string;
-    tagName?: string | null;
+export interface DenounceInput { 
+    documentId?: string;
+    denounceMotivation?: DocumentDenounceEnum;
+    description?: string | null;
 }
 

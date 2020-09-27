@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FaIconsModule } from '@shared/components';
 import { KeyboardShortcutsModule } from 'ng-keyboard-shortcuts';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NgxMoveableModule } from 'ngx-moveable';
 import { NgxSelectoModule } from 'ngx-selecto';
@@ -45,6 +46,7 @@ import { EditorInteractionService } from './services/interactions/editor-interac
     EditorPropertiesContainerModule,
 
     NzToolTipModule,
+    NzNotificationModule,
 
     EditorContainerRoutingModule
   ],

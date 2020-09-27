@@ -33,6 +33,7 @@ export class EditorHeaderComponent implements OnDestroy {
   @Output() public pageIndexChange = new EventEmitter<number>();
   @Output() public redirectBack = new EventEmitter<void>();
   @Output() public openDocumentConfiguration = new EventEmitter<void>();
+  @Output() public openDenounceModal = new EventEmitter<void>();
 
   public get pageTotalCount(): number {
     return this.document?.pageNumber || 1;

@@ -1,9 +1,13 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { EditorDocument } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
 
+import { EditorDenounceModalComponent } from '../editor-denounce/editor-denounce-modal/editor-denounce-modal.component';
 import { EditorPageService } from '../editor-page/editor-page.service';
 
 @Component({
@@ -21,6 +25,8 @@ export class DocumentViewPageComponent implements OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private documentService: DocumentService,
+    private nzNotificationService: NzNotificationService,
+    private nzModalService: NzModalService,
     private editorPageService: EditorPageService,
   ) {
     this.activatedRoute.params.subscribe(params => {
@@ -48,7 +54,7 @@ export class DocumentViewPageComponent implements OnDestroy {
 
   private getDocument(): void {
     this.subs.push(this.documentService.getDocument(this.documentId).subscribe(document => {
-      if (!document) {
+      if (!document || document.documentAccess === 0) {
         this.redirectBack();
         return;
       }
@@ -57,5 +63,28 @@ export class DocumentViewPageComponent implements OnDestroy {
       () => {
         this.redirectBack();
       }));
+  }
+
+  public openDenounceModal(): void {
+    const modal = this.nzModalService.create<EditorDenounceModalComponent>({
+      nzContent: EditorDenounceModalComponent,
+      nzTitle: 'Denunciar Documento',
+      nzStyle: {
+        top: '2.5vh',
+        'padding-top': '2.5vh',
+        'padding-bottom': '2.5vh'
+      },
+      nzComponentParams: {
+        documentId: this.documentId
+      }
+    });
+    modal.afterClose.pipe(first()).subscribe((result: boolean) => {
+      if (result) {
+        this.nzNotificationService.success('Denúncia Realizada', 'Sua denúncia foi recebida. Verificaremos o mais rápido possivel', {
+          nzPlacement: 'topRight'
+        });
+        this.redirectBack();
+      }
+    });
   }
 }

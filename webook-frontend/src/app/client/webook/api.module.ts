@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 
 
 import { ContactFormServiceProxy } from './api/contactFormServiceProxy';
+import { DenounceDocumentServiceProxy } from './api/denounceDocumentServiceProxy';
 import { DocumentServiceProxy } from './api/documentServiceProxy';
 import { DocumentInstanceServiceProxy } from './api/documentInstanceServiceProxy';
 import { DocumentTagServiceProxy } from './api/documentTagServiceProxy';
@@ -18,6 +19,7 @@ import { UserPreferencesServiceProxy } from './api/userPreferencesServiceProxy';
   exports:      [],
   providers: [
     ContactFormServiceProxy,
+    DenounceDocumentServiceProxy,
     DocumentServiceProxy,
     DocumentInstanceServiceProxy,
     DocumentTagServiceProxy,

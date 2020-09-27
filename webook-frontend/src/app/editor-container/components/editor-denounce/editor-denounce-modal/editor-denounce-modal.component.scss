@@ -1,0 +1,10 @@
+nz-radio-group {
+  display: flex;
+  flex-direction: column;
+  label.ant-radio-wrapper {
+    height: 2em;
+  }
+}
+textarea {
+  margin-top: 12px;
+}

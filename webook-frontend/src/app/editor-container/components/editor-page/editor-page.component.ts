@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '@oath/services/user.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, first } from 'rxjs/operators';
 import { DocumentOutput } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
 
@@ -87,10 +87,10 @@ export class EditorPageComponent implements OnDestroy {
         documentId: this.documentId
       }
     });
-    this.subs.push(modal.afterClose.subscribe((result: boolean) => {
+    modal.afterClose.pipe(first()).subscribe((result: boolean) => {
       if (result) {
         this.getDocument();
       }
-    }));
+    });
   }
 }

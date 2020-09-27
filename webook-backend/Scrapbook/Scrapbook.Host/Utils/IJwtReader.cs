@@ -6,9 +6,10 @@ namespace Scrapbook.Host.Utils
 {
     public interface IJwtReader
     {
-        string GetJwtToken();
-        JwtSecurityToken GetJwtDecoded();
-        string GetJwtClaim(string claimName);
-        Guid GetUserId();
+        bool IsUserLoggedIn();
+        string GetJwtToken(bool shouldThrowError = true);
+        JwtSecurityToken GetJwtDecoded(bool shouldThrowError = true);
+        string GetJwtClaim(string claimName, bool shouldThrowError = true);
+        Guid GetUserId(bool shouldThrowError = true);
     }
 }

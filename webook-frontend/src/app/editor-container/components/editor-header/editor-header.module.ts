@@ -10,9 +10,11 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { DocumentService } from 'src/app/services/document.service';
 
 import { EditorConfigurationModule } from '../editor-configuration/editor-configuration.module';
+import { EditorDenounceModule } from '../editor-denounce/editor-denounce.module';
 import { EditorDocumentTitleComponent } from './document-title/document-title.component';
 import { EditorHeaderComponent } from './editor-header.component';
 import {
@@ -33,6 +35,7 @@ import { EditorDocumentPageNavigationComponent } from './page-navigation/page-na
 
     FaIconsModule,
     EditorConfigurationModule,
+    EditorDenounceModule,
 
     NzButtonModule,
     NzGridModule,
@@ -41,7 +44,8 @@ import { EditorDocumentPageNavigationComponent } from './page-navigation/page-na
     NzPageHeaderModule,
     NzPaginationModule,
     NzSpaceModule,
-    NzSpinModule
+    NzSpinModule,
+    NzToolTipModule
   ],
   providers: [
     DocumentService

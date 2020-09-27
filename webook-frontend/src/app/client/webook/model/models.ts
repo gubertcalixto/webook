@@ -1,5 +1,7 @@
 export * from './contactFormSubjectType';
+export * from './denounceInput';
 export * from './documentCreateOrUpdateInput';
+export * from './documentDenounceEnum';
 export * from './documentOutput';
 export * from './documentPageOutput';
 export * from './documentSavePageInput';
