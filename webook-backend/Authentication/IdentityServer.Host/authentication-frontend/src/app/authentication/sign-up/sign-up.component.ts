@@ -6,6 +6,7 @@ import { v4 as UUID } from 'uuid';
 
 import { RegisterOutputResult } from '../client';
 import { AuthenticationService } from '../services/authentication.service';
+import { ExternalAuthenticationService } from '../services/external-authentication.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -24,7 +25,8 @@ export class SignUpComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private externalAuthenticationService: ExternalAuthenticationService
   ) { }
 
   ngOnInit(): void {
@@ -48,8 +50,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
         console.log('TODO: Create Account with facebook');
         break;
       case 'google':
-        // TODO: Login with google
-        console.log('TODO: Create Account with google');
+        this.externalAuthenticationService.loginWithGoogle();
         break;
       case 'twitter':
         // TODO: Login with twitter

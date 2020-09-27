@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 
 
 import { AccountServiceProxy } from './api/accountServiceProxy';
+import { ExternalServiceProxy } from './api/externalServiceProxy';
 import { UserServiceProxy } from './api/userServiceProxy';
 
 @NgModule({
@@ -12,6 +13,7 @@ import { UserServiceProxy } from './api/userServiceProxy';
   exports:      [],
   providers: [
     AccountServiceProxy,
+    ExternalServiceProxy,
     UserServiceProxy ]
 })
 export class ApiModule {
