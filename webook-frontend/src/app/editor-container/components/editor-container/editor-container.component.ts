@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { ShortcutInput } from 'ng-keyboard-shortcuts';
 import { merge, Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { DocumentOutput } from 'src/app/client/webook';
 import { EditorDocumentPageService } from 'src/app/editor-container/services/document-page.service';
 
@@ -35,6 +36,7 @@ import { EditorComponent } from '../editor/editor.component';
 })
 export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   private _pageIndex = 1;
+  private onSavePageSubscription: Subscription;
 
   @ViewChild('editor', { static: false }) private editorElement: EditorComponent;
   @ViewChild('editorContainer', { read: ViewContainerRef }) editorContainer: ViewContainerRef;
@@ -55,6 +57,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   public editorShortcuts: ShortcutInput[] = [
     { key: ['del', 'backspace'], command: () => { this.deleteEditorSelectedElements(); } },
     { key: 'ctrl + z', command: () => { this.undo(); } },
+    { key: 'ctrl + y', command: () => { this.redo(); } },
   ];
   public editorHistory = new EditorHistoryManager();
   public editorElements: ComponentRef<EditorBaseElement>[] = [];
@@ -83,6 +86,9 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
     window.removeEventListener('resize', this.windowResizeListenerFn);
     this.editorInteractionService.destroyInstance();
     this.subs.forEach(s => s.unsubscribe());
+    if (this.onSavePageSubscription && !this.onSavePageSubscription.closed) {
+      this.onSavePageSubscription.unsubscribe();
+    }
   }
 
   private getDocumentPage(): void {
@@ -90,11 +96,19 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
     this.subs.push(this.documentPageService.getPage(this.document.id, this.pageIndex).subscribe(result => {
       if (result?.pageData) {
         const data: EditorElementHistoryData[] = JSON.parse(result.pageData);
-        data.forEach(e => {
-          this.instanciateDocument(e.elementTypeId, e.instanceData, e.elementId);
-        });
+        this.instanciateElementsFromData(data);
+        this.editorHistory.reset(data);
       }
     }));
+  }
+
+  private instanciateElementsFromData(data: EditorElementHistoryData[]) {
+    if (this.editorElements.length) {
+      this.resetEditorElements();
+    }
+    data.forEach(e => {
+      this.instanciateDocument(e.elementTypeId, e.instanceData, e.elementId);
+    });
   }
 
   private resetEditorElements(): void {
@@ -139,6 +153,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   public editorDragOver(event: DragEvent): void {
     if (this.visualizeMode) { return; }
     event.preventDefault();
+    // TODO
   }
 
   private deleteEditorSelectedElements(): void {
@@ -156,8 +171,15 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private undo(): void {
-    // TODO
-    console.log('Undo last action');
+    if (!this.editorHistory.hasUndo()) { return; }
+    const data = this.editorHistory.undo();
+    this.instanciateElementsFromData(data);
+  }
+
+  private redo(): void {
+    if (!this.editorHistory.hasRedo()) { return; }
+    const data = this.editorHistory.redo();
+    this.instanciateElementsFromData(data);
   }
 
   private subscribeToElementChanges(): void {
@@ -182,5 +204,11 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
       };
     });
     this.documentPageService.savePage(this.document.id, this.pageIndex, data, forceNoDebounce);
+    if (this.onSavePageSubscription && !this.onSavePageSubscription.closed) {
+      this.onSavePageSubscription.unsubscribe();
+    }
+    this.onSavePageSubscription = this.documentPageService.savedPageSubject.pipe(first()).subscribe(res => {
+      this.editorHistory.append(data);
+    })
   }
 }
