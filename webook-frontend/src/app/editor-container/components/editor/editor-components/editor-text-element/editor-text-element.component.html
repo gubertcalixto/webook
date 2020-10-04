@@ -1,40 +1,42 @@
-<span *ngIf="!editing" (dblclick)="toggleEditMode()">{{text}}</span>
-<ng-container *ngIf="editing && !visualizeMode">
-  <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-    <input #inputToSave type="text" nz-input placeholder="input search text" (keyup.enter)="saveEdit()"
-      (keyup.esc)="toggleEditMode()" />
-  </nz-input-group>
-  <ng-template #suffixIconButton>
-    <button nz-button nzType="primary" (click)="saveEdit()"><i fa="save"></i></button>
-    <button nz-button nzType="danger" (click)="toggleEditMode()"><i fa="times"></i></button>
-  </ng-template>
-</ng-container>
+<ng-container *ngIf="hasFinishedDataEntry">
+  <span *ngIf="!editing" (dblclick)="toggleEditMode()">{{text}}</span>
+  <ng-container *ngIf="editing && !visualizeMode">
+    <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+      <input #inputToSave type="text" nz-input placeholder="input search text" (keyup.enter)="saveEdit()"
+        (keyup.esc)="toggleEditMode()" />
+    </nz-input-group>
+    <ng-template #suffixIconButton>
+      <button nz-button nzType="primary" (click)="saveEdit()"><i fa="save"></i></button>
+      <button nz-button nzType="danger" (click)="toggleEditMode()"><i fa="times"></i></button>
+    </ng-template>
+  </ng-container>
 
-<ng-container *ngIf="elementRef">
-  <ngx-moveable
-    *ngIf="!visualizeMode"
-    #moveable
-    [target]="target"
-    [className]="moveableClasses"
+  <ng-container *ngIf="elementRef">
+    <ngx-moveable
+      *ngIf="!visualizeMode"
+      #moveable
+      [target]="target"
+      [className]="moveableClasses"
 
-    [origin]="dragOptions.hasOrigin"
-    [draggable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && dragOptions.draggable"
-    [dragTarget]="dragOptions.dragTarget"
-    (dragStart)="onDragStart($event)"
-    (drag)="onDrag($event)"
-    (dragEnd)="onDragEnd($event)"
+      [origin]="dragOptions.hasOrigin"
+      [draggable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && dragOptions.draggable"
+      [dragTarget]="dragOptions.dragTarget"
+      (dragStart)="onDragStart($event)"
+      (drag)="onDrag($event)"
+      (dragEnd)="onDragEnd($event)"
 
-    [rotatable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && rotateOptions.rotatable"
-    [rotationPosition]="rotateOptions.rotatePosition"
-    (rotateStart)="onRotateStart($event)"
-    (rotate)="onRotate($event)"
-    (rotateEnd)="onRotateEnd($event)"
+      [rotatable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && rotateOptions.rotatable"
+      [rotationPosition]="rotateOptions.rotatePosition"
+      (rotateStart)="onRotateStart($event)"
+      (rotate)="onRotate($event)"
+      (rotateEnd)="onRotateEnd($event)"
 
-    [resizable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && resizeOptions.resizable"
-    [keepRatio]="resizeOptions.keepRatio"
-    (resizeStart)="onResizeStart($event)"
-    (resize)="onResize($event)"
-    (resizeEnd)="onResizeEnd($event)"
-    >
-  </ngx-moveable>
+      [resizable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && resizeOptions.resizable"
+      [keepRatio]="resizeOptions.keepRatio"
+      (resizeStart)="onResizeStart($event)"
+      (resize)="onResize($event)"
+      (resizeEnd)="onResizeEnd($event)"
+      >
+    </ngx-moveable>
+  </ng-container>
 </ng-container>

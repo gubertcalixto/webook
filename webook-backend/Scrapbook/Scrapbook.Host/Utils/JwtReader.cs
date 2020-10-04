@@ -15,22 +15,30 @@ namespace Scrapbook.Host.Utils
         {
             _contextAccessor = contextAccessor;
         }
+
+        public bool IsUserLoggedIn()
+        {
+            var jwtDecoded = GetJwtDecoded(false);
+            return jwtDecoded?.Id != null;
+        }
         
-        public string GetJwtToken()
+        public string GetJwtToken(bool shouldThrowError = true)
         {
             var token = _contextAccessor.HttpContext.Request.Headers["Authorization"];
             const string bearerPrefix = "Bearer ";
+            if (string.IsNullOrEmpty(token) && !shouldThrowError)
+                return null;
             if(string.IsNullOrEmpty(token) || !token.ToString().StartsWith(bearerPrefix))
                 ThrowNotAuthenticatedError();
             return token.ToString().Split(bearerPrefix)[1];
         }
 
-        public JwtSecurityToken GetJwtDecoded()
+        public JwtSecurityToken GetJwtDecoded(bool shouldThrowError = true)
         {
-            var token = GetJwtToken();
+            var token = GetJwtToken(shouldThrowError);
             var handler = new JwtSecurityTokenHandler();
             var jwtDecoded = handler.ReadJwtToken(token);
-            if(jwtDecoded == null)
+            if(shouldThrowError && jwtDecoded == null)
                 ThrowNotAuthenticatedError();
             return jwtDecoded;
         }
@@ -42,17 +50,20 @@ namespace Scrapbook.Host.Utils
             throw new AuthenticationException("No JWT token found");
         }
 
-        public string GetJwtClaim(string claimName)
+        public string GetJwtClaim(string claimName, bool shouldThrowError = true)
         {
             if (string.IsNullOrEmpty(claimName))
                 return null;
-            var jwt = GetJwtDecoded();
+            var jwt = GetJwtDecoded(shouldThrowError);
             return jwt.Claims.FirstOrDefault(c => c.Type == claimName)?.Value;
         }
 
-        public Guid GetUserId()
+        public Guid GetUserId(bool shouldThrowError = true)
         {
-            return Guid.Parse(GetJwtClaim("sub"));
+            var jwtClaim = GetJwtClaim("sub", shouldThrowError);
+            if (string.IsNullOrEmpty(jwtClaim))
+                return Guid.Empty;
+            return Guid.Parse(jwtClaim);
         }
     }
 }

@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserService } from '@oath/services/user.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { first, tap } from 'rxjs/operators';
 import { DocumentService } from 'src/app/services/document.service';
 
 import { UserPreferencesService } from './user-preferences.service';
@@ -72,24 +73,31 @@ export class UserPreferencesComponent implements OnDestroy {
   }
 
   public deleteAccount(): void {
-    this.userService.deleteUser();
+    const deleteDocumentsFn = () => {
+      return this.deleteDocumentsCall()
+    }
+    this.userService.deleteUser(deleteDocumentsFn);
   }
 
   public deleteDocuments(): void {
-    const deleteCallback = () => {
-      this.subs.push(this.documentService.deleteAllMyDocument().subscribe(res => {
-        this.nzNotificationService.success('Ação Concluida', 'Todos seus documentos foram deletados', {
-          nzPlacement: 'topRight'
-        });
-      }));
-    };
     this.nzModal.confirm({
       nzTitle: 'Você tem certeza que deseja apagar todos seus documentos?',
       nzContent: 'Todos seus documentos serão apagados, incluindo os privados.',
       nzOkText: 'Sim, tenho certeza',
       nzOkType: 'danger',
-      nzOnOk: () => deleteCallback(),
+      nzOnOk: () => this.deleteDocumentsCall().subscribe(),
       nzCancelText: 'Cancelar',
     });
+  }
+
+  private deleteDocumentsCall(): Observable<any> {
+    return this.documentService.deleteAllMyDocument().pipe(
+      first(),
+      tap(res => {
+        this.nzNotificationService.success('Ação Concluida', 'Todos seus documentos foram deletados', {
+          nzPlacement: 'topRight'
+        });
+      })
+    );
   }
 }

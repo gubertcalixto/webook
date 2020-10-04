@@ -32,6 +32,7 @@ namespace Scrapbook.Infrastructure
         public DbSet<EditorDocumentAccess> EditorDocumentAccesses { get; set; }
         public DbSet<EditorInteraction> EditorInteractions { get; set; }
         public DbSet<UserFollow> UserFollows { get; set; }
+        public DbSet<DenounceDocument> DocumentDenounces { get; set; }
         #endregion Interaction
 
         #region Editor

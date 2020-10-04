@@ -33,6 +33,7 @@ export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
   public forceMoveableEnable = false;
   public isLoading = true;
   public dataChanged = new Subject<void>();
+  public hasFinishedDataEntry: boolean;
 
   @HostBinding('class') public readonly defaultClasses = 'editor-element';
   // #region MoveableEvents

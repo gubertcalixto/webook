@@ -46,7 +46,7 @@ namespace Scrapbook.Host.Controllers.Document
         public async Task<List<MyEditorDocument>> GetAll(string querySearch)
         {
             var query = Repository
-                .Where(r => r.UserId == JwtReader.GetUserId());
+                .Where(r => r.UserId == JwtReader.GetUserId(true));
             if (!string.IsNullOrEmpty(querySearch))
                 query = query.Where(r => r.Description.Contains(querySearch) || r.Title.Contains(querySearch));
             

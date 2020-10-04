@@ -19,7 +19,6 @@ using IdentityServer4.Extensions;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -38,13 +37,14 @@ namespace IdentityServer.IdentityControllers.Account
         private readonly IMapper _mapper;
         private readonly UserContext _userContext;
         private readonly IMailService _mailService;
+        private readonly ICurrentUserService _currentUserService;
         private readonly IMailTemplateService _mailTemplateService;
         private DbSet<ApplicationUser> UserRepository => _userContext.ApplicationUsers;
         private DbSet<ForgotPasswordInfo> ForgotPasswordInfoRepository => _userContext.ForgotPasswordInfos;
 
         public AccountController(UserContext userContext, IEventService events,
             IIdentityServerInteractionService interaction, IResourceOwnerPasswordValidator usersValidator,
-            IMapper mapper, IMailService mailService, IMailTemplateService mailTemplateService)
+            IMapper mapper, IMailService mailService, IMailTemplateService mailTemplateService, ICurrentUserService currentUserService)
         {
             _events = events;
             _interaction = interaction;
@@ -53,6 +53,7 @@ namespace IdentityServer.IdentityControllers.Account
             _userContext = userContext;
             _mailService = mailService;
             _mailTemplateService = mailTemplateService;
+            _currentUserService = currentUserService;
         }
         
         [HttpPost]
@@ -179,14 +180,11 @@ namespace IdentityServer.IdentityControllers.Account
         [HttpDelete]
         public async Task<bool> DeleteAccount()
         {
-            // TODO: User is NEVER authentication
-            if (User?.Identity.IsAuthenticated != true)
+            var id = _currentUserService.GetCurrentUserId();
+            if (!id.HasValue || id.Value == Guid.Empty)
                 return false;
 
-            Guid.TryParse(User?.Identity.GetSubjectId(), out var userId);
-            if(userId == Guid.Empty)
-                return false;
-            var user = await UserRepository.FirstAsync(u => u.Id == userId);
+            var user = await UserRepository.FirstAsync(u => u.Id == id.Value);
             user.IsDeleted = true;
             UserRepository.Update(user);
             await _userContext.SaveChangesAsync();

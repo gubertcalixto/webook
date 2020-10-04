@@ -5,16 +5,16 @@ import {
   EventEmitter,
   Input,
   OnDestroy,
-  OnInit,
   Output,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
 import { ShortcutInput } from 'ng-keyboard-shortcuts';
-import { merge, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { DocumentOutput } from 'src/app/client/webook';
-import { EditorDocumentPageService } from 'src/app/editor-container/services/document-page.service';
 
+import { EditorDocumentPageService } from '../../services/document-page.service';
 import {
   EditorElementsDefinitionManagerService,
 } from '../../services/element/definition/editor-elements-definition-manager.service';
@@ -24,19 +24,20 @@ import {
 import { EditorInteractionService } from '../../services/interactions/editor-interaction.service';
 import { EditorElementInstanceData } from '../../tokens/classes/element/instance/editor-element-instance-data.class';
 import { EditorElementHistoryData } from '../../tokens/classes/history/editor-history-pre-serialize.class';
-import { EditorHistoryManager } from '../../tokens/classes/history/editor-history-stack.class';
 import { EditorBaseElement } from '../editor/editor-components/editor-element-base-classes/editor-base-element';
 import { EditorComponent } from '../editor/editor.component';
+import { EditorContainerClipboardBaseComponent } from './editor-container-clipboard-base.component';
 
 @Component({
   selector: 'wb-editor-container',
   templateUrl: './editor-container.component.html',
   styleUrls: ['./editor-container.component.scss']
 })
-export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestroy {
+export class EditorContainerComponent extends EditorContainerClipboardBaseComponent implements AfterViewInit, OnDestroy {
   private _pageIndex = 1;
+  private onSavePageSubscription: Subscription;
 
-  @ViewChild('editor', { static: false }) private editorElement: EditorComponent;
+  @ViewChild('editor', { static: false }) protected editorElement: EditorComponent;
   @ViewChild('editorContainer', { read: ViewContainerRef }) editorContainer: ViewContainerRef;
   @Input() public document: DocumentOutput;
   @Input() public visualizeMode = false;
@@ -49,28 +50,21 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   }
   @Output() public pageIndexChange = new EventEmitter<number>();
 
-  private subs: Subscription[] = [];
-  private windowResizeListenerFn = () => { this.editorElements.forEach(element => { element.instance?.updateFrame(); }); };
-  private editorElementChangeSubscription: Subscription;
   public editorShortcuts: ShortcutInput[] = [
     { key: ['del', 'backspace'], command: () => { this.deleteEditorSelectedElements(); } },
     { key: 'ctrl + z', command: () => { this.undo(); } },
+    { key: 'ctrl + y', command: () => { this.redo(); } },
+    { key: 'ctrl + c', command: () => { this.copy(); } },
+    { key: 'ctrl + v', command: () => { this.paste(); } },
   ];
-  public editorHistory = new EditorHistoryManager();
-  public editorElements: ComponentRef<EditorBaseElement>[] = [];
-  public get toolboxItems() {
-    return this.editorElementsManagerService?.items;
-  }
 
   constructor(
-    private editorElementsManagerService: EditorElementsDefinitionManagerService,
-    private instanceManagerService: EditorElementsInstanceManagerService,
-    private documentPageService: EditorDocumentPageService,
-    private editorInteractionService: EditorInteractionService
-  ) { }
-
-  ngOnInit(): void {
-    this.registerToWindowResize();
+    editorElementsManagerService: EditorElementsDefinitionManagerService,
+    instanceManagerService: EditorElementsInstanceManagerService,
+    documentPageService: EditorDocumentPageService,
+    editorInteractionService: EditorInteractionService
+  ) {
+    super(editorElementsManagerService, instanceManagerService, documentPageService, editorInteractionService);
   }
 
   ngAfterViewInit(): void {
@@ -79,9 +73,11 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngOnDestroy(): void {
-    window.removeEventListener('resize', this.windowResizeListenerFn);
+    super.ngOnDestroy();
     this.editorInteractionService.destroyInstance();
-    this.subs.forEach(s => s.unsubscribe());
+    if (this.onSavePageSubscription && !this.onSavePageSubscription.closed) {
+      this.onSavePageSubscription.unsubscribe();
+    }
   }
 
   private getDocumentPage(): void {
@@ -89,55 +85,22 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
     this.subs.push(this.documentPageService.getPage(this.document.id, this.pageIndex).subscribe(result => {
       if (result?.pageData) {
         const data: EditorElementHistoryData[] = JSON.parse(result.pageData);
-        data.forEach(e => {
-          this.instanciateDocument(e.elementTypeId, e.instanceData, e.elementId);
-        });
+        this.instanciateElementsFromData(data);
+        this.editorHistory.reset(data);
       }
     }));
   }
 
-  private resetEditorElements(): void {
-    this.editorElements.forEach(elements => {
-      elements.destroy();
-    });
-    this.editorElements = [];
-  }
-
-  private registerToWindowResize(): void {
-    if (this.visualizeMode) { return; }
-    window.addEventListener('resize', this.windowResizeListenerFn);
-  }
-
-  public editorDropElement(event: DragEvent): void {
-    if (this.visualizeMode) { return; }
-    const elementId = event.dataTransfer.getData('text/plain');
-    if (typeof elementId !== 'string') {
-      return;
-    }
-    const instanceData = new EditorElementInstanceData({
-      frameProperties: {
-        left: `${event?.offsetX}px`,
-        top: `${event?.offsetY}px`,
-      }
-    });
-
-    this.instanciateDocument(elementId, instanceData);
-    this.emitDocumentPageSave(true);
-  }
-
-  private instanciateDocument(elementTypeId: string, data?: EditorElementInstanceData, elementId?: string): void {
-    this.editorElements.push(this.instanceManagerService.instanciateElement(
+  protected instanciateDocument(elementTypeId: string, data?: EditorElementInstanceData, elementId?: string): ComponentRef<EditorBaseElement> {
+    const addedElement = this.instanceManagerService.instanciateElement(
       elementTypeId,
       this.editorContainer,
       data,
       elementId
-    ));
+    );
+    this.editorElements.push(addedElement);
     this.subscribeToElementChanges();
-  }
-
-  public editorDragOver(event: DragEvent): void {
-    if (this.visualizeMode) { return; }
-    event.preventDefault();
+    return addedElement;
   }
 
   private deleteEditorSelectedElements(): void {
@@ -154,22 +117,7 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
     this.emitDocumentPageSave();
   }
 
-  private undo(): void {
-    // TODO
-    console.log('Undo last action');
-  }
-
-  private subscribeToElementChanges(): void {
-    if (this.visualizeMode) { return; }
-    if (this.editorElementChangeSubscription) {
-      this.editorElementChangeSubscription.unsubscribe();
-    }
-    this.editorElementChangeSubscription = merge(...this.editorElements.map(e => e.instance.change)).subscribe((elementId: string) => {
-      this.emitDocumentPageSave();
-    })
-  }
-
-  private emitDocumentPageSave(forceNoDebounce = false) {
+  protected emitDocumentPageSave(forceNoDebounce = false) {
     const data: EditorElementHistoryData[] = this.editorElements.map(el => {
       return {
         elementId: el.instance?.elementId,
@@ -181,5 +129,11 @@ export class EditorContainerComponent implements OnInit, AfterViewInit, OnDestro
       };
     });
     this.documentPageService.savePage(this.document.id, this.pageIndex, data, forceNoDebounce);
+    if (this.onSavePageSubscription && !this.onSavePageSubscription.closed) {
+      this.onSavePageSubscription.unsubscribe();
+    }
+    this.onSavePageSubscription = this.documentPageService.savedPageSubject.pipe(first()).subscribe(res => {
+      this.editorHistory.append(data);
+    })
   }
 }

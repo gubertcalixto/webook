@@ -1,5 +1,6 @@
 wb-editor {
   position: relative;
+  outline: none;
   > wb-editor-element-projection {
     $box-padding: 4px 8px;
     $box-border-transition-time: 0.25s;

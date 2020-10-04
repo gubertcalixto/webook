@@ -126,7 +126,7 @@ namespace Scrapbook.Host.Controllers.Document
         {
             var document = await Repository
                 .Include(d => d.Tags)
-                .Where(d => d.UserId == JwtReader.GetUserId())
+                .Where(d => d.UserId == JwtReader.GetUserId(true))
                 .FirstOrDefaultAsync(d => d.Id == id);
             if (document == null)
                 return;
@@ -156,7 +156,7 @@ namespace Scrapbook.Host.Controllers.Document
             {
                 const string titlePrefix = "Novo Documento";
                 var title = $"{titlePrefix} {currentIndex}";
-                if (await Repository.AnyAsync(e => e.UserId == JwtReader.GetUserId() && e.Title == title))
+                if (await Repository.AnyAsync(e => e.UserId == JwtReader.GetUserId(true) && e.Title == title))
                 {
                     currentIndex++;
                     continue;
