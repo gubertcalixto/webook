@@ -1,4 +1,13 @@
-import { Component, ElementRef, EventEmitter, HostBinding, Input, Output, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  Input,
+  Output,
+  ViewEncapsulation,
+} from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SelectoEvents } from 'selecto';
 
@@ -10,10 +19,15 @@ import { SelectoEvents } from 'selecto';
 })
 export class EditorComponent {
   private _selectedElementIds: string[] = [];
+  public isFocused = false;
 
   @HostBinding('class.editing') @Input() public editMode: boolean;
+  @HostBinding('attr.tabindex') public tabindex = 0;
   @Input() public visualizeMode = false;
   @Output() public editModeChange = new EventEmitter<boolean>();
+
+  @HostListener('focus') public onFocus() { this.isFocused = true; }
+  @HostListener('blur') public onBlur() { this.isFocused = false; }
 
   public temporarySelectedElementIds: string[] = [];
   public get selectedElementIds(): string[] { return this._selectedElementIds; }
