@@ -46,7 +46,7 @@ namespace IdentityServer
                     builder =>
                     {
                         // TODO: Production Mode
-                        builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+                        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                     });
             });
             services.AddControllers();
@@ -106,7 +106,7 @@ namespace IdentityServer
                     options.ClientId = clientId;
                     options.ClientSecret = clientPassword;
                     options.CallbackPath = "/";
-                    options.AccessDeniedPath = "/oauth/External/AccessDeniedCallback";
+                    options.AccessDeniedPath = "/External/AccessDeniedCallback";
                     options.SaveTokens = true;
                     options.AccessType = "offline";
                 });

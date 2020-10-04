@@ -45,14 +45,13 @@ namespace IdentityServer.IdentityControllers
             _externalAuthLinkRepository = context.ExternalAuthenticationLinks;
         }
 
-
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Challenge(string scheme = "", string returnUrl = "", string fallbackUrl = "", bool forceConsent = false)
         {
             // TODO: Production
-            if (string.IsNullOrEmpty(returnUrl)) returnUrl = "http://localhost:4200";
-            if (string.IsNullOrEmpty(fallbackUrl)) fallbackUrl = "/oauth/app/login";
+            if (string.IsNullOrEmpty(returnUrl)) returnUrl = $"{IdentityDefaultUrls.FrontendAppOrigin}#forceLogin=true";
+            if (string.IsNullOrEmpty(fallbackUrl)) fallbackUrl = "/login";
             if (string.IsNullOrEmpty(scheme)) scheme = "Google";
             // TODO: Production - Remove clientId from here;
             var clientId = Encoding.UTF8.GetString(Convert.FromBase64String("NTA1MjAyNjgxNDkwLWhmMWE2ZDBoczF0dDgwcjExNW10YzhydHJvYmVrYWdpLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29t"));
@@ -65,7 +64,7 @@ namespace IdentityServer.IdentityControllers
             var scopes = "openid email profile";
             var props = new AuthenticationProperties
             {
-                RedirectUri = Path.Combine($"/oauth{Url.Action(nameof(Callback))}?clientId={clientId}&addedScopes={scopes}&{nameof(fallbackUrl)}={fallbackUrl}"),
+                RedirectUri = Path.Combine($"{Url.Action(nameof(Callback))}?clientId={clientId}&addedScopes={scopes}&{nameof(fallbackUrl)}={fallbackUrl}"),
                 Items =
                 {
                     { "return_url", returnUrl }, 
@@ -89,7 +88,7 @@ namespace IdentityServer.IdentityControllers
         {
             // External Authentication returns default callback url 
             if (string.IsNullOrEmpty(returnUrl))
-                returnUrl = $"/oauth{Url.Action(nameof(Callback))}";
+                returnUrl = $"{Url.Action(nameof(Callback))}";
             return Redirect(returnUrl);
         }
         
@@ -102,11 +101,11 @@ namespace IdentityServer.IdentityControllers
 
             if (string.IsNullOrEmpty(fallbackUrl))
             {
-                fallbackUrl = "/oauth/app/login";
-                var loggedUserId = GetAuthenticatedUserId();
-                if (loggedUserId != null)
+                fallbackUrl = "/login";
+                var hasUserId = HasUserId();
+                if (hasUserId)
                     // TODO: Production
-                    fallbackUrl = "http://localhost:4200";
+                    fallbackUrl = $"{IdentityDefaultUrls.FrontendAppOrigin}#forceLogin=true";
             }
 
             if (result?.Succeeded != true)
@@ -116,17 +115,13 @@ namespace IdentityServer.IdentityControllers
             var (user, provider, providerUserId, externalTokens, externalClaims) = await GetInfoFromExternalProvider(result);
 
             // User wasn't found
-            if (user == null)
-            {
-                // TODO: Create User
-            }
+            user ??= await AddUserByExternalClaims(externalClaims);
             
             if (externalTokens == null || !externalTokens.Any())
-                return Redirect($"{fallbackUrl}" +
-                                $"?errors=externalAuthenticationError");
+                return Redirect($"{fallbackUrl}?errors=externalAuthenticationError");
             
             var externalLink = await CreateOrUpdateExternalLink(user, externalTokens, addedScopes);
-            var returnUrl = result.Properties.Items["return_url"] ?? "http://localhost:4200";
+            var returnUrl = result.Properties.Items["return_url"] ?? $"{IdentityDefaultUrls.FrontendAppOrigin}#forceLogin=true";
             
             // Refresh Token wasn't save, forcing consent
             if (string.IsNullOrEmpty(externalLink?.RefreshToken))
@@ -135,7 +130,6 @@ namespace IdentityServer.IdentityControllers
                 return await Challenge(scheme, returnUrl, fallbackUrl, true);
             }
 
-            // TODO: Testar
             await LoginWithExternalAuth(result, user, provider, providerUserId);
 
             // Delete temporary cookie used during external authentication
@@ -230,9 +224,9 @@ namespace IdentityServer.IdentityControllers
             // TODO: Production
             var redirectUris = new List<string>
             {
-                "/oauth/app/login",
-                "http://localhost:4200",
-                "http://localhost:4200/*"
+                "/login",
+                IdentityDefaultUrls.FrontendAppOrigin,
+                IdentityDefaultUrls.FrontendWildcardAppOrigin
             };
 
             foreach (var returnUrl in returnUrls)
@@ -282,7 +276,7 @@ namespace IdentityServer.IdentityControllers
                 await _context.SaveChangesAsync();
             }
             else
-                UpdateExternalAuthLink(externalLink, accessToken, normalizedAccessTokenExpiresDate, scopes, refreshToken);
+                await UpdateExternalAuthLink(externalLink, accessToken, normalizedAccessTokenExpiresDate, scopes, refreshToken);
 
             return externalLink;
         }
@@ -315,11 +309,11 @@ namespace IdentityServer.IdentityControllers
                 throw new Exception("Refresh Access Token request failed. User token might be invalid");
             
             var expires = DateTime.UtcNow.AddSeconds(refreshResponse.ExpiresIn);
-            UpdateExternalAuthLink(externalAuthenticationLink, refreshResponse.AccessToken, expires);
+            await UpdateExternalAuthLink(externalAuthenticationLink, refreshResponse.AccessToken, expires);
             return refreshResponse;
         }
 
-        private void UpdateExternalAuthLink(ExternalAuthenticationLink externalAuthenticationLink,
+        private async Task UpdateExternalAuthLink(ExternalAuthenticationLink externalAuthenticationLink,
             string accessToken, DateTime expiresDate, string scopesToAdd = null, string refreshToken = null)
         {
             if (externalAuthenticationLink == null || string.IsNullOrEmpty(accessToken)) return;
@@ -327,6 +321,8 @@ namespace IdentityServer.IdentityControllers
             externalAuthenticationLink.AccessTokenExpiresDate = expiresDate;
             if (!string.IsNullOrEmpty(refreshToken))
                 externalAuthenticationLink.RefreshToken = refreshToken;
+            _externalAuthLinkRepository.Update(externalAuthenticationLink);
+            await _context.SaveChangesAsync();
         }
 
         private async Task<(ApplicationUser user, string provider, string providerUserId, List<AuthenticationToken> tokens, IEnumerable<Claim> claims)> GetInfoFromExternalProvider(AuthenticateResult result)
@@ -346,10 +342,14 @@ namespace IdentityServer.IdentityControllers
 
             var provider = result.Properties.Items["scheme"];
             var providerUserId = userIdClaim.Value;
-            
-            var loggedUserId = GetAuthenticatedUserId();
-            var user = await _userRepository
-                .FirstOrDefaultAsync(u => u.Id == loggedUserId);
+
+            var loggedUserId = HasUserId()
+                ? GetAuthenticatedUserId()
+                : null;
+            var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var user = loggedUserId.HasValue && loggedUserId.Value != Guid.Empty
+                ? await _userRepository.FirstOrDefaultAsync(u => u.Id == loggedUserId)
+                : await _userRepository.FirstOrDefaultAsync(u => u.Email == email && u.ExternalLoginProvider == "Google");
 
             return (user, provider, providerUserId, result.Properties.GetTokens().ToList(), claims);
         }
@@ -387,6 +387,39 @@ namespace IdentityServer.IdentityControllers
             if (HttpContext.User == null)
                 return null;
             return Guid.Parse(HttpContext.User.GetSubjectId());
+        }
+        
+        private bool HasUserId()
+        {
+            if (HttpContext.User == null)
+                return false;
+            return !string.IsNullOrEmpty(HttpContext.User.Claims.FirstOrDefault(f => f.Type == "sub")?.Value);
+        }
+
+        private async Task<ApplicationUser> AddUserByExternalClaims(IEnumerable<Claim> externalClaims)
+        {
+            var claims = externalClaims.ToList();
+            var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var firstName = claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value;
+            var secondName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Surname)?.Value;
+            var fullName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            var userToCreate = new ApplicationUser
+            {
+                Id = Guid.NewGuid(),
+                Email = email,
+                FirstName = firstName,
+                SecondName = secondName,
+                UserName = fullName,
+                CreationTime = DateTime.Now,
+                NormalizedUserName = fullName?.ToUpperInvariant(),
+                EmailConfirmed = true,
+                IsActive = true,
+                ExternalLoginProvider = "Google",
+                NormalizedEmail = email?.ToUpperInvariant()
+            };
+            var user = await _userRepository.AddAsync(userToCreate);
+            await _context.SaveChangesAsync();
+            return user.Entity;
         }
     }
 }

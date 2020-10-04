@@ -20,6 +20,6 @@ namespace IdentityServer.Domain.Entities
         public Guid? DeleterId { get; set; }
         public DateTime? DeletionTime { get; set; }
         public bool IsDeleted { get; set; }
-        
+        public string ExternalLoginProvider { get; set; }
     }
 }
