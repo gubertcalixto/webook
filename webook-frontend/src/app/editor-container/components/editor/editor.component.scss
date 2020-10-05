@@ -27,9 +27,12 @@ wb-editor {
       cursor: initial;
     }
   }
+  .editor-element {
+    position: absolute;
+  }
 }
 .moveable-control-box {
-  &:not(.selected){
+  &:not(.selected) {
     display: none !important;
   }
 }
