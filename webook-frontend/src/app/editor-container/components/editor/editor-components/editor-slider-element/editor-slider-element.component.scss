@@ -1,0 +1,17 @@
+wb-editor-slider-component {
+  nz-slider {
+    display: flex;
+    flex: auto;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    .ant-slider {
+      &.ant-slider-vertical {
+        margin: 0;
+      }
+      &:not(.ant-slider-vertical) {
+        width: 100%;
+      }
+    }
+  }
+}

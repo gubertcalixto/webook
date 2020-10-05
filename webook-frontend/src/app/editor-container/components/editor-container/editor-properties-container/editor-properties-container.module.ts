@@ -7,6 +7,7 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { ColorPickerModule } from 'ngx-color-picker';
 
 import { EditorPropertiesContainerComponent } from './editor-properties-container.component';
+import { ElementPropertiesModule } from './element-properties/element-properties.module';
 import { EditorPagePropertiesModule } from './page-properties/page-properties.module';
 
 @NgModule({
@@ -17,6 +18,7 @@ import { EditorPagePropertiesModule } from './page-properties/page-properties.mo
     FaIconsModule,
 
     EditorPagePropertiesModule,
+    ElementPropertiesModule,
 
     ColorPickerModule,
     NzUploadModule,

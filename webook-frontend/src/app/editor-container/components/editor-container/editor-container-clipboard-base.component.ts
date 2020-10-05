@@ -68,7 +68,6 @@ export abstract class EditorContainerClipboardBaseComponent extends EditorContai
   protected paste(): void {
     const clipboardContent = navigator.clipboard.readText();
     clipboardContent.then((copiedContent: string) => {
-      debugger
       if (copiedContent === '[webook.copiedElements]' && this.copiedElementsData.length) {
         this.copiedElementsData.forEach(el => {
           const instanciatedElement = this.instanciateDocument(el.elementTypeId, el.data);
