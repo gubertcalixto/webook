@@ -1,0 +1,30 @@
+<h4 nz-typography>Retângulo</h4>
+<label>Cor de fundo</label>
+<div class="color-picker-container">
+  <input class="color-picker-input" [colorPicker]="currentElementSelectedData.backgroundColor" (colorPickerChange)="setDataProperty('backgroundColor', $event)" [style.background]="currentElementSelectedData.backgroundColor || '#000'" readonly />
+</div>
+<label nz-checkbox  
+[ngModel]="currentElementSelectedData.hasBorder"
+(ngModelChange)="setDataProperty('hasBorder', $event)">
+Com borda
+</label>
+<ng-container *ngIf="currentElementSelectedData.hasBorder">
+  <label>Tamanho da Borda</label>
+  <nz-input-number
+  nzPlaceHolder="Tamanho da Borda"
+  [ngModel]="currentElementSelectedData.borderSize"
+  (ngModelChange)="setDataProperty('borderSize', $event)"
+  nzMin="0" nzMax="30"
+  ></nz-input-number>
+  <label>Cor da Borda</label>
+  <div class="color-picker-container">
+    <input class="color-picker-input" [colorPicker]="currentElementSelectedData.borderColor" (colorPickerChange)="setDataProperty('borderColor', $event)" [style.background]="currentElementSelectedData.borderColor || '#000'" readonly />
+  </div>
+  <label>Estilo de Borda</label>
+  <nz-select [ngModel]="currentElementSelectedData.borderStyle" (ngModelChange)="setDataProperty('borderStyle', $event)">
+    <nz-option nzValue="dotted" nzLabel="Pontilhada"></nz-option>
+    <nz-option nzValue="dashed" nzLabel="Tracejada"></nz-option>
+    <nz-option nzValue="solid" nzLabel="Sólida"></nz-option>
+    <nz-option nzValue="double" nzLabel="Duplicada"></nz-option>
+  </nz-select>
+</ng-container>

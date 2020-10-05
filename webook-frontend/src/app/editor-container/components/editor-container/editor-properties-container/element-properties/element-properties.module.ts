@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { RectanglePropertiesModule } from './rectangle-properties/rectangle-properties.module';
 import { SliderPropertiesModule } from './slider-properties/slider-properties.module';
 
 @NgModule({
@@ -9,10 +10,12 @@ import { SliderPropertiesModule } from './slider-properties/slider-properties.mo
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    SliderPropertiesModule
+    SliderPropertiesModule,
+    RectanglePropertiesModule
   ],
   exports: [
-    SliderPropertiesModule
+    SliderPropertiesModule,
+    RectanglePropertiesModule
   ],
 })
 export class ElementPropertiesModule { }
