@@ -46,7 +46,7 @@ namespace IdentityServer
                     builder =>
                     {
                         // TODO: Production Mode
-                        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                        builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
                     });
             });
             services.AddControllers();
@@ -96,7 +96,7 @@ namespace IdentityServer
             services.AddAuthentication()
                .AddGoogle("Google", options =>
                 {
-                    // TODO Hidden value
+                    // TODO Hide value
                     var clientIdAsByteArray = Convert.FromBase64String("NTA1MjAyNjgxNDkwLWhmMWE2ZDBoczF0dDgwcjExNW10YzhydHJvYmVrYWdpLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29t");
                     var clientId = Encoding.UTF8.GetString(clientIdAsByteArray);
                     var clientPasswordAsByteArray = Convert.FromBase64String("S0JUZjU4X09VLTU1MzdoZ1V1Q3Vtbl9h");
