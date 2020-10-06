@@ -1,0 +1,28 @@
+wb-checkbox-properties {
+  display: flex;
+  flex-direction: column;
+  p.checkboxes-header {
+    margin: 12px 0 0;
+    font-weight: bold;
+  }
+  div.checkbox-option {
+    display: flex;
+    flex-direction: column;
+    & + .checkbox-option {
+      margin-top: 12px;
+    }
+    .field-container {
+      display: flex;
+      align-items: stretch;
+      button {
+        background: unset;
+        border: none;
+        box-shadow: unset;
+        &.hidden {
+          pointer-events: none;
+          opacity: 0;
+        }
+      }
+    }
+  }
+}
