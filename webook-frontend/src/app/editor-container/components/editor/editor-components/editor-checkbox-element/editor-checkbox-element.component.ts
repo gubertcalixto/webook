@@ -10,16 +10,15 @@ import { EditorCheckboxElementData } from './tokens/editor-checkbox-element-data
   styleUrls: ['./editor-checkbox-element.component.scss'],
 })
 export class EditorCheckboxElementComponent extends EditorResizeBaseElement {
-  private _options: EditorCheckboxElementData[];
+  private internalOptions: EditorCheckboxElementData[];
   private hasStarted = false;
   public elementTypeId = 'wb-checkbox';
-  public checked: boolean;
 
   public get options(): EditorCheckboxElementData[] {
-    return this._options;
+    return this.internalOptions;
   }
   public set options(value: EditorCheckboxElementData[]) {
-    this._options = value;
+    this.internalOptions = value;
     this.data.checkboxOptions = this.options;
     if (this.hasStarted) {
       this.emitChange();
@@ -40,12 +39,6 @@ export class EditorCheckboxElementComponent extends EditorResizeBaseElement {
     this.setInitialSize();
     this.setData();
     this.hasStarted = true;
-  }
-
-  public avoidCheckboxClick(event: MouseEvent): boolean {
-    event.preventDefault();
-    event.stopPropagation();
-    return false;
   }
 
   private setInitialSize(): void {
