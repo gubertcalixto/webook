@@ -32,17 +32,20 @@ export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
   public elementId = uuid();
   public forceMoveableEnable = false;
   public isLoading = true;
+  public isMouseOver: boolean;
   public dataChanged = new Subject<void>();
   public hasFinishedDataEntry: boolean;
 
   @HostBinding('class') public readonly defaultClasses = 'editor-element';
   // #region MoveableEvents
   @HostListener('mouseover') private onElementMouseOver() {
+    this.isMouseOver = true;
     if (!this.hasSelectionEnded || this.editor?.selectedElementIds.length === 0) {
       this.forceMoveableEnable = true;
     }
   }
   @HostListener('mouseout') private onElementMouseOut() {
+    this.isMouseOver = false;
     if (this.forceMoveableEnable) { this.forceMoveableEnable = false; }
   }
   @HostListener('mousedown') private onElementClick() {
@@ -108,6 +111,9 @@ export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
     target.style.cssText = this.frame.toCSS();
     this.postUpdateFrame.forEach(fn => { fn(); });
     this.updateTransformationStyle();
+    if (!this.hasFinishedDataEntry) {
+      return;
+    }
     setTimeout(() => {
       if (!this.frameSnapshot || this.frameSnapshot !== JSON.stringify(this.frame.properties)) {
         this.moveable?.updateRect();
