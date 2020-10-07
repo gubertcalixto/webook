@@ -11,7 +11,6 @@ import { EditorRadioElementData } from './tokens/editor-radio-element-data.inter
 })
 export class EditorRadioElementComponent extends EditorResizeBaseElement {
   private internalOptions: EditorRadioElementData[];
-  private hasStarted = false;
   public elementTypeId = 'wb-radio';
   public selectedOption: string;
 
@@ -28,23 +27,9 @@ export class EditorRadioElementComponent extends EditorResizeBaseElement {
 
   constructor(public elementRef: ElementRef<HTMLElement>) {
     super(elementRef);
-    this.subs.push(this.dataChanged.subscribe(() => {
-      if (!this.data) { return; }
-      this.setData();
-      if (this.hasStarted) {
-        this.emitChange();
-      }
-    }));
   }
 
-  ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-    this.setInitialSize();
-    this.setData();
-    this.hasStarted = true;
-  }
-
-  private setInitialSize(): void {
+  protected setInitialSize(): void {
     const width = this.frame.get('width');
     if (width === undefined || width === null || width === 'unset') {
       this.frame.set('width', '200px');
@@ -52,13 +37,7 @@ export class EditorRadioElementComponent extends EditorResizeBaseElement {
     }
   }
 
-  public updateSelectedOption(optionId: string) {
-    this.selectedOption = optionId;
-    this.data.selectedOption = optionId;
-    this.emitChange();
-  }
-
-  private setData(): void {
+  protected setData(): void {
     if (this.options !== this.data.radioOptions) {
       this.options = this.data.radioOptions;
     }
@@ -72,5 +51,11 @@ export class EditorRadioElementComponent extends EditorResizeBaseElement {
         this.updateSelectedOption(this.options[0].id);
       });
     }
+  }
+
+  public updateSelectedOption(optionId: string) {
+    this.selectedOption = optionId;
+    this.data.selectedOption = optionId;
+    this.emitChange();
   }
 }

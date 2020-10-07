@@ -21,31 +21,18 @@ export class EditorRectangleElementComponent extends EditorResizeBaseElement {
 
   constructor(public elementRef: ElementRef<HTMLElement>) {
     super(elementRef);
-    this.subs.push(this.dataChanged.subscribe(() => {
-      if (!this.data) { return; }
-      this.setData();
-      this.emitChange(true);
-    }));
   }
 
-  ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-
-    this.setData();
-    this.setInitialSize();
-    this.updateFrame();
-  }
-
-  private setInitialSize(): void {
+  protected setInitialSize(): void {
     const width = this.frame.get('width');
     const height = this.frame.get('height');
     let hasAlteredSize = false;
     if (width === undefined || width === null || width === 'unset') {
-      this.frame.set('width', '200px');
+      this.frame.set('width', `${this.initialWidth}px`);
       hasAlteredSize = true;
     }
     if (height === undefined || height === null || height === 'unset') {
-      this.frame.set('height', '200px');
+      this.frame.set('height', `${this.initialHeight}px`);
       hasAlteredSize = true;
     }
     if (hasAlteredSize) {
@@ -53,7 +40,7 @@ export class EditorRectangleElementComponent extends EditorResizeBaseElement {
     }
   }
 
-  private setData(): void {
+  protected setData(): void {
     if (this.backgroundColor !== this.data.backgroundColor) {
       this.backgroundColor = this.data.backgroundColor || this.initialColor;
     }

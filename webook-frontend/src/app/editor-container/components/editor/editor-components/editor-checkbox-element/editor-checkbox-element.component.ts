@@ -11,7 +11,6 @@ import { EditorCheckboxElementData } from './tokens/editor-checkbox-element-data
 })
 export class EditorCheckboxElementComponent extends EditorResizeBaseElement {
   private internalOptions: EditorCheckboxElementData[];
-  private hasStarted = false;
   public elementTypeId = 'wb-checkbox';
 
   public get options(): EditorCheckboxElementData[] {
@@ -27,21 +26,9 @@ export class EditorCheckboxElementComponent extends EditorResizeBaseElement {
 
   constructor(public elementRef: ElementRef<HTMLElement>) {
     super(elementRef);
-    this.subs.push(this.dataChanged.subscribe(() => {
-      if (!this.data) { return; }
-      this.setData();
-      this.emitChange(true);
-    }));
   }
 
-  ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-    this.setInitialSize();
-    this.setData();
-    this.hasStarted = true;
-  }
-
-  private setInitialSize(): void {
+  protected setInitialSize(): void {
     const width = this.frame.get('width');
     if (width === undefined || width === null || width === 'unset') {
       this.frame.set('width', '200px');
@@ -49,7 +36,7 @@ export class EditorCheckboxElementComponent extends EditorResizeBaseElement {
     }
   }
 
-  private setData(): void {
+  protected setData(): void {
     if (this.options !== this.data.checkboxOptions) {
       this.options = this.data.checkboxOptions;
     }

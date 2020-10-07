@@ -25,6 +25,7 @@ export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
   protected subs: Subscription[] = [];
   protected preUpdateFrame = new Map<string, () => any>();
   protected postUpdateFrame = new Map<string, () => any>();
+  protected hasStarted = false;
 
   private frameSnapshot: string;
 
@@ -85,7 +86,15 @@ export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
     return undefined;
   }
 
-  constructor(public elementRef: ElementRef<HTMLElement>) { }
+  constructor(public elementRef: ElementRef<HTMLElement>) {
+    this.subs.push(this.dataChanged.subscribe(() => {
+      if (!this.data) { return; }
+      this.setData();
+      if (this.hasStarted) {
+        this.emitChange();
+      }
+    }));
+  }
 
   ngAfterViewInit(): void {
     // First change after component is instanced
@@ -96,11 +105,17 @@ export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
     if (!this.data) {
       this.data = {};
     }
+    this.setInitialSize();
+    this.setData();
+    this.hasStarted = true;
   }
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
   }
+
+  protected abstract setInitialSize(): void;
+  protected abstract setData(): void;
 
   /**
    * Update element frame

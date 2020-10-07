@@ -11,7 +11,6 @@ import { EditorResizeBaseElement } from '../editor-element-base-classes/resize/e
 export class EditorSliderElementComponent extends EditorResizeBaseElement {
   private readonly defaultSliderValue = 50;
   private _valueSlider = this.defaultSliderValue;
-  private hasStarted = false;
   public elementTypeId = 'wb-slider';
   public isVertical = false;
   public minValue = 0;
@@ -26,23 +25,12 @@ export class EditorSliderElementComponent extends EditorResizeBaseElement {
       this.emitChange();
     }
   }
+
   constructor(public elementRef: ElementRef<HTMLElement>) {
     super(elementRef);
-    this.subs.push(this.dataChanged.subscribe(() => {
-      if (!this.data) { return; }
-      this.setData();
-      this.emitChange(true);
-    }));
   }
 
-  ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-    this.setData();
-    this.setInitialWidth();
-    this.hasStarted = true;
-  }
-
-  private setInitialWidth() {
+  protected setInitialSize(): void {
     const width = this.frame.get('width');
     if (width === undefined || width === null || width === 'unset') {
       this.frame.set('width', '200px');
@@ -50,7 +38,7 @@ export class EditorSliderElementComponent extends EditorResizeBaseElement {
     }
   }
 
-  private setData(): void {
+  protected setData(): void {
     if (this.valueSlider !== this.data.valueSlide) {
       this.valueSlider = this.data.valueSlider;
     }
