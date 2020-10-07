@@ -42,7 +42,7 @@ export class EditorPropertiesContainerComponent {
 
   constructor(private editorInteractionService: EditorInteractionService) {
     this.subs.push(this.editorInteractionService.currentSelectedElementDataSubject
-      .pipe(filter(r => Boolean(r)))
+      .pipe(filter((r) => Boolean(r)))
       .subscribe((elementMetadata) => {
         this.currentElementSelectedMetaData = elementMetadata;
         setTimeout(() => {
@@ -51,7 +51,7 @@ export class EditorPropertiesContainerComponent {
       }));
   }
 
-  public setDataProperty(fieldName: string, fieldValue: any) {
+  public setDataProperty: (fieldName: string, fieldValue: any) => void = (fieldName: string, fieldValue: any) => {
     if (this.currentElementSelectedData) {
       this.currentElementSelectedData[fieldName] = fieldValue;
     }

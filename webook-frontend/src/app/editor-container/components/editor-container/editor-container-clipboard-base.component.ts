@@ -5,7 +5,7 @@ import { EditorContainerBaseComponent } from './editor-container-base.component'
 export abstract class EditorContainerClipboardBaseComponent extends EditorContainerBaseComponent {
   private copiedElementsData: { elementTypeId: string; data: EditorElementInstanceData }[] = []
 
-  private getCopiedDataFromElement(element: EditorBaseElement) {
+  private getCopiedDataFromElement(element: EditorBaseElement, keepsSamePosition = false) {
     const getNumberOfPosition = (position: string = '') => {
       const normalizedPosition = Number(position.replace('px', ''));
       return isNaN(normalizedPosition) ? 0 : normalizedPosition;
@@ -13,21 +13,23 @@ export abstract class EditorContainerClipboardBaseComponent extends EditorContai
     const spacingBetweenItems = 5; // px
     const elWidth = getNumberOfPosition(element.frame.get('width')) || element.elementRef.nativeElement.clientWidth;
     const elHeight = getNumberOfPosition(element.frame.get('height')) || element.elementRef.nativeElement.clientHeight;
-    const maxWidth = this.editorElement.elementRef.nativeElement.scrollWidth;
-    const maxHeight = this.editorElement.elementRef.nativeElement.scrollHeight;
-
     let left = getNumberOfPosition(element.frame.get('left'));
-    if (left + (elWidth * 2) + spacingBetweenItems <= maxWidth) {
-      left = left + (elWidth * 2) + spacingBetweenItems;
-    } else if (left - (elWidth * 2) - spacingBetweenItems >= 0) {
-      left = left - (elWidth * 2) - spacingBetweenItems;
-    }
-
     let top = getNumberOfPosition(element.frame.get('top'));
-    if (top + (elHeight * 2) + spacingBetweenItems <= maxHeight) {
-      top = top + (elHeight * 2) + spacingBetweenItems;
-    } else if (top - (elHeight * 2) - spacingBetweenItems >= 0) {
-      top = top - (elHeight * 2) - spacingBetweenItems;
+    if (!keepsSamePosition) {
+      const maxWidth = this.editorElement.elementRef.nativeElement.scrollWidth;
+      const maxHeight = this.editorElement.elementRef.nativeElement.scrollHeight;
+      const spacerMultipler = 1.1;
+      if (left + (elWidth * spacerMultipler) + spacingBetweenItems <= maxWidth) {
+        left = left + (elWidth * spacerMultipler) + spacingBetweenItems;
+      } else if (left - (elWidth * spacerMultipler) - spacingBetweenItems >= 0) {
+        left = left - (elWidth * spacerMultipler) - spacingBetweenItems;
+      }
+
+      if (top + (elHeight * spacerMultipler) + spacingBetweenItems <= maxHeight) {
+        top = top + (elHeight * spacerMultipler) + spacingBetweenItems;
+      } else if (top - (elHeight * spacerMultipler) - spacingBetweenItems >= 0) {
+        top = top - (elHeight * spacerMultipler) - spacingBetweenItems;
+      }
     }
 
     return {
@@ -44,8 +46,29 @@ export abstract class EditorContainerClipboardBaseComponent extends EditorContai
       })
     };
   }
+  protected cut(): void {
+    if (!this.editorElement.isFocused || this.editorElement.selectedElementIds.length === 0) {
+      return;
+    }
+    this.copy(true);
+    this.deleteEditorSelectedElements();
+  }
 
-  protected copy(): void {
+  protected deleteEditorSelectedElements(): void {
+    const selectedIds = this.editorElement.selectedElementIds;
+    if (selectedIds.length === 0) {
+      return;
+    }
+    const elementRefs = this.editorElements.filter(e => selectedIds.includes(e.instance?.elementId));
+    elementRefs.forEach(element => {
+      element.destroy();
+    });
+    this.editorElements = [...this.editorElements.filter(e => !selectedIds.includes(e.instance?.elementId))];
+    this.editorElement.selectedElementIds = [];
+    this.emitDocumentPageSave();
+  }
+
+  protected copy(keepsSamePosition = false): void {
     if (!this.editorElement.isFocused) {
       return;
     }
@@ -59,7 +82,7 @@ export abstract class EditorContainerClipboardBaseComponent extends EditorContai
 
     elementRefs.forEach((element) => {
       if (element.instance) {
-        this.copiedElementsData.push(this.getCopiedDataFromElement(element.instance));
+        this.copiedElementsData.push(this.getCopiedDataFromElement(element.instance, keepsSamePosition));
       }
     });
     navigator.clipboard.writeText('[webook.copiedElements]');
