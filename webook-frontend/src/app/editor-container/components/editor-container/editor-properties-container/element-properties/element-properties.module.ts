@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CheckboxPropertiesModule } from './checkbox-properties/checkbox-properties.module';
+import { ImagePropertiesModule } from './image-properties/image-properties.module';
 import { RadioPropertiesModule } from './radio-properties/radio-properties.module';
 import { RectanglePropertiesModule } from './rectangle-properties/rectangle-properties.module';
 import { SliderPropertiesModule } from './slider-properties/slider-properties.module';
@@ -15,13 +16,15 @@ import { SliderPropertiesModule } from './slider-properties/slider-properties.mo
     SliderPropertiesModule,
     RectanglePropertiesModule,
     CheckboxPropertiesModule,
-    RadioPropertiesModule
+    RadioPropertiesModule,
+    ImagePropertiesModule
   ],
   exports: [
     SliderPropertiesModule,
     RectanglePropertiesModule,
     CheckboxPropertiesModule,
-    RadioPropertiesModule
+    RadioPropertiesModule,
+    ImagePropertiesModule
   ],
 })
 export class ElementPropertiesModule { }

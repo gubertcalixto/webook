@@ -1,0 +1,34 @@
+<h4 nz-typography>Imagem</h4>
+
+<input #fileUpload style="display: none;" type="file" accept="image/*" (change)="alterImage($event)" />
+<div class="button-container">
+  <button class="upload-button" nz-button nzType="primary" nzSize="large" (click)="fileUpload.click()" nz-tooltip nzTooltipTitle="Realizar Upload" nzTooltipPlacement="bottomRight">
+    <ng-container *ngIf="!fileReaderLoading">
+      <i fa="upload"></i>
+    </ng-container>
+    <ng-container *ngIf="fileReaderLoading">
+      Carregando...
+    </ng-container>
+  </button>
+  <button *ngIf="currentElementSelectedData.image !== defaultImage" class="remove-button" nz-button nzType="danger"
+  nzSize="large" (click)="removeImage()" nz-tooltip nzTooltipTitle="Remover Imagem" nzTooltipPlacement="bottomRight">
+    <i fa="times"></i>
+  </button>
+</div>
+<label>Arredondamento das Bordas</label>
+<nz-input-number
+class="image-border-radius-field"
+nzPlaceHolder="Arredondamento das Bordas"
+[ngModel]="currentElementSelectedData.borderRadius"
+(ngModelChange)="setDataProperty('borderRadius', $event)"
+nzMin="0" nzMax="500"
+></nz-input-number>
+<br />
+<label nz-checkbox [ngModel]="currentElementSelectedData.hasBorder"
+(ngModelChange)="setDataProperty('hasBorder', $event)">Cor de fundo</label>
+<br />
+<ng-container *ngIf="currentElementSelectedData.hasBorder">
+  <input class="color-picker-input" [colorPicker]="currentElementSelectedData.background"
+  (colorPickerChange)="setDataProperty('background', $event)"
+  [style.background]="currentElementSelectedData.background || 'unset'" readonly />
+</ng-container>
