@@ -7,3 +7,4 @@ export * from './registerInput';
 export * from './registerOutput';
 export * from './registerOutputResult';
 export * from './simplifiedUser';
+export * from './userImageInput';

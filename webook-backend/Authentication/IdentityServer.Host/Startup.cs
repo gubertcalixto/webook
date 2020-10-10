@@ -1,8 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using AutoMapper;
 using IdentityServer.Domain.Entities;
+using IdentityServer.IdentityControllers;
 using Microsoft.Extensions.DependencyInjection;
 using IdentityServer.IdentityControllers.Account.Dtos.ForgotPassword;
 using IdentityServer.IdentityControllers.Profile;
@@ -11,6 +14,7 @@ using IdentityServer.IdentityServerConfig;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
 using IdentityServer.Mapper;
 using IdentityServer.Services;
+using IdentityServer4;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Services;
@@ -88,27 +92,31 @@ namespace IdentityServer
                 })
                 // TODO Production Configuration
                 .AddDeveloperSigningCredential();
-
-            services.AddAuthentication();
-                // TODO Add Google Authentication
-                // .AddAuthentication(options =>
-                // {
-                //     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                // })
-                // .AddGoogle("Google", options =>
-                // {
-                //     var googleAuthSection = _configuration.GetSection("Authentication:Google");
-                //     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                //     options.ClientId = googleAuthSection[ExternalLoginConfiguration.Google.ClientId];
-                //     options.ClientSecret = googleAuthSection[ExternalLoginConfiguration.Google.ClientSecret];
-                // });
-
+            
+            services.AddAuthentication()
+               .AddGoogle("Google", options =>
+                {
+                    // TODO Hide value
+                    var clientIdAsByteArray = Convert.FromBase64String("NTA1MjAyNjgxNDkwLWhmMWE2ZDBoczF0dDgwcjExNW10YzhydHJvYmVrYWdpLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29t");
+                    var clientId = Encoding.UTF8.GetString(clientIdAsByteArray);
+                    var clientPasswordAsByteArray = Convert.FromBase64String("S0JUZjU4X09VLTU1MzdoZ1V1Q3Vtbl9h");
+                    var clientPassword = Encoding.UTF8.GetString(clientPasswordAsByteArray);
+                    
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    options.ClientId = clientId;
+                    options.ClientSecret = clientPassword;
+                    options.CallbackPath = "/";
+                    options.AccessDeniedPath = "/External/AccessDeniedCallback";
+                    options.SaveTokens = true;
+                    options.AccessType = "offline";
+                });
             services.Configure<MailSettings>(_configuration.GetSection("MailSettings"));
             
             services.AddHttpContextAccessor();
 
             services
                 .AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>()
+                .AddTransient<IGoogleExternalAuthenticationConfiguration, GoogleExternalAuthenticationConfiguration>()
                 .AddTransient<IProfileService, IdentityClaimsProfileService>()
                 .AddTransient<IRedirectUriValidator, RedirectUriValidator>()
                 .AddTransient<IMailTemplateService, MailTemplateService>()

@@ -6,6 +6,7 @@ import { urlConsts } from 'src/environments/url.consts';
 
 import { LogInStatus } from '../client';
 import { AuthenticationService } from '../services/authentication.service';
+import { ExternalAuthenticationService } from '../services/external-authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,8 @@ export class SignInComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private externalAuthenticationService: ExternalAuthenticationService
   ) {
   }
 
@@ -45,23 +47,6 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
-  }
-
-  public loginOutside(socialMedia: 'google' | 'facebook' | 'twitter') {
-    switch (socialMedia) {
-      case 'facebook':
-        // TODO: Login with facebook
-        console.log('TODO: Login with facebook');
-        break;
-      case 'google':
-        // TODO: Login with google
-        console.log('TODO: Login with google');
-        break;
-      case 'twitter':
-        // TODO: Login with twitter
-        console.log('TODO: Login with twitter');
-        break;
-    }
   }
 
   public forgotPassword(): void {
@@ -119,8 +104,7 @@ export class SignInComponent implements OnInit, OnDestroy {
         console.log('TODO: Login with facebook');
         break;
       case 'google':
-        // TODO: Login with google
-        console.log('TODO: Login with google');
+        this.externalAuthenticationService.loginWithGoogle();
         break;
       case 'twitter':
         // TODO: Login with twitter

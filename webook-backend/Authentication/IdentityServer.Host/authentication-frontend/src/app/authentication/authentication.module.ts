@@ -17,6 +17,7 @@ import { AuthenticationRoutingModule } from './authentication-routing.module';
 import { AuthenticationSocialMediaComponent } from './authentication-social-media/authentication-social-media.component';
 import { ApiModule as LoginApiModule, BASE_PATH as LoginPath } from './client';
 import { AuthenticationService } from './services/authentication.service';
+import { ExternalAuthenticationService } from './services/external-authentication.service';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 
@@ -45,7 +46,8 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     {
       provide: LoginPath, useValue: urlConsts.authServerUrl()
     },
-    AuthenticationService
+    AuthenticationService,
+    ExternalAuthenticationService
   ]
 })
 export class AuthenticationModule { }

@@ -1,4 +1,5 @@
 ﻿using IdentityServer.Domain.Dtos.Mail;
+using IdentityServer.IdentityServerConfig;
 
 namespace IdentityServer.Services
 {
@@ -10,7 +11,7 @@ namespace IdentityServer.Services
             {
                 case "welcome":
                     // TODO: Set Production url
-                    var redirectUrl = $"http://localhost:5000/login/forgot-password/{args.PasswordHash}";
+                    var redirectUrl = $"{IdentityDefaultUrls.AuthenticationOrigin}/login/forgot-password/{args.PasswordHash}";
                     return new EmailTemplate
                     {
                         Subject = "Bem vindo ao Webook",

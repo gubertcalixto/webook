@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -13,7 +13,8 @@ import { EditorPageService } from '../editor-page/editor-page.service';
 @Component({
   selector: 'wb-document-view-page',
   templateUrl: './document-view-page.component.html',
-  styleUrls: ['./document-view-page.component.scss']
+  styleUrls: ['./document-view-page.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DocumentViewPageComponent implements OnDestroy {
   private subs: Subscription[] = [];
