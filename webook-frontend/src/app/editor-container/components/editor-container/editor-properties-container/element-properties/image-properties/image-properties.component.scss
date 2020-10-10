@@ -1,0 +1,35 @@
+wb-image-properties {
+  display: flex;
+  flex-direction: column;
+  .button-container {
+    display: flex;
+    button {
+      flex: 1;
+
+      &:first-child {
+        border-top-right-radius: unset;
+        border-bottom-right-radius: unset;
+      }
+      &:last-child {
+        border-top-left-radius: unset;
+        border-bottom-left-radius: unset;
+      }
+    }
+    .upload-button,
+    .remove-button {
+      span + i,
+      i + span {
+        margin-left: 12px;
+      }
+    }
+  }
+
+  .image-border-radius-field {
+    width: 100%;
+  }
+
+  .color-picker-input {
+    width: 100%;
+    cursor: pointer;
+  }
+}

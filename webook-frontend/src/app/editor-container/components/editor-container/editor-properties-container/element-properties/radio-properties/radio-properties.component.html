@@ -1,0 +1,25 @@
+<h4 nz-typography>Radio</h4>
+<label nz-checkbox [ngModel]="currentElementSelectedData.horizontalLayout" (ngModelChange)="currentElementSelectedData.horizontalLayout = $event; updateOptions()">
+  Habilitar Layout Horizontal
+</label>
+<p class="radios-header">Opções</p>
+<div *ngFor="let option of radioOptions; let i = index" class="radio-option">
+  <div class="field-container">
+    <label
+      nz-radio
+      [ngModel]="option.id === currentElementSelectedData.selectedOption"
+      (click)="updateSelectedOption(option.id)"
+      >
+    </label>
+    <input placeholder="Nome da opção" [ngModel]="option.label" (ngModelChange)="option.label = $event; updateOptions()" />
+    <button [class.hidden]="radioOptions.length !== (i + 1)" [tabIndex]="radioOptions.length !== (i + 1) ? -1 : 1" nz-button (click)="radioOptions.length !== (i + 1) ? undefined : addOption()" nz-tooltip nzTooltipTitle="Adicionar">
+      <i fa="plus-square"></i>
+    </button>
+    <button *ngIf="radioOptions.length !== (i + 1) || radioOptions.length !== 1" nz-button (click)="removeOption(option)" nz-tooltip nzTooltipTitle="Remover">
+      <i fa="minus"></i>
+    </button>
+    <button nz-button (click)="option.isDisabled = !option.isDisabled; updateOptions()" nz-tooltip [nzTooltipTitle]="option.isDisabled ? 'Desbloquear' : 'Bloquear'">
+      <i [fa]="option.isDisabled ? 'hand-pointer' : 'ban'"></i>
+    </button>
+  </div>
+</div>

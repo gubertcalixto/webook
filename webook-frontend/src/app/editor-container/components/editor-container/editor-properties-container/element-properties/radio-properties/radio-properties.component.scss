@@ -1,0 +1,28 @@
+wb-radio-properties {
+  display: flex;
+  flex-direction: column;
+  p.radios-header {
+    margin: 12px 0 0;
+    font-weight: bold;
+  }
+  div.radio-option {
+    display: flex;
+    flex-direction: column;
+    & + .radio-option {
+      margin-top: 12px;
+    }
+    .field-container {
+      display: flex;
+      align-items: stretch;
+      button {
+        background: unset;
+        border: none;
+        box-shadow: unset;
+        &.hidden {
+          pointer-events: none;
+          opacity: 0;
+        }
+      }
+    }
+  }
+}

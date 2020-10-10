@@ -9,7 +9,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { ShortcutInput } from 'ng-keyboard-shortcuts';
+import { ShortcutEventOutput, ShortcutInput } from 'ng-keyboard-shortcuts';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { DocumentOutput } from 'src/app/client/webook';
@@ -54,8 +54,10 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
     { key: ['del', 'backspace'], command: () => { this.deleteEditorSelectedElements(); } },
     { key: 'ctrl + z', command: () => { this.undo(); } },
     { key: 'ctrl + y', command: () => { this.redo(); } },
+    { key: 'ctrl + x', command: () => { this.cut(); } },
     { key: 'ctrl + c', command: () => { this.copy(); } },
     { key: 'ctrl + v', command: () => { this.paste(); } },
+    { key: 'ctrl + a', command: (event) => { this.selectAllElements(event); } },
   ];
 
   constructor(
@@ -103,20 +105,6 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
     return addedElement;
   }
 
-  private deleteEditorSelectedElements(): void {
-    const selectedIds = this.editorElement.selectedElementIds;
-    if (selectedIds.length === 0) {
-      return;
-    }
-    const elementRefs = this.editorElements.filter(e => selectedIds.includes(e.instance?.elementId));
-    elementRefs.forEach(element => {
-      element.destroy();
-    });
-    this.editorElements = [...this.editorElements.filter(e => !selectedIds.includes(e.instance?.elementId))];
-    this.editorElement.selectedElementIds = [];
-    this.emitDocumentPageSave();
-  }
-
   protected emitDocumentPageSave(forceNoDebounce = false) {
     const data: EditorElementHistoryData[] = this.editorElements.map(el => {
       return {
@@ -135,5 +123,13 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
     this.onSavePageSubscription = this.documentPageService.savedPageSubject.pipe(first()).subscribe(res => {
       this.editorHistory.append(data);
     })
+  }
+
+  private selectAllElements(event: ShortcutEventOutput): void {
+    if (!this.editorElement.isFocused) { return; }
+
+    const ids = this.editorElements.map(el => el.instance.elementId);
+    this.editorElement.selectedElementIds = ids;
+    event.event.preventDefault();
   }
 }

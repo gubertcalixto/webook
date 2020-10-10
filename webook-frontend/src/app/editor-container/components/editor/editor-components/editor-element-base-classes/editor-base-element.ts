@@ -25,6 +25,7 @@ export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
   protected subs: Subscription[] = [];
   protected preUpdateFrame = new Map<string, () => any>();
   protected postUpdateFrame = new Map<string, () => any>();
+  protected hasStarted = false;
 
   private frameSnapshot: string;
 
@@ -32,17 +33,20 @@ export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
   public elementId = uuid();
   public forceMoveableEnable = false;
   public isLoading = true;
+  public isMouseOver: boolean;
   public dataChanged = new Subject<void>();
   public hasFinishedDataEntry: boolean;
 
   @HostBinding('class') public readonly defaultClasses = 'editor-element';
   // #region MoveableEvents
   @HostListener('mouseover') private onElementMouseOver() {
+    this.isMouseOver = true;
     if (!this.hasSelectionEnded || this.editor?.selectedElementIds.length === 0) {
       this.forceMoveableEnable = true;
     }
   }
   @HostListener('mouseout') private onElementMouseOut() {
+    this.isMouseOver = false;
     if (this.forceMoveableEnable) { this.forceMoveableEnable = false; }
   }
   @HostListener('mousedown') private onElementClick() {
@@ -82,7 +86,15 @@ export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
     return undefined;
   }
 
-  constructor(public elementRef: ElementRef<HTMLElement>) { }
+  constructor(public elementRef: ElementRef<HTMLElement>) {
+    this.subs.push(this.dataChanged.subscribe(() => {
+      if (!this.data) { return; }
+      this.setData();
+      if (this.hasStarted) {
+        this.emitChange();
+      }
+    }));
+  }
 
   ngAfterViewInit(): void {
     // First change after component is instanced
@@ -93,11 +105,17 @@ export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
     if (!this.data) {
       this.data = {};
     }
+    this.setInitialSize();
+    this.setData();
+    this.hasStarted = true;
   }
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
   }
+
+  protected abstract setInitialSize(): void;
+  protected abstract setData(): void;
 
   /**
    * Update element frame
@@ -108,6 +126,9 @@ export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
     target.style.cssText = this.frame.toCSS();
     this.postUpdateFrame.forEach(fn => { fn(); });
     this.updateTransformationStyle();
+    if (!this.hasFinishedDataEntry) {
+      return;
+    }
     setTimeout(() => {
       if (!this.frameSnapshot || this.frameSnapshot !== JSON.stringify(this.frame.properties)) {
         this.moveable?.updateRect();

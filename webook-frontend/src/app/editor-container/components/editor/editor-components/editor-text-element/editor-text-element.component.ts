@@ -8,7 +8,7 @@ import { EditorResizeBaseElement } from '../editor-element-base-classes/resize/e
   styleUrls: ['./editor-text-element.component.scss']
 })
 export class EditorTextElementComponent extends EditorResizeBaseElement {
-  elementTypeId = 'text';
+  public elementTypeId = 'wb-text';
   public editing = false;
   public text: string = 'Escreva aqui...';
 
@@ -16,20 +16,32 @@ export class EditorTextElementComponent extends EditorResizeBaseElement {
 
   constructor(public elementRef: ElementRef<HTMLElement>, private changeDetectorRef: ChangeDetectorRef) {
     super(elementRef);
-    this.subs.push(this.dataChanged.subscribe(() => {
-      if (!this.data) {
-        return;
-      }
-      if (this.data.text !== this.text) {
-        this.text = this.data.text;
-      }
-      this.emitChange(true);
-    }));
   }
 
-  ngAfterViewInit(): void {
-    super.ngAfterViewInit();
+  protected setInitialSize(): void {
+    const width = this.frame.get('width');
+    if (width === undefined || width === null || width === 'unset') {
+      this.frame.set('width', '200px');
+      this.updateFrame();
+    }
+  }
+
+  protected setData(): void {
     this.text = this.data?.text || 'Escreva aqui...';
+  }
+
+  public getTextVerticalAlign(position: string): string {
+    if(position?.startsWith('T')) { return 'flex-start'; }
+    if(position?.startsWith('C')) { return 'center'; }
+    if(position?.startsWith('B')) { return 'flex-end'; }
+    return 'unset';
+  }
+  
+  public getTextHorizontalAlign(position: string): string {
+    if(position?.endsWith('E')) { return 'flex-start'; }
+    if(position?.endsWith('C')) { return 'center'; }
+    if(position?.endsWith('D')) { return 'flex-end'; }
+    return 'unset';
   }
 
   public toggleEditMode(): void {

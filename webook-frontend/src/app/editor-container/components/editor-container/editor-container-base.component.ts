@@ -87,12 +87,14 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
     if (!this.editorHistory.hasUndo()) { return; }
     const data = this.editorHistory.undo();
     this.instanciateElementsFromData(data);
+    // TODO: Save document after "undo"
   }
 
   protected redo(): void {
     if (!this.editorHistory.hasRedo()) { return; }
     const data = this.editorHistory.redo();
     this.instanciateElementsFromData(data);
+    // TODO: Save document after "redo"
   }
 
   protected instanciateElementsFromData(data: EditorElementHistoryData[]): void {

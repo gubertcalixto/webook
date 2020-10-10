@@ -1,0 +1,23 @@
+<h4 nz-typography>Checkbox</h4>
+<label nz-checkbox [ngModel]="currentElementSelectedData.horizontalLayout" (ngModelChange)="currentElementSelectedData.horizontalLayout = $event; updateOptions()">
+  Habilitar Layout Horizontal
+</label>
+<p class="checkboxes-header">Checkboxes</p>
+<div *ngFor="let option of checkboxOptions; let i = index" class="checkbox-option">
+  <div class="field-container">
+    <input placeholder="Nome da opção" [ngModel]="option.label" (ngModelChange)="option.label = $event; updateOptions()" />
+    <button [class.hidden]="checkboxOptions.length !== (i + 1)" nz-button (click)="addCheckboxOption()" nz-tooltip nzTooltipTitle="Adicionar">
+      <i fa="plus-square"></i>
+    </button>
+    <button *ngIf="checkboxOptions.length !== (i + 1) || checkboxOptions.length !== 1" nz-button (click)="removeCheckboxOption(option)" nz-tooltip nzTooltipTitle="Remover">
+      <i fa="minus"></i>
+    </button>
+    <button nz-button (click)="option.isDisabled = !option.isDisabled; updateOptions()" nz-tooltip [nzTooltipTitle]="option.isDisabled ? 'Desbloquear' : 'Bloquear'">
+      <i [fa]="option.isDisabled ? 'hand-pointer' : 'ban'"></i>
+    </button>
+    <button nz-button (click)="option.isChecked = !option.isChecked; updateOptions()" nz-tooltip [nzTooltipTitle]="option.isChecked ? 'Desmarcar' : 'Marcar'">
+      <i *ngIf="option.isChecked" fa="times-circle" color="red"></i>
+      <i *ngIf="!option.isChecked" fa="check-circle"></i>
+    </button>
+  </div>
+</div>

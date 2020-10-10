@@ -1,0 +1,34 @@
+<ng-container *ngIf="hasFinishedDataEntry">
+  <img [src]="image" alt="Imagem" class="image"
+  [style.background-color]="data.hasBorder ? data.background : 'unset'"
+  [style.border-radius]="data.borderRadius ? data.borderRadius + 'px' : 'unset'" />
+
+  <ng-container *ngIf="elementRef">
+    <ngx-moveable
+        *ngIf="!visualizeMode"
+        #moveable
+        [target]="target"
+        [className]="moveableClasses"
+
+        [origin]="dragOptions.hasOrigin"
+        [draggable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && dragOptions.draggable"
+        [dragTarget]="dragOptions.dragTarget"
+        (dragStart)="onDragStart($event)"
+        (drag)="onDrag($event)"
+        (dragEnd)="onDragEnd($event)"
+
+        [rotatable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && rotateOptions.rotatable"
+        [rotationPosition]="rotateOptions.rotatePosition"
+        (rotateStart)="onRotateStart($event)"
+        (rotate)="onRotate($event)"
+        (rotateEnd)="onRotateEnd($event)"
+
+        [resizable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && resizeOptions.resizable"
+        [keepRatio]="resizeOptions.keepRatio"
+        (resizeStart)="onResizeStart($event)"
+        (resize)="onResize($event)"
+        (resizeEnd)="onResizeEnd($event)"
+        >
+    </ngx-moveable>
+  </ng-container>
+</ng-container>

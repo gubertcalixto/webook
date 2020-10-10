@@ -1,0 +1,32 @@
+<h4 nz-typography>Slider</h4>
+<label>Valor do Slider</label>
+<nz-input-number
+nzPlaceHolder="Valor do Slider"
+[ngModel]="currentElementSelectedData.valueSlider"
+(ngModelChange)="setDataProperty('valueSlider', $event)"
+[nzMin]="currentElementSelectedData.minValue || 0" [nzMax]="currentElementSelectedData.maxValue || 100" [nzStep]="1"
+></nz-input-number>
+<label>Valor Mínimo</label>
+<nz-input-number
+nzPlaceHolder="Valor Mínimo"
+[ngModel]="currentElementSelectedData.minValue || 0"
+(ngModelChange)="setDataProperty('minValue', $event)"
+[nzStep]="1"
+></nz-input-number>
+<label>Valor Máximo</label>
+<nz-input-number
+nzPlaceHolder="Valor Máximo"
+[ngModel]="currentElementSelectedData.maxValue || 100"
+(ngModelChange)="setDataProperty('maxValue', $event)"
+[nzStep]="1"
+></nz-input-number>
+<label nz-checkbox  
+[ngModel]="currentElementSelectedData.isVertical"
+(ngModelChange)="setDataProperty('isVertical', $event)">
+Slider na posição vertical
+</label>
+<label nz-checkbox  
+[ngModel]="currentElementSelectedData.isDisabled"
+(ngModelChange)="setDataProperty('isDisabled', $event)">
+Desabilitado
+</label>
