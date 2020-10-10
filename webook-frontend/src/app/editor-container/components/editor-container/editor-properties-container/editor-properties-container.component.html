@@ -1,10 +1,12 @@
 <h2 nz-typography>Propriedades</h2>
 <ng-container *ngIf="!isLoading">
-    <div class="container" [ngSwitch]="currentElementType">
-        <div *ngSwitchCase="'text'">
-            <h4>Texto</h4>
-            <input [ngModel]="currentElementSelectedData.text" (ngModelChange)="setDataProperty('text', $event)" placeholder="Escreva o texto aqui" />
-        </div>
-        <wb-page-properties *ngSwitchDefault></wb-page-properties>
-    </div>
+  <div class="container" [ngSwitch]="currentElementType">
+    <wb-text-properties *ngSwitchCase="'wb-text'" [currentElementSelectedData]="currentElementSelectedData" [setDataProperty]="setDataProperty"></wb-text-properties>
+    <wb-rectangle-properties *ngSwitchCase="'wb-rectangle'" [currentElementSelectedData]="currentElementSelectedData" [setDataProperty]="setDataProperty"></wb-rectangle-properties>
+    <wb-slider-properties *ngSwitchCase="'wb-slider'" [currentElementSelectedData]="currentElementSelectedData" [setDataProperty]="setDataProperty"></wb-slider-properties>
+    <wb-checkbox-properties *ngSwitchCase="'wb-checkbox'" [currentElementSelectedData]="currentElementSelectedData" [setDataProperty]="setDataProperty"></wb-checkbox-properties>
+    <wb-radio-properties *ngSwitchCase="'wb-radio'" [currentElementSelectedData]="currentElementSelectedData" [setDataProperty]="setDataProperty"></wb-radio-properties>
+    <wb-image-properties *ngSwitchCase="'wb-image'" [currentElementSelectedData]="currentElementSelectedData" [setDataProperty]="setDataProperty"></wb-image-properties>
+    <wb-page-properties *ngSwitchDefault></wb-page-properties>
+  </div>
 </ng-container>

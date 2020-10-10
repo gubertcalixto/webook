@@ -1,0 +1,68 @@
+<h4 nz-typography>Texto</h4>
+<input nz-input [ngModel]="currentElementSelectedData.text" (ngModelChange)="setDataProperty('text', $event)"
+  placeholder="Escreva o texto aqui" />
+<p>Tipo de Texto</p>
+<nz-select [ngModel]="currentElementSelectedData.textType || 'text'"
+  (ngModelChange)="setDataProperty('textType', $event)">
+  <nz-option nzValue="text" nzLabel="Texto"></nz-option>
+  <nz-option nzValue="h1" nzLabel="Título 1"></nz-option>
+  <nz-option nzValue="h2" nzLabel="Título 2"></nz-option>
+  <nz-option nzValue="h3" nzLabel="Título 3"></nz-option>
+  <nz-option nzValue="h4" nzLabel="Título 4"></nz-option>
+  <nz-option nzValue="h5" nzLabel="Título 5"></nz-option>
+  <nz-option nzValue="h6" nzLabel="Título 6"></nz-option>
+</nz-select>
+
+<ng-container *ngIf="(currentElementSelectedData.textType || 'text') === 'text'">
+  <p>Tamanho do Texto</p>
+  <nz-input-number nzPlaceHolder="Tamanho do Texto" [ngModel]="currentElementSelectedData.textSize"
+    (ngModelChange)="setDataProperty('textSize', $event)" nzMin="0" nzMax="150"></nz-input-number>
+</ng-container>
+<p>Espessura do Texto</p>
+<nz-select [ngModel]="currentElementSelectedData.textWeight" (ngModelChange)="setDataProperty('textWeight', $event)">
+  <nz-option nzValue="200" nzLabel="Muito Fina"></nz-option>
+  <nz-option nzValue="400" nzLabel="Fina"></nz-option>
+  <nz-option nzValue="500" nzLabel="Normal"></nz-option>
+  <nz-option nzValue="700" nzLabel="Grossa"></nz-option>
+  <nz-option nzValue="900" nzLabel="Muito Grossa"></nz-option>
+</nz-select>
+<p>Posição do Texto</p>
+<input nz-input readonly [ngModel]="currentElementSelectedData.position"
+  (ngModelChange)="setDataProperty('position', $event)" placeholder="Posição do Texto" nz-popover
+  [nzPopoverContent]="textPositionSelectorTemplate" />
+
+  <p>Cor do Texto</p>
+<div class="color-picker-container">
+  <input class="color-picker-input" [colorPicker]="currentElementSelectedData.textColor"
+    (colorPickerChange)="setDataProperty('textColor', $event)"
+    [style.background]="currentElementSelectedData.textColor || '#000'" readonly />
+</div>
+<p>Cor de Fundo</p>
+<div class="color-picker-container">
+  <input class="color-picker-input" [colorPicker]="currentElementSelectedData.backgroundColor"
+    (colorPickerChange)="setDataProperty('backgroundColor', $event)"
+    [style.background]="currentElementSelectedData.backgroundColor || 'rgba(0,0,0,0)'" readonly />
+</div>
+
+<ng-template #textPositionSelectorTemplate>
+  <div class="text-position-container">
+    <button class="text-position" [class.active]="currentElementSelectedData.position === 'TE'"
+    (click)="setDataProperty('position', 'TE')">TE</button>
+    <button class="text-position" [class.active]="currentElementSelectedData.position === 'TC'"
+    (click)="setDataProperty('position', 'TC')">TC</button>
+    <button class="text-position" [class.active]="currentElementSelectedData.position === 'TD'"
+    (click)="setDataProperty('position', 'TD')">TD</button>
+    <button class="text-position" [class.active]="currentElementSelectedData.position === 'CE'"
+    (click)="setDataProperty('position', 'CE')">CE</button>
+    <button class="text-position" [class.active]="currentElementSelectedData.position === 'CC'"
+    (click)="setDataProperty('position', 'CC')">CC</button>
+    <button class="text-position" [class.active]="currentElementSelectedData.position === 'CD'"
+    (click)="setDataProperty('position', 'CD')">CD</button>
+    <button class="text-position" [class.active]="currentElementSelectedData.position === 'BE'"
+    (click)="setDataProperty('position', 'BE')">BE</button>
+    <button class="text-position" [class.active]="currentElementSelectedData.position === 'BC'"
+    (click)="setDataProperty('position', 'BC')">BC</button>
+    <button class="text-position" [class.active]="currentElementSelectedData.position === 'BD'"
+    (click)="setDataProperty('position', 'BD')">BD</button>
+  </div>
+</ng-template>

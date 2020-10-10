@@ -30,6 +30,20 @@ export class EditorTextElementComponent extends EditorResizeBaseElement {
     this.text = this.data?.text || 'Escreva aqui...';
   }
 
+  public getTextVerticalAlign(position: string): string {
+    if(position?.startsWith('T')) { return 'flex-start'; }
+    if(position?.startsWith('C')) { return 'center'; }
+    if(position?.startsWith('B')) { return 'flex-end'; }
+    return 'unset';
+  }
+  
+  public getTextHorizontalAlign(position: string): string {
+    if(position?.endsWith('E')) { return 'flex-start'; }
+    if(position?.endsWith('C')) { return 'center'; }
+    if(position?.endsWith('D')) { return 'flex-end'; }
+    return 'unset';
+  }
+
   public toggleEditMode(): void {
     if (this.visualizeMode) { return; }
     this.editing = !this.editing;

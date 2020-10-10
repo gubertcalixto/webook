@@ -7,6 +7,7 @@ import { ImagePropertiesModule } from './image-properties/image-properties.modul
 import { RadioPropertiesModule } from './radio-properties/radio-properties.module';
 import { RectanglePropertiesModule } from './rectangle-properties/rectangle-properties.module';
 import { SliderPropertiesModule } from './slider-properties/slider-properties.module';
+import { TextPropertiesModule } from './text-properties/text-properties.module';
 
 @NgModule({
   imports: [
@@ -17,14 +18,16 @@ import { SliderPropertiesModule } from './slider-properties/slider-properties.mo
     RectanglePropertiesModule,
     CheckboxPropertiesModule,
     RadioPropertiesModule,
-    ImagePropertiesModule
+    ImagePropertiesModule,
+    TextPropertiesModule
   ],
   exports: [
     SliderPropertiesModule,
     RectanglePropertiesModule,
     CheckboxPropertiesModule,
     RadioPropertiesModule,
-    ImagePropertiesModule
+    ImagePropertiesModule,
+    TextPropertiesModule
   ],
 })
 export class ElementPropertiesModule { }
