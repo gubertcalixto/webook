@@ -3,7 +3,7 @@ import { EditorBaseElement } from '../editor/editor-components/editor-element-ba
 import { EditorContainerBaseComponent } from './editor-container-base.component';
 
 export abstract class EditorContainerClipboardBaseComponent extends EditorContainerBaseComponent {
-  private copiedElementsData: { elementTypeId: string; data: EditorElementInstanceData }[] = []
+  private copiedElementsData: { elementTypeId: string; data: EditorElementInstanceData }[] = [];
 
   private getCopiedDataFromElement(element: EditorBaseElement, keepsSamePosition = false) {
     const getNumberOfPosition = (position: string = '') => {
@@ -46,13 +46,6 @@ export abstract class EditorContainerClipboardBaseComponent extends EditorContai
       })
     };
   }
-  protected cut(): void {
-    if (!this.editorElement.isFocused || this.editorElement.selectedElementIds.length === 0) {
-      return;
-    }
-    this.copy(true);
-    this.deleteEditorSelectedElements();
-  }
 
   protected deleteEditorSelectedElements(): void {
     const selectedIds = this.editorElement.selectedElementIds;
@@ -66,6 +59,14 @@ export abstract class EditorContainerClipboardBaseComponent extends EditorContai
     this.editorElements = [...this.editorElements.filter(e => !selectedIds.includes(e.instance?.elementId))];
     this.editorElement.selectedElementIds = [];
     this.emitDocumentPageSave();
+  }
+
+  protected cut(): void {
+    if (!this.editorElement.isFocused || this.editorElement.selectedElementIds.length === 0) {
+      return;
+    }
+    this.copy(true);
+    this.deleteEditorSelectedElements();
   }
 
   protected copy(keepsSamePosition = false): void {

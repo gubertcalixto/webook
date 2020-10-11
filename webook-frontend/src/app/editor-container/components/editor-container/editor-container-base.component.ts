@@ -1,4 +1,4 @@
-import { ComponentRef, OnDestroy, OnInit } from '@angular/core';
+import { ComponentRef, isDevMode, OnDestroy, OnInit } from '@angular/core';
 import { merge, Subscription } from 'rxjs';
 
 import { DocumentOutput } from '../../../client/webook/model/models';
@@ -10,6 +10,7 @@ import {
   EditorElementsInstanceManagerService,
 } from '../../services/element/instance/editor-elements-instance-manager.service';
 import { EditorInteractionService } from '../../services/interactions/editor-interaction.service';
+import { IEditorExternalEvent } from '../../tokens/classes/editor-external-event.interface';
 import { EditorElementInstanceData } from '../../tokens/classes/element/instance/editor-element-instance-data.class';
 import { EditorElementHistoryData } from '../../tokens/classes/history/editor-history-pre-serialize.class';
 import { EditorHistoryManager } from '../../tokens/classes/history/editor-history-stack.class';
@@ -19,6 +20,7 @@ import { EditorComponent } from '../editor/editor.component';
 export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy {
   public abstract visualizeMode: boolean;
   public abstract document: DocumentOutput;
+  public abstract editorExternalEvent: IEditorExternalEvent;
 
   protected abstract editorElement: EditorComponent;
   protected subs: Subscription[] = [];
@@ -42,6 +44,7 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
 
   ngOnInit(): void {
     this.registerToWindowResize();
+    this.subscriveToExternalEvents();
   }
 
   ngOnDestroy(): void {
@@ -54,6 +57,26 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
 
   protected abstract emitDocumentPageSave(forceNoDebounce?: boolean, ignoreHistory?: boolean): void;
   protected abstract instanciateDocument(elementTypeId: string, data?: EditorElementInstanceData, elementId?: string): ComponentRef<EditorBaseElement>;
+
+  private subscriveToExternalEvents(): void {
+    if (this.editorExternalEvent?.eventSubject?.subscribe) {
+      this.subs.push(this.editorExternalEvent.eventSubject.subscribe((eventName) => {
+        switch (eventName) {
+          case 'undo':
+            this.undo();
+            break;
+          case 'redo':
+            this.redo();
+            break;
+          default:
+            if (isDevMode()) {
+              console.log(`Event emitted to editor named "${eventName}"`);
+            }
+            break;
+        }
+      }));
+    }
+  }
 
   private registerToWindowResize(): void {
     if (this.visualizeMode) { return; }
@@ -83,11 +106,19 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
     this.emitDocumentPageSave(true);
   }
 
+  protected updateExternalEventData(): void {
+    if (this.editorExternalEvent) {
+      this.editorExternalEvent.hasUndo = this.editorHistory.hasUndo();
+      this.editorExternalEvent.hasRedo = this.editorHistory.hasRedo();
+    }
+  }
+
   protected undo(): void {
     if (!this.editorHistory.hasUndo()) { return; }
     const data = this.editorHistory.undo();
     this.instanciateElementsFromData(data);
     this.emitDocumentPageSave(false, true);
+    this.updateExternalEventData();
   }
 
   protected redo(): void {
@@ -95,6 +126,7 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
     const data = this.editorHistory.redo();
     this.instanciateElementsFromData(data);
     this.emitDocumentPageSave(false, true);
+    this.updateExternalEventData();
   }
 
   protected instanciateElementsFromData(data: EditorElementHistoryData[]): void {

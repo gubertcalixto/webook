@@ -22,6 +22,7 @@ import {
   EditorElementsInstanceManagerService,
 } from '../../services/element/instance/editor-elements-instance-manager.service';
 import { EditorInteractionService } from '../../services/interactions/editor-interaction.service';
+import { IEditorExternalEvent } from '../../tokens/classes/editor-external-event.interface';
 import { EditorElementInstanceData } from '../../tokens/classes/element/instance/editor-element-instance-data.class';
 import { EditorElementHistoryData } from '../../tokens/classes/history/editor-history-pre-serialize.class';
 import { EditorBaseElement } from '../editor/editor-components/editor-element-base-classes/editor-base-element';
@@ -41,6 +42,7 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
   @ViewChild('editorContainer', { read: ViewContainerRef }) editorContainer: ViewContainerRef;
   @Input() public document: DocumentOutput;
   @Input() public visualizeMode = false;
+  @Input() public editorExternalEvent: IEditorExternalEvent;
 
   @Input()
   public get pageIndex() { return this._pageIndex; }
@@ -123,6 +125,7 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
     this.onSavePageSubscription = this.documentPageService.savedPageSubject.pipe(first()).subscribe(res => {
       if (!ignoreHistory) {
         this.editorHistory.append(data);
+        this.updateExternalEventData();
       }
     })
   }

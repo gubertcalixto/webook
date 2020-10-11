@@ -2,11 +2,12 @@ import { Component, OnDestroy, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '@oath/services/user.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import { DocumentOutput } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
 
+import { IEditorExternalEvent } from '../../tokens/classes/editor-external-event.interface';
 import {
   EditorConfigurationModalComponent,
 } from '../editor-configuration/editor-configuration-modal/editor-configuration-modal.component';
@@ -22,6 +23,12 @@ export class EditorPageComponent implements OnDestroy {
   public document: DocumentOutput;
   public documentId: string;
   public pageIndex = 1;
+
+  public editorExternalEvent: IEditorExternalEvent = {
+    hasUndo: false,
+    hasRedo: false,
+    eventSubject: new Subject<string>()
+  };
 
   constructor(
     private router: Router,

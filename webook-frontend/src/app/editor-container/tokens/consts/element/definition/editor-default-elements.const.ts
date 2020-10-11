@@ -18,7 +18,6 @@ import {
 } from '../../../../components/editor/editor-components/editor-text-element/editor-text-element.component';
 import { EditorElementDefinition } from '../../../classes/element/definition/editor-element-definition.class';
 
-// TODO: define elementClass
 // TODO: define imagePreviewPath
 // TODO: define colors
 export const editorDefaultElements: EditorElementDefinition[] = [

@@ -18,15 +18,18 @@
     </nz-page-header-extra>
     <nz-page-header-extra class="actions-container">
       <ng-container *ngIf="!visualizeMode">
-        <!-- TODO: Undo and Redo -->
-        <button nz-button nzType="link" nz-tooltip nzTooltipTitle="Desfazer"><i fa="undo-alt"></i></button>
-        <button nz-button nzType="link" nz-tooltip nzTooltipTitle="Refazer"><i fa="redo"></i></button>
+        <button nz-button nzType="link" [disabled]="!editorExternalEvent?.hasUndo" nz-tooltip
+          [nzTooltipTitle]="editorExternalEvent?.hasUndo ? 'Desfazer' : undefined" nzTooltipPlacement="bottomRight"
+          (click)="editorExternalEvent?.eventSubject?.next('undo')"><i fa="undo-alt"></i></button>
+        <button nz-button nzType="link" [disabled]="!editorExternalEvent?.hasRedo" nz-tooltip
+          [nzTooltipTitle]="editorExternalEvent?.hasRedo ? 'Refazer' : undefined" nzTooltipPlacement="bottomRight"
+          (click)="editorExternalEvent?.eventSubject?.next('redo')"><i fa="redo"></i></button>
         <button (click)="openDocumentConfiguration.next()" nz-button nzType="primary"
           nzShape="round">Configurações</button>
       </ng-container>
       <ng-container *ngIf="visualizeMode">
-        <button nz-button (click)="openDenounceModal.next()" nzType="danger" nzShape="circle" nz-tooltip nzTooltipTitle="Denunciar"><i fa="exclamation-triangle"></i></button>
-        <!-- TODO: Visualize Mode Actions -->
+        <button nz-button (click)="openDenounceModal.next()" nzType="danger" nzShape="circle" nz-tooltip
+          nzTooltipTitle="Denunciar"><i fa="exclamation-triangle"></i></button>
       </ng-container>
     </nz-page-header-extra>
     <nz-page-header-content *ngIf="pageSelectionExpanded">

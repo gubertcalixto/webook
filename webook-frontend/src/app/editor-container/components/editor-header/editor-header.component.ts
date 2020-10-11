@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { DocumentOutput } from 'src/app/client/webook';
 
 import { EditorDocumentPageService } from '../../services/document-page.service';
+import { IEditorExternalEvent } from '../../tokens/classes/editor-external-event.interface';
 
 @Component({
   selector: 'wb-editor-header',
@@ -30,6 +31,7 @@ export class EditorHeaderComponent implements OnDestroy {
   }
   @Input() public showPageSaveStatus = true;
   @Input() public visualizeMode = false;
+  @Input() public editorExternalEvent: IEditorExternalEvent;
   @Output() public pageIndexChange = new EventEmitter<number>();
   @Output() public redirectBack = new EventEmitter<void>();
   @Output() public openDocumentConfiguration = new EventEmitter<void>();
