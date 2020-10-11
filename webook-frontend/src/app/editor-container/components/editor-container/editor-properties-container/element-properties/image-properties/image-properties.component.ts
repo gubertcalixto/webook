@@ -1,5 +1,7 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 
+import { ImageUtils } from '../../../../../tokens/classes/element/image-utils';
+
 @Component({
   selector: 'wb-image-properties',
   templateUrl: './image-properties.component.html',
@@ -17,21 +19,24 @@ export class ImagePropertiesComponent {
     if (!event.target.files?.length) {
       return;
     }
-    const reader = new FileReader();
-    // Checks if image size is larger than 5 MB
     if (event.target.files[0].size / 1024 / 1024 > 5) {
-      this.maximumImageSizeReached = true;
       return;
     }
     this.maximumImageSizeReached = false;
     this.fileReaderLoading = true;
-    const file = event.target.files[0];
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      const fileBase64 = 'data:image/png;base64,' + reader.result.toString().split(',')[1];
-      this.setDataProperty('image', fileBase64);
-      this.fileReaderLoading = false;
-    };
+
+    ImageUtils.getBase64ImageFromFile(event.target.files[0])
+      .then((base64Image) => {
+        this.setDataProperty('image', base64Image);
+      })
+      .catch(error => {
+        if (error.message === 'Exceeded image max size') {
+          this.maximumImageSizeReached = true;
+        }
+      })
+      .finally(() => {
+        this.fileReaderLoading = false;
+      });
   }
 
 

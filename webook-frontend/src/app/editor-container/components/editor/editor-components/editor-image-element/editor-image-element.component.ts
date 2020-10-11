@@ -21,13 +21,24 @@ export class EditorImageElementComponent extends EditorResizeBaseElement {
     const width = this.frame.get('width');
     const height = this.frame.get('height');
     let hasAlteredSize = false;
-    if (width === undefined || width === null || width === 'unset') {
-      this.frame.set('width', '200px');
-      hasAlteredSize = true;
-    }
-    if (height === undefined || height === null || height === 'unset') {
-      this.frame.set('height', '200px');
-      hasAlteredSize = true;
+    if (this.data?.image) {
+      if (width === undefined || width === null || width === 'unset'
+        && height === undefined || height === null || height === 'unset') {
+        this.getImageDimensions(this.data.image).then(dimensions => {
+          this.frame.set('width', `${dimensions?.width || 200 }px`);
+          this.frame.set('height', `${dimensions?.height || 200 }px`);
+          hasAlteredSize = true;
+        });
+      }
+    } else {
+      if (width === undefined || width === null || width === 'unset') {
+        this.frame.set('width', '200px');
+        hasAlteredSize = true;
+      }
+      if (height === undefined || height === null || height === 'unset') {
+        this.frame.set('height', '200px');
+        hasAlteredSize = true;
+      }
     }
     if (hasAlteredSize) {
       this.updateFrame();
@@ -41,5 +52,15 @@ export class EditorImageElementComponent extends EditorResizeBaseElement {
     if (this.image !== this.data.image) {
       this.image = this.data.image;
     }
+  }
+
+  private getImageDimensions(base64Image: string): Promise<{ width: number; height: number; }> {
+    return new Promise((resolved, rejected) => {
+      var i = new Image()
+      i.onload = () => {
+        resolved({ width: i.width, height: i.height })
+      };
+      i.src = base64Image
+    })
   }
 }

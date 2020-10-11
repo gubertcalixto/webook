@@ -3,7 +3,7 @@ import { EditorElementInstanceFrame } from './editor-element-instance-frame.clas
 
 export class EditorElementInstanceData {
   frameProperties?: EditorElementInstanceFrameProperties;
-  data?: object;
+  data?: { [property: string]: any };
 
   constructor(data?: EditorElementInstanceData) {
     if (data?.frameProperties) {

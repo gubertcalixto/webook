@@ -11,6 +11,7 @@ import {
 } from '../../services/element/instance/editor-elements-instance-manager.service';
 import { EditorInteractionService } from '../../services/interactions/editor-interaction.service';
 import { IEditorExternalEvent } from '../../tokens/classes/editor-external-event.interface';
+import { ImageUtils } from '../../tokens/classes/element/image-utils';
 import { EditorElementInstanceData } from '../../tokens/classes/element/instance/editor-element-instance-data.class';
 import { EditorElementHistoryData } from '../../tokens/classes/history/editor-history-pre-serialize.class';
 import { EditorHistoryManager } from '../../tokens/classes/history/editor-history-stack.class';
@@ -89,28 +90,54 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
   }
 
   public editorDropElement(event: DragEvent): void {
+    event.preventDefault();
     if (this.visualizeMode) { return; }
-    let elementId = event.dataTransfer.getData('text/plain');
-    if (typeof elementId !== 'string') {
+    const elementId = event.dataTransfer.getData('text/plain');
+    const isAnElementId = typeof elementId === 'string' && this.editorElementsManagerService.getEditorElementDefinition(elementId);
+    if (!isAnElementId) {
+      // Treat files dropped in editor
+      const fileList = event.dataTransfer.files;
+      const isAFileList = fileList?.length;
+      if (isAFileList) {
+        const imageTypeRegex = /image\/[a-z]{1,}/;
+        for (let i = 0; i < fileList.length; i++) {
+          const file = fileList[i];
+          if (!imageTypeRegex.test(file.type)) {
+            continue;
+          }
+          ImageUtils.getBase64ImageFromFile(file)
+            .then((base64Image) => {
+              const instanceData = new EditorElementInstanceData({
+                frameProperties: { left: `${event?.offsetX}px`, top: `${event?.offsetY}px`, },
+                data: { image: base64Image }
+              });
+              this.instanciateDocument('wb-image', instanceData);
+              this.emitDocumentPageSave(true);
+            })
+            .catch(error => {
+              if (isDevMode()) {
+                console.error(error)
+              }
+            });
+        }
+      }
+      // Treat text dropped in editor
+      if (elementId && typeof elementId === 'string' && !this.editorElementsManagerService.getEditorElementDefinition(elementId)) {
+        const dataText = elementId;
+        const instanceData = new EditorElementInstanceData({
+          frameProperties: { left: `${event?.offsetX}px`, top: `${event?.offsetY}px`, },
+          data: { text: dataText }
+        });
+        this.instanciateDocument('wb-text', instanceData);
+        this.emitDocumentPageSave(true);
+        return;
+      }
       return;
     }
 
     const instanceData = new EditorElementInstanceData({
-      frameProperties: {
-        left: `${event?.offsetX}px`,
-        top: `${event?.offsetY}px`,
-      },
-      data: {}
+      frameProperties: { left: `${event?.offsetX}px`, top: `${event?.offsetY}px` }
     });
-
-    // Treat text dropped in editor
-    if (typeof elementId === 'string' && !this.editorElementsManagerService.getEditorElementDefinition(elementId)) {
-      const dataText = elementId;
-      elementId = 'wb-text';
-      instanceData.data['text'] = dataText;
-    }
-    
-    // TODO: Treat image dropped in editor
 
     this.instanciateDocument(elementId, instanceData);
     this.emitDocumentPageSave(true);
