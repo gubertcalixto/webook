@@ -104,6 +104,9 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
     );
     this.editorElements.push(addedElement);
     this.subscribeToElementChanges();
+    if (addedElement.instance?.elementId) {
+      this.editorElement.selectedElementIds = [addedElement.instance.elementId];
+    }
     return addedElement;
   }
 
@@ -130,11 +133,11 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
     })
   }
 
-  private selectAllElements(event: ShortcutEventOutput): void {
+  private selectAllElements(event?: ShortcutEventOutput): void {
     if (!this.editorElement.isFocused) { return; }
 
     const ids = this.editorElements.map(el => el.instance.elementId);
     this.editorElement.selectedElementIds = ids;
-    event.event.preventDefault();
+    event?.event?.preventDefault();
   }
 }

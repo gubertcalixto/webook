@@ -86,21 +86,31 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
   public editorDragOver(event: DragEvent): void {
     if (this.visualizeMode) { return; }
     event.preventDefault();
-    // TODO
   }
 
   public editorDropElement(event: DragEvent): void {
     if (this.visualizeMode) { return; }
-    const elementId = event.dataTransfer.getData('text/plain');
+    let elementId = event.dataTransfer.getData('text/plain');
     if (typeof elementId !== 'string') {
       return;
     }
+
     const instanceData = new EditorElementInstanceData({
       frameProperties: {
         left: `${event?.offsetX}px`,
         top: `${event?.offsetY}px`,
-      }
+      },
+      data: {}
     });
+
+    // Treat text dropped in editor
+    if (typeof elementId === 'string' && !this.editorElementsManagerService.getEditorElementDefinition(elementId)) {
+      const dataText = elementId;
+      elementId = 'wb-text';
+      instanceData.data['text'] = dataText;
+    }
+    
+    // TODO: Treat image dropped in editor
 
     this.instanciateDocument(elementId, instanceData);
     this.emitDocumentPageSave(true);
