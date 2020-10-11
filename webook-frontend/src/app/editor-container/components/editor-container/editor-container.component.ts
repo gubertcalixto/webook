@@ -105,7 +105,7 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
     return addedElement;
   }
 
-  protected emitDocumentPageSave(forceNoDebounce = false) {
+  protected emitDocumentPageSave(forceNoDebounce = false, ignoreHistory = false) {
     const data: EditorElementHistoryData[] = this.editorElements.map(el => {
       return {
         elementId: el.instance?.elementId,
@@ -121,7 +121,9 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
       this.onSavePageSubscription.unsubscribe();
     }
     this.onSavePageSubscription = this.documentPageService.savedPageSubject.pipe(first()).subscribe(res => {
-      this.editorHistory.append(data);
+      if (!ignoreHistory) {
+        this.editorHistory.append(data);
+      }
     })
   }
 

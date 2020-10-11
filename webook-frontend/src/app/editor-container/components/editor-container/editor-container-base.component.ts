@@ -52,7 +52,7 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
     }
   }
 
-  protected abstract emitDocumentPageSave(forceNoDebounce?: boolean): void;
+  protected abstract emitDocumentPageSave(forceNoDebounce?: boolean, ignoreHistory?: boolean): void;
   protected abstract instanciateDocument(elementTypeId: string, data?: EditorElementInstanceData, elementId?: string): ComponentRef<EditorBaseElement>;
 
   private registerToWindowResize(): void {
@@ -87,14 +87,14 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
     if (!this.editorHistory.hasUndo()) { return; }
     const data = this.editorHistory.undo();
     this.instanciateElementsFromData(data);
-    // TODO: Save document after "undo"
+    this.emitDocumentPageSave(false, true);
   }
 
   protected redo(): void {
     if (!this.editorHistory.hasRedo()) { return; }
     const data = this.editorHistory.redo();
     this.instanciateElementsFromData(data);
-    // TODO: Save document after "redo"
+    this.emitDocumentPageSave(false, true);
   }
 
   protected instanciateElementsFromData(data: EditorElementHistoryData[]): void {
