@@ -1,5 +1,6 @@
 import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '@oath/services/user.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
@@ -29,6 +30,7 @@ export class DocumentViewPageComponent implements OnDestroy {
     private nzNotificationService: NzNotificationService,
     private nzModalService: NzModalService,
     private editorPageService: EditorPageService,
+    private userService: UserService,
   ) {
     this.activatedRoute.params.subscribe(params => {
       const documentId = params.id;
@@ -56,6 +58,10 @@ export class DocumentViewPageComponent implements OnDestroy {
   private getDocument(): void {
     this.subs.push(this.documentService.getDocument(this.documentId).subscribe(document => {
       if (!document || document.documentAccess === 0) {
+        if (document.documentAccess === 0 && document.userId === this.userService.userId) {
+          this.router.navigateByUrl(`/document/${this.documentId}`);
+          return;
+        }
         this.redirectBack();
         return;
       }
