@@ -2,6 +2,7 @@ import { ComponentRef, isDevMode, OnDestroy, OnInit } from '@angular/core';
 import { merge, Subscription } from 'rxjs';
 
 import { DocumentOutput } from '../../../client/webook/model/models';
+import { EditorDocumentPageInstanceService } from '../../services/document-page-instance.service';
 import { EditorDocumentPageService } from '../../services/document-page.service';
 import {
   EditorElementsDefinitionManagerService,
@@ -10,6 +11,7 @@ import {
   EditorElementsInstanceManagerService,
 } from '../../services/element/instance/editor-elements-instance-manager.service';
 import { EditorInteractionService } from '../../services/interactions/editor-interaction.service';
+import { EditorDocumentPageInstanceData } from '../../tokens/classes/editor-document-page-instance-data.class';
 import { IEditorExternalEvent } from '../../tokens/classes/editor-external-event.interface';
 import { ImageUtils } from '../../tokens/classes/element/image-utils';
 import { EditorElementInstanceData } from '../../tokens/classes/element/instance/editor-element-instance-data.class';
@@ -37,11 +39,14 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
   }
 
   constructor(
+    protected editorDocumentPageInstanceService: EditorDocumentPageInstanceService,
     protected editorElementsManagerService: EditorElementsDefinitionManagerService,
     protected instanceManagerService: EditorElementsInstanceManagerService,
     protected documentPageService: EditorDocumentPageService,
     protected editorInteractionService: EditorInteractionService
-  ) { }
+  ) {
+    this.subscribeToPageChange();
+  }
 
   ngOnInit(): void {
     this.registerToWindowResize();
@@ -55,6 +60,8 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
       this.editorElementChangeSubscription.unsubscribe();
     }
   }
+
+  protected abstract subscribeToPageChange(): void;
 
   protected abstract emitDocumentPageSave(forceNoDebounce?: boolean, ignoreHistory?: boolean): void;
   protected abstract instanciateDocument(elementTypeId: string, data?: EditorElementInstanceData, elementId?: string): ComponentRef<EditorBaseElement>;
@@ -170,9 +177,18 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
     if (this.editorElements.length) {
       this.resetEditorElements();
     }
+
+    const pageDataIndex = data.findIndex(d => d.elementTypeId === 'page');
+    if (pageDataIndex !== -1) {
+      this.editorDocumentPageInstanceService.setData(data[pageDataIndex]?.instanceData?.data as EditorDocumentPageInstanceData);
+      data.splice(pageDataIndex, 1);
+    } else {
+      this.editorDocumentPageInstanceService.setData(undefined);
+    }
     data.forEach(e => {
       this.instanciateDocument(e.elementTypeId, e.instanceData, e.elementId);
     });
+    this.editorElement.selectedElementIds = [];
   }
 
   protected resetEditorElements(): void {

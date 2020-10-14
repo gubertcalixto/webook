@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { DocumentOutput } from 'src/app/client/webook';
 
+import { EditorDocumentPageInstanceService } from '../../services/document-page-instance.service';
 import { EditorDocumentPageService } from '../../services/document-page.service';
 import {
   EditorElementsDefinitionManagerService,
@@ -22,6 +23,7 @@ import {
   EditorElementsInstanceManagerService,
 } from '../../services/element/instance/editor-elements-instance-manager.service';
 import { EditorInteractionService } from '../../services/interactions/editor-interaction.service';
+import { EditorDocumentPageInstanceData } from '../../tokens/classes/editor-document-page-instance-data.class';
 import { IEditorExternalEvent } from '../../tokens/classes/editor-external-event.interface';
 import { EditorElementInstanceData } from '../../tokens/classes/element/instance/editor-element-instance-data.class';
 import { EditorElementHistoryData } from '../../tokens/classes/history/editor-history-pre-serialize.class';
@@ -37,6 +39,7 @@ import { EditorContainerClipboardBaseComponent } from './editor-container-clipbo
 export class EditorContainerComponent extends EditorContainerClipboardBaseComponent implements AfterViewInit, OnDestroy {
   private _pageIndex = 1;
   private onSavePageSubscription: Subscription;
+  private lastSavedPageInstanceData: string;
 
   @ViewChild('editor', { static: false }) protected editorElement: EditorComponent;
   @ViewChild('editorContainer', { read: ViewContainerRef }) editorContainer: ViewContainerRef;
@@ -63,12 +66,13 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
   ];
 
   constructor(
+    editorDocumentPageInstanceService: EditorDocumentPageInstanceService,
     editorElementsManagerService: EditorElementsDefinitionManagerService,
     instanceManagerService: EditorElementsInstanceManagerService,
     documentPageService: EditorDocumentPageService,
     editorInteractionService: EditorInteractionService
   ) {
-    super(editorElementsManagerService, instanceManagerService, documentPageService, editorInteractionService);
+    super(editorDocumentPageInstanceService, editorElementsManagerService, instanceManagerService, documentPageService, editorInteractionService);
   }
 
   ngAfterViewInit(): void {
@@ -84,12 +88,31 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
     }
   }
 
+  protected subscribeToPageChange(): void {
+    this.subs.push(this.editorDocumentPageInstanceService.dataChanged.subscribe(data => {
+      if (data && JSON.stringify(data) !== this.lastSavedPageInstanceData) {
+        this.emitDocumentPageSave();
+      }
+    }));
+  }
+
   private getDocumentPage(): void {
     this.resetEditorElements();
     this.subs.push(this.documentPageService.getPage(this.document.id, this.pageIndex).subscribe(result => {
       if (result?.pageData) {
         const data: EditorElementHistoryData[] = JSON.parse(result.pageData);
-        this.instanciateElementsFromData(data);
+        const normalizedData: EditorElementHistoryData[] = [...data];
+        const pageDataIndex = data.findIndex(d => d.elementTypeId === 'page');
+        if (pageDataIndex !== -1) {
+          const pageData: EditorDocumentPageInstanceData = data[pageDataIndex]?.instanceData?.data as EditorDocumentPageInstanceData;
+          this.lastSavedPageInstanceData = JSON.stringify(pageData);
+          this.editorDocumentPageInstanceService.setData(pageData);
+          normalizedData.splice(pageDataIndex, 1);
+        } else {
+          this.lastSavedPageInstanceData = undefined;
+          this.editorDocumentPageInstanceService.setData(undefined);
+        }
+        this.instanciateElementsFromData(normalizedData);
         this.editorHistory.reset(data);
       }
     }));
@@ -121,6 +144,14 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
         }
       };
     });
+    if (this.editorDocumentPageInstanceService.data) {
+      this.lastSavedPageInstanceData = JSON.stringify(this.editorDocumentPageInstanceService.data);
+      data.unshift({
+        elementTypeId: 'page',
+        elementId: `page-${this.pageIndex}`,
+        instanceData: { data: this.editorDocumentPageInstanceService.data }
+      });
+    }
     this.documentPageService.savePage(this.document.id, this.pageIndex, data, forceNoDebounce);
     if (this.onSavePageSubscription && !this.onSavePageSubscription.closed) {
       this.onSavePageSubscription.unsubscribe();

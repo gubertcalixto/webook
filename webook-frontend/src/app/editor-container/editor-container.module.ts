@@ -19,6 +19,7 @@ import { EditorToolboxComponent } from './components/editor-toolbox/editor-toolb
 import { EditorComponentsModule } from './components/editor/editor-components/editor-components.module';
 import { EditorComponent } from './components/editor/editor.component';
 import { EditorContainerRoutingModule } from './editor-container-routing.module';
+import { EditorDocumentPageInstanceService } from './services/document-page-instance.service';
 import { EditorDocumentPageService } from './services/document-page.service';
 import {
   EditorElementsDefinitionManagerService,
@@ -55,6 +56,7 @@ import { EditorInteractionService } from './services/interactions/editor-interac
     EditorElementsDefinitionManagerService,
     EditorElementsInstanceManagerService,
     EditorDocumentPageService,
+    EditorDocumentPageInstanceService,
     EditorInteractionService
   ]
 })

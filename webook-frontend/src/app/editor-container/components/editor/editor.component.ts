@@ -1,15 +1,19 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
   HostBinding,
   HostListener,
   Input,
+  OnDestroy,
   Output,
   ViewEncapsulation,
 } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { SelectoEvents } from 'selecto';
+
+import { EditorDocumentPageInstanceService } from '../../services/document-page-instance.service';
 
 @Component({
   selector: 'wb-editor',
@@ -17,13 +21,15 @@ import { SelectoEvents } from 'selecto';
   styleUrls: ['./editor.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class EditorComponent {
+export class EditorComponent implements AfterViewInit, OnDestroy {
   private _selectedElementIds: string[] = [];
+  private subs: Subscription[] = [];
   public isFocused = false;
 
   @HostBinding('class.editing') @Input() public editMode: boolean;
   @HostBinding('attr.tabindex') public tabindex = 0;
   @Input() public visualizeMode = false;
+
   @Output() public editModeChange = new EventEmitter<boolean>();
 
   @HostListener('focus') public onFocus() { this.isFocused = true; }
@@ -49,7 +55,29 @@ export class EditorComponent {
       : this.selectedElementIds;
   }
 
-  constructor(public elementRef: ElementRef<HTMLElement>) { }
+  constructor(
+    private editorDocumentPageInstanceService: EditorDocumentPageInstanceService,
+    public elementRef: ElementRef<HTMLElement>) { }
+
+  ngAfterViewInit(): void {
+    this.subscribeToPageDataChange();
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(s => s.unsubscribe());
+  }
+
+  private subscribeToPageDataChange(): void {
+    this.subs.push(this.editorDocumentPageInstanceService.dataChanged.subscribe(data => {
+      if (data?.backgroundImage) {
+        this.elementRef.nativeElement.style.background = data.backgroundImage;
+      } else if (data?.backgroundColor) {
+        this.elementRef.nativeElement.style.background = data.backgroundColor;
+      } else {
+        this.elementRef.nativeElement.style.background = 'unset';
+      }
+    }))
+  }
 
   public onDragStart(event: SelectoEvents['drag']): void {
     if (this.visualizeMode) { return; }
