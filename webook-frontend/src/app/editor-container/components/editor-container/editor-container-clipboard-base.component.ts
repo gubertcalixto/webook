@@ -35,7 +35,7 @@ export abstract class EditorContainerClipboardBaseComponent extends EditorContai
     return {
       elementTypeId: element.elementTypeId,
       data: new EditorElementInstanceData({
-        data: element.data,
+        data: element.data ? JSON.parse(JSON.stringify(element.data)) : undefined,
         frameProperties: {
           height: element.frame.get('height'),
           width: element.frame.get('width'),
