@@ -14,8 +14,8 @@ export class PagePropertiesComponent {
 
   constructor(private editorDocumentPageInstanceService: EditorDocumentPageInstanceService) {
     this.editorDocumentPageInstanceService.dataChanged.subscribe(res => {
-      this.backgroundColor = res?.backgroundColor;
-      this.backgroundImage = res?.backgroundImage;
+      this.backgroundColor = typeof res?.backgroundColor !== 'string' ? undefined : res?.backgroundColor;
+      this.backgroundImage = typeof res?.backgroundImage !== 'string' ? undefined : res?.backgroundImage;
     });
   }
 
