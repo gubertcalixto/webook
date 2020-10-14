@@ -14,14 +14,14 @@ export class PagePropertiesComponent {
 
   constructor(private editorDocumentPageInstanceService: EditorDocumentPageInstanceService) {
     this.editorDocumentPageInstanceService.dataChanged.subscribe(res => {
-      this.backgroundColor = typeof res?.backgroundColor !== 'string' ? undefined : res?.backgroundColor;
+      this.backgroundColor = typeof res?.backgroundColor !== 'string' ? '#fff' : res?.backgroundColor;
       this.backgroundImage = typeof res?.backgroundImage !== 'string' ? undefined : res?.backgroundImage;
     });
   }
 
   public setBackground(type: 'color' | 'image', backgroundValue: string) {
     if (type === 'color') {
-      this.backgroundColor = backgroundValue;
+      this.backgroundColor = backgroundValue || '#fff';
     } else {
       this.backgroundImage = backgroundValue;
     }

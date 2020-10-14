@@ -196,6 +196,7 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
       elements.destroy();
     });
     this.editorElements = [];
+    this.editorDocumentPageInstanceService.setData(undefined);
   }
 
   protected subscribeToElementChanges(): void {

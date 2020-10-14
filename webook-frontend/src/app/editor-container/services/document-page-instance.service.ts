@@ -8,7 +8,7 @@ export class EditorDocumentPageInstanceService {
   public data: EditorDocumentPageInstanceData;
   public dataChanged = new BehaviorSubject<EditorDocumentPageInstanceData>(undefined);
 
-  public setData(data: EditorDocumentPageInstanceData = this.data): void {
+  public setData(data?: EditorDocumentPageInstanceData): void {
     this.data = data;
     this.dataChanged.next(this.data);
   }

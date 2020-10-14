@@ -86,6 +86,7 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
     if (this.onSavePageSubscription && !this.onSavePageSubscription.closed) {
       this.onSavePageSubscription.unsubscribe();
     }
+    this.editorDocumentPageInstanceService.setData(undefined);
   }
 
   protected subscribeToPageChange(): void {
@@ -107,13 +108,13 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
           const pageData: EditorDocumentPageInstanceData = data[pageDataIndex]?.instanceData?.data as EditorDocumentPageInstanceData;
           this.lastSavedPageInstanceData = JSON.stringify(pageData);
           this.editorDocumentPageInstanceService.setData(pageData);
-          normalizedData.splice(pageDataIndex, 1);
         } else {
           this.lastSavedPageInstanceData = undefined;
           this.editorDocumentPageInstanceService.setData(undefined);
         }
-        this.instanciateElementsFromData(normalizedData);
+        this.instanciateElementsFromData(data);
         this.editorHistory.reset(data);
+      } else {
       }
     }));
   }
