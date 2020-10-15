@@ -44,7 +44,6 @@ export class MyDocumentsPageComponent implements OnInit, AfterViewInit, OnDestro
 
   ngOnInit(): void {
     this.shouldHaveCreateDocumentViewExpanded = documentCreationModels.length > this.maximumCreatDocumenModelSize;
-    this.getMyDocuments();
   }
 
   ngAfterViewInit(): void {
