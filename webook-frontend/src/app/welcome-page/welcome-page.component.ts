@@ -49,7 +49,9 @@ export class WelcomePageComponent implements OnDestroy {
     const setIsNavigationCompactModeEnabled = () => {
       this.isNavigationCompactModeEnabled = document.body.clientWidth <= 1000;
     };
-    setIsNavigationCompactModeEnabled();
+    setTimeout(() => {
+      setIsNavigationCompactModeEnabled();
+    });
     window.onresize = () => {
       setIsNavigationCompactModeEnabled();
     };
