@@ -66,9 +66,11 @@ namespace IdentityServer.Controller
         {
             if (string.IsNullOrEmpty(userName))
                 throw new ArgumentException(nameof(userName));
+                
+            var normalizedUserName = userName.ToLower();
     
             return _mapper.Map<List<SimplifiedUser>>(await _userContext.ApplicationUsers
-                .Where(b => b.UserName.Contains(userName))
+                .Where(b => b.UserName.ToLower().Contains(normalizedUserName))
                 .Skip(skipCount)
                 .Take(pageSize)
                 .ToListAsync());

@@ -24,8 +24,8 @@ namespace Scrapbook.Host.Services.User
             var response = await _client.GetAsync($"http://localhost:5000/users/{username}");
             if (!response.IsSuccessStatusCode)
                 throw new Exception($"Could not get from: http://localhost:5000/users/{username}");
-            var responseResult = await response.Content.ReadAsStreamAsync();
-            var users = await JsonSerializer.DeserializeAsync<List<SimplifiedUser>>(responseResult);
+            var responseResult = await response.Content.ReadAsStringAsync();
+            var users = JsonSerializer.Deserialize<List<SimplifiedUser>>(responseResult);
             return users;
         }
     }
