@@ -26,8 +26,10 @@ export class DocumentService {
     return this.documentsServiceProxy.documentsMyUserGet(searchQuery);
   }
 
-  public getAllDocuments(filter?: string, skipCount?: number, pageSize?: number, order?: string, user?: string, tags?: Array<Tags>): Observable<EditorDocumentPagedResultOutput> {
-    return this.documentsServiceProxy.documentsSearchGet(skipCount, pageSize, filter, order, user, tags);
+  public getAllDocuments(input: {
+    userName?: string; tagFilter?: string[]; rate?: number; startDate?: string; endDate?: string; skipCount?: number; pageSize?: number; filter?: string; order?: string
+  }): Observable<EditorDocumentPagedResultOutput> {
+    return this.documentsServiceProxy.documentsSearchGet(input.userName, input.tagFilter, input.rate, input.startDate, input.endDate, input.skipCount, input.pageSize, input.filter, input.order);
   }
 
   public getUserDocuments(userId: string, skipCount?: number, pageSize?: number, filter?: string): Observable<EditorDocumentPagedResultOutput> {

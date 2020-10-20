@@ -1,0 +1,52 @@
+<h2 nz-typography>Filtrar</h2>
+<form *ngIf="form" [formGroup]="form" nz-form nzLayout="vertical">
+  <nz-form-item>
+    <label>Pesquisa</label>
+    <input nz-input placeholder="Digite o termo de sua pesquisa" formControlName="query" />
+  </nz-form-item>
+  <nz-form-item>
+    <label nz-checkbox formControlName="isDateFilterEnabled">Habilitar filtros de Data</label>
+    <div [hidden]="!form.get('isDateFilterEnabled').value">
+      <nz-date-picker nzFormat="dd/MM/yyyy" nzPlaceHolder="Publicações feita entre" formControlName="dateFilterStart"
+        [nzDisabled]="!form.get('isDateFilterEnabled').value">
+      </nz-date-picker>
+      <nz-date-picker nzFormat="dd/MM/yyyy" nzPlaceHolder="Publicações feita até" formControlName="dateFilterEnd"
+        [nzDisabled]="!form.get('isDateFilterEnabled').value">
+      </nz-date-picker>
+    </div>
+  </nz-form-item>
+  <nz-form-item>
+    <label nz-checkbox formControlName="isTagFilterEnabled">Habilitar filtros de Tags</label>
+    <div [hidden]="!form.get('isTagFilterEnabled').value">
+      <nz-select [nzDisabled]="!form.get('isTagFilterEnabled').value" nzMode="tags"
+        [nzTokenSeparators]="[',', ';', ' ']" nzPlaceHolder="Insira suas Tags" [nzAutoFocus]
+        formControlName="tagFilter">
+      </nz-select>
+    </div>
+  </nz-form-item>
+  <nz-form-item>
+    <label nz-checkbox formControlName="isRateFilterEnabled">Habilitar filtros de Avaliação</label>
+    <div [hidden]="!form.get('isRateFilterEnabled').value">
+      <label>Avaliação</label>
+      <nz-rate [nzDisabled]="!form.get('isRateFilterEnabled').value" formControlName="rateFilter"></nz-rate>
+    </div>
+  </nz-form-item>
+  <nz-form-item>
+    <label nz-checkbox (nzCheckedChange)="userFilterChanged()" formControlName="isUserFilterEnabled">Habilitar filtros
+      de Usuário</label>
+    <div [hidden]="!form.get('isUserFilterEnabled').value">
+      <input nz-input placeholder="Digite um nome de usuário" formControlName="userFilter" />
+    </div>
+  </nz-form-item>
+</form>
+<div *nzModalFooter>
+  <button [disabled]="isUpdating" nz-button nzType="default" (click)="cancelModal()">
+    Cancelar
+  </button>
+  <button nz-button nzType="danger" (click)="clearFilters()">
+    Limpar Filtros
+  </button>
+  <button [disabled]="isUpdating" nz-button nzType="primary" (click)="saveModal()">
+    Aplicar Filtros
+  </button>
+</div>

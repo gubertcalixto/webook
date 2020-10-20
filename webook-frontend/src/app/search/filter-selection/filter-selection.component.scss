@@ -1,0 +1,8 @@
+wb-filter-selection {
+  nz-date-picker {
+    width: 100%;
+  }
+  nz-form-item > label[nz-checkbox] + * {
+    margin-top: 12px;
+  }
+}

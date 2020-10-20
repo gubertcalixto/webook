@@ -11,6 +11,7 @@ using Scrapbook.Domain.Enums.Editor;
 using Scrapbook.Domain.Shared;
 using Scrapbook.Domain.Shared.Utils.IQueryable;
 using Scrapbook.Host.Controllers.Document.Dtos;
+using Scrapbook.Host.Services.User;
 using Scrapbook.Host.Utils;
 using Scrapbook.Infrastructure;
 
@@ -18,10 +19,13 @@ namespace Scrapbook.Host.Controllers.Document
 {
     public class DocumentsController: UserBaseController<EditorDocument>
     {
-        public DocumentsController(DefaultContext context, IJwtReader jwtReader, IMapper mapper = null) : base(context, context.Documents, jwtReader, mapper)
-        {
-        }
+        private readonly IUserService _userService;
 
+        public DocumentsController(DefaultContext context, IJwtReader jwtReader, IUserService userService, IMapper mapper = null) : base(context, context.Documents, jwtReader, mapper)
+        {
+            _userService = userService;
+        }
+        
         [HttpGet("/documents/user/{userId}")]
         public async Task<PagedResultOutput<EditorDocument>> GetAllFromUser(Guid userId, PagedResultInput input)
         {
@@ -57,22 +61,32 @@ namespace Scrapbook.Host.Controllers.Document
 
         [AllowAnonymous]
         [HttpGet("/documents/search")]
-        public async Task<PagedResultOutput<EditorDocument>> GetAll(PagedResultInput input)
+        public async Task<PagedResultOutput<EditorDocument>> GetAll(GetAllDocumentsInput input)
         {
-            var query = Repository
-                .Where(r => r.DocumentAccess == EditorDocumentAllowedAccess.Public)
-                .WhereIf(!string.IsNullOrEmpty(input.Filter),
-                    r => r.Title.Contains(input.Filter) || r.Description.Contains(input.Filter));
+            var tagNames = input?.TagFilter ?? new List<string>();
+            var filteredUsers = await _userService.GetUsersByUserName(input?.UserName);
+            var filteredUserIds = filteredUsers.Select(u => u.Id).ToList(); 
 
+            var query = Repository
+                 .Include(d => d.Tags)
+                 .Where(r => r.DocumentAccess == EditorDocumentAllowedAccess.Public)
+                 .WhereIf(!string.IsNullOrEmpty(input?.Filter), r => r.Title.Contains(input.Filter) || r.Description.Contains(input.Filter))
+                 .WhereIf(tagNames.Any(), d => d.Tags.Any(t => tagNames.Contains(t.TagName)))
+                 .WhereIf(input?.StartDate != null, d => d.LastUpdateTime != null ? d.LastUpdateTime >= input.StartDate : d.CreationTime >= input.StartDate)
+                 .WhereIf(input?.EndDate != null, d => d.LastUpdateTime != null ? d.LastUpdateTime <= input.EndDate : d.CreationTime <= input.EndDate)
+                 .WhereIf(!string.IsNullOrEmpty(input?.UserName), u => filteredUserIds.Contains(u.UserId));
+            
+            // TODO Rate Filter
+                
             var totalCount = await query.CountAsync();
 
-            query = input.Order == "asc" 
+            query = input == null || input.Order == "asc" 
                 ? query.OrderBy(document => document.Title)
                 : query.OrderByDescending(document => document.Title);
             
             var items = await query
-                .Skip(input.SkipCount ?? 0)
-                .Take(input.PageSize ?? 20)
+                .Skip(input?.SkipCount ?? 0)
+                .Take(input?.PageSize ?? 20)
                 .ToListAsync();
 
             return new PagedResultOutput<EditorDocument>(items, totalCount);

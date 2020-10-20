@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Scrapbook.Domain.Entities.Editor.Document;
-
-namespace Scrapbook.Domain.Shared
+﻿namespace Scrapbook.Domain.Shared
 {
     public class PagedResultInput
     {
@@ -9,7 +6,5 @@ namespace Scrapbook.Domain.Shared
         public int? PageSize { get; set; }
         public string Filter { get; set; }
         public string Order { get; set; }
-        public string UsernameFilter { get; set; }
-        public List<Tags> TagFilter { get; set; }
     }
 }

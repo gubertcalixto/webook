@@ -18,7 +18,6 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 import { EditorDocumentPagedResultOutput } from '../model/models';
-import { Tags } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -89,15 +88,13 @@ export class FeedServiceProxy {
      * @param pageSize 
      * @param filter 
      * @param order 
-     * @param usernameFilter 
-     * @param tagFilter 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public feedGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, usernameFilter?: string, tagFilter?: Array<Tags>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocumentPagedResultOutput>;
-    public feedGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, usernameFilter?: string, tagFilter?: Array<Tags>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocumentPagedResultOutput>>;
-    public feedGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, usernameFilter?: string, tagFilter?: Array<Tags>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocumentPagedResultOutput>>;
-    public feedGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, usernameFilter?: string, tagFilter?: Array<Tags>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+    public feedGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorDocumentPagedResultOutput>;
+    public feedGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorDocumentPagedResultOutput>>;
+    public feedGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorDocumentPagedResultOutput>>;
+    public feedGet(skipCount?: number, pageSize?: number, filter?: string, order?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
         if (skipCount !== undefined && skipCount !== null) {
@@ -115,16 +112,6 @@ export class FeedServiceProxy {
         if (order !== undefined && order !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
             <any>order, 'Order');
-        }
-        if (usernameFilter !== undefined && usernameFilter !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>usernameFilter, 'UsernameFilter');
-        }
-        if (tagFilter) {
-            tagFilter.forEach((element) => {
-                queryParameters = this.addToHttpParams(queryParameters,
-                  <any>element, 'TagFilter');
-            })
         }
 
         let headers = this.defaultHeaders;
