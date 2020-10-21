@@ -1,8 +1,13 @@
 wb-editor-header {
+  position: relative;
   wb-editor-document-title {
     display: flex;
   }
   nz-page-header-extra.page-navigation-container {
+    $page-navigation-width: 25vw;
+    position: absolute;
+    width: $page-navigation-width;
+    left: #{50vw - ($page-navigation-width / 2)};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -14,6 +19,27 @@ wb-editor-header {
     font-size: 80%;
     &.waiting {
       opacity: 0.3;
+    }
+  }
+  .actions-container {
+    .expanded {
+      display: initial;
+    }
+    .collapsed {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 700px) {
+  wb-editor-header {
+    .actions-container {
+      .expanded {
+        display: none;
+      }
+      .collapsed {
+        display: initial;
+      }
     }
   }
 }

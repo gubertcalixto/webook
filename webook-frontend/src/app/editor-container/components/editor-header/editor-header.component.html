@@ -25,7 +25,10 @@
           [nzTooltipTitle]="editorExternalEvent?.hasRedo ? 'Refazer' : undefined" nzTooltipPlacement="bottomRight"
           (click)="editorExternalEvent?.eventSubject?.next('redo')"><i fa="redo"></i></button>
         <button (click)="openDocumentConfiguration.next()" nz-button nzType="primary"
-          nzShape="round">Configurações</button>
+          nzShape="round">
+        <span class="expanded">Configurações</span>
+        <i fa="cogs" class="collapsed"></i>
+        </button>
       </ng-container>
       <ng-container *ngIf="visualizeMode">
         <button nz-button (click)="openDenounceModal.next()" nzType="danger" nzShape="circle" nz-tooltip
