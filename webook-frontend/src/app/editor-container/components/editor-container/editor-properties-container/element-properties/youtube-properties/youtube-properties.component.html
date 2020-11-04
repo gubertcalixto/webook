@@ -1,0 +1,23 @@
+<h4>Youtube</h4>
+<input
+  nz-input
+  [ngModel]="currentElementSelectedData.youtubeUrl"
+  (ngModelChange)="setYoutubeUrl($event)"
+  placeholder="Url do youtube"
+/>
+<label *ngIf="invalidUrl" class="invalid-url-message">URL inválida, tente novamente</label>
+
+
+<label>Começa em (segundos)</label>
+<nz-time-picker
+nzPlaceHolder="Início do Vídeo"
+[ngModel]="startTimeSelected"
+(ngModelChange)="setTime(true, $event)"
+nzFormat="mm:ss"></nz-time-picker>
+
+<label>Termina em (segundos)</label>
+<nz-time-picker
+nzPlaceHolder="Final do Vídeo"
+[ngModel]="endTimeSelected"
+(ngModelChange)="setTime(false, $event)"
+nzFormat="mm:ss"></nz-time-picker>

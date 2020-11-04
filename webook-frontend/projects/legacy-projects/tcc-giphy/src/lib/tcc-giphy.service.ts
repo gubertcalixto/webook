@@ -9,7 +9,7 @@ export class TccGiphyService {
   constructor(private http: HttpClient, @Inject(TCC_GIPHY_API_KEY) private apiKey: string) { }
 
   private getHttpParamWithBearer(): HttpParams {
-    return new HttpParams().append('key', this.apiKey);
+    return new HttpParams().append('api_key', this.apiKey);
   }
 
   private appendParam(paramsObj: HttpParams, key: string, value: any): HttpParams {

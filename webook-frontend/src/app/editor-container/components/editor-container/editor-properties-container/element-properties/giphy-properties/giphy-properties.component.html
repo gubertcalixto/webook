@@ -1,0 +1,17 @@
+<h4 nz-typography>Gifs - Giphy</h4>
+<input nz-input [(ngModel)]="searchQuery" placeholder="Pesquise no Giphy" />
+<div *ngIf="result" class="result-container">
+  <h3>Resultados <small>via <a href="https://giphy.com/" target="_blank">Giphy</a></small></h3>
+  <div class="result-container">
+    <ng-container *ngFor="let item of result.data">
+      <a class="result-item" (click)="onGiphySelect(item.id)">
+        <img
+          [title]="item.title"
+          [alt]="'Imagem de' + (item.user?.display_name + ' | @' + item.username)"
+          [src]="item.images?.fixed_width?.url"
+        />
+      </a>
+    </ng-container>
+  </div>
+</div>
+<nz-empty *ngIf="!result"></nz-empty>

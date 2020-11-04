@@ -1,8 +1,30 @@
 wb-page-properties {
+    display: flex;
+    flex-direction: column;
+    flex: auto;
+    max-height: 100%;
     .color-picker-container {
+        margin-bottom: 12px;
         input.color-picker-input {
+            color: transparent;
             width: 100%;
             cursor: pointer;
         }
+    }
+    .patterns-container {
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+    
+      > .item {
+        $img-size: 80px;
+        display: flex;
+        flex-direction: column;
+        margin: 4px;
+        height: $img-size;
+        min-height: $img-size;
+        max-height: $img-size;
+        cursor: pointer;
+      }
     }
 }

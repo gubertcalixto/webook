@@ -21,6 +21,7 @@
     "@angular/platform-browser": "~9.1.9",
     "@angular/platform-browser-dynamic": "~9.1.9",
     "@angular/router": "~9.1.9",
+    "@angular/youtube-player": "^10.2.5",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "angular-oauth2-oidc": "^9.2.2",
     "angular-oauth2-oidc-jwks": "^9.0.0",

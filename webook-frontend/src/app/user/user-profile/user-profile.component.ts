@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '@oath/services/user.service';
 import { OAuthUser } from '@oath/tokens/oauth-user';
-import { image } from 'html2canvas/dist/types/css/types/image';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
