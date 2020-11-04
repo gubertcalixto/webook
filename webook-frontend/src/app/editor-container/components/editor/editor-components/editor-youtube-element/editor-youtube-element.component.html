@@ -1,5 +1,5 @@
 <ng-container *ngIf="hasFinishedDataEntry">
-  <div class="avoid-click"></div>
+  <div *ngIf="!visualizeMode" class="avoid-click"></div>
   <div *ngIf="!url" class="no-video-container">
     <i fa="youtube" faStyle="fab" faSize="5"></i>
   </div>
