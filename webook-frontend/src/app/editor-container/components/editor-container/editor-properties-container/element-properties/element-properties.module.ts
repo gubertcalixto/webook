@@ -3,11 +3,14 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CheckboxPropertiesModule } from './checkbox-properties/checkbox-properties.module';
+import { GiphyPropertiesModule } from './giphy-properties/giphy-properties.module';
 import { ImagePropertiesModule } from './image-properties/image-properties.module';
+import { PixabayPropertiesModule } from './pixabay-properties/pixabay-properties.module';
 import { RadioPropertiesModule } from './radio-properties/radio-properties.module';
 import { RectanglePropertiesModule } from './rectangle-properties/rectangle-properties.module';
 import { SliderPropertiesModule } from './slider-properties/slider-properties.module';
 import { TextPropertiesModule } from './text-properties/text-properties.module';
+import { YoutubePropertiesModule } from './youtube-properties/youtube-properties.module';
 
 @NgModule({
   imports: [
@@ -19,7 +22,10 @@ import { TextPropertiesModule } from './text-properties/text-properties.module';
     CheckboxPropertiesModule,
     RadioPropertiesModule,
     ImagePropertiesModule,
-    TextPropertiesModule
+    TextPropertiesModule,
+    GiphyPropertiesModule,
+    PixabayPropertiesModule,
+    YoutubePropertiesModule,
   ],
   exports: [
     SliderPropertiesModule,
@@ -27,7 +33,10 @@ import { TextPropertiesModule } from './text-properties/text-properties.module';
     CheckboxPropertiesModule,
     RadioPropertiesModule,
     ImagePropertiesModule,
-    TextPropertiesModule
+    TextPropertiesModule,
+    GiphyPropertiesModule,
+    PixabayPropertiesModule,
+    YoutubePropertiesModule,
   ],
 })
 export class ElementPropertiesModule { }

@@ -1,0 +1,27 @@
+nz-empty {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.image-loader {
+  display: flex;
+  flex: auto;
+  align-items: center;
+  place-content: center;
+  height: 100%;
+}
+.image {
+  $width: 100%;
+  $height: 100%;
+  display: flex;
+  flex: auto;
+  min-width: $width;
+  max-width: $width;
+  width: $width;
+  min-height: $height;
+  max-height: $height;
+  height: $height;
+}

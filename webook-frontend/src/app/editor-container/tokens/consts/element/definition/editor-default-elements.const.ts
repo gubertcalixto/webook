@@ -1,4 +1,14 @@
 import {
+  EditorGiphyElementComponent,
+} from 'src/app/editor-container/components/editor/editor-components/editor-giphy-element/editor-giphy-element.component';
+import {
+  EditorPixabayElementComponent,
+} from 'src/app/editor-container/components/editor/editor-components/editor-pixabay-element/editor-pixabay-element.component';
+import {
+  EditorYoutubeElementComponent,
+} from 'src/app/editor-container/components/editor/editor-components/editor-youtube-element/editor-youtube-element.component';
+
+import {
   EditorCheckboxElementComponent,
 } from '../../../../components/editor/editor-components/editor-checkbox-element/editor-checkbox-element.component';
 import {
@@ -69,5 +79,29 @@ export const editorDefaultElements: EditorElementDefinition[] = [
     label: 'Imagem',
     icon: 'image',
     imagePreviewPath: undefined,
-  }
+  },
+  {
+    elementId: 'wb-giphy',
+    elementClass: EditorGiphyElementComponent,
+    pluginId: 'default',
+    label: 'Gifs',
+    icon: 'photo-video',
+    imagePreviewPath: undefined,
+  },
+  {
+    elementId: 'wb-pixabay',
+    elementClass: EditorPixabayElementComponent,
+    pluginId: 'default',
+    label: 'Imagens - Pixabay',
+    icon: 'camera-retro',
+    imagePreviewPath: undefined,
+  },
+  {
+    elementId: 'wb-youtube',
+    elementClass: EditorYoutubeElementComponent,
+    pluginId: 'default',
+    label: 'Youtube',
+    icon: 'video',
+    imagePreviewPath: undefined,
+  },
 ];

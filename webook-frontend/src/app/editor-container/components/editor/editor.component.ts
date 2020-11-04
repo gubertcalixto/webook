@@ -14,6 +14,9 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { SelectoEvents } from 'selecto';
 
 import { EditorDocumentPageInstanceService } from '../../services/document-page-instance.service';
+import {
+  EditorPageBackgroundPatterns,
+} from '../editor-container/editor-properties-container/page-properties/page-background-patterns.const';
 
 @Component({
   selector: 'wb-editor',
@@ -69,12 +72,17 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   private subscribeToPageDataChange(): void {
     this.subs.push(this.editorDocumentPageInstanceService.dataChanged.subscribe(data => {
-      if (data?.backgroundImage) {
-        this.elementRef.nativeElement.style.background = data.backgroundImage;
-      } else if (data?.backgroundColor) {
-        this.elementRef.nativeElement.style.background = data.backgroundColor;
-      } else {
-        this.elementRef.nativeElement.style.background = 'unset';
+      if (data?.backgroundColor) {
+        this.elementRef.nativeElement.style['background-color'] = data.backgroundColor;
+      }
+      if (data?.backgroundPattern) {
+        const backgroundPattern = EditorPageBackgroundPatterns.find(f => f.id == data.backgroundPattern);
+        if (backgroundPattern?.src) {
+          const backgroundImage = `url('${backgroundPattern.src}')`;
+          this.elementRef.nativeElement.style['background-image'] = backgroundImage;
+        } else {
+          this.elementRef.nativeElement.style['background-image'] = 'unset';
+        }
       }
     }))
   }

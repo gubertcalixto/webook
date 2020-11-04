@@ -1,0 +1,7 @@
+wb-youtube-properties {
+  display: flex;
+  flex-direction: column;
+  .invalid-url-message {
+    color: red;
+  }
+}

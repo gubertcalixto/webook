@@ -1,0 +1,13 @@
+<h4 nz-typography>Imagens - Pixabay</h4>
+<input nz-input [(ngModel)]="searchQuery" placeholder="Pesquise no Pixabay" />
+<ng-container *ngIf="result">
+  <h3>Resultados <small>via <a href="https://pixabay.com/pt/" target="_blank">Pixabay</a></small></h3>
+  <div class="result-container">
+    <ng-container *ngFor="let item of result.hits">
+      <a class="result-item" (click)="onImageSelect(item.id)">
+        <img [title]="item.user" [alt]="item.user" [src]="item.previewURL"/>
+      </a>
+    </ng-container>
+  </div>
+</ng-container>
+<nz-empty *ngIf="!result"></nz-empty>

@@ -1,0 +1,45 @@
+<ng-container *ngIf="hasFinishedDataEntry">
+  <div class="avoid-click"></div>
+  <div *ngIf="!url" class="no-video-container">
+    <i fa="youtube" faStyle="fab" faSize="5"></i>
+  </div>
+  <youtube-player *ngIf="url"
+    [style.display.none]="duringVideoValidation"
+    class="youtube-player"
+    [videoId]="url"
+    [startSeconds]="startSecond"
+    [endSeconds]="endSecond"
+    (ready)="onVideoReady($event)"
+    (stateChange)="onVideoChanged($event)"
+    (error)="onVideoError($event)"
+  ></youtube-player>
+
+  <ng-container *ngIf="elementRef">
+    <ngx-moveable
+      *ngIf="!visualizeMode"
+      #moveable
+      [target]="target"
+      [className]="moveableClasses"
+
+      [origin]="dragOptions.hasOrigin"
+      [draggable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && dragOptions.draggable"
+      [dragTarget]="dragOptions.dragTarget"
+      (dragStart)="onDragStart($event)"
+      (drag)="onDrag($event)"
+      (dragEnd)="onDragEnd($event)"
+
+      [rotatable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && rotateOptions.rotatable"
+      [rotationPosition]="rotateOptions.rotatePosition"
+      (rotateStart)="onRotateStart($event)"
+      (rotate)="onRotate($event)"
+      (rotateEnd)="onRotateEnd($event)"
+
+      [resizable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && resizeOptions.resizable"
+      [keepRatio]="resizeOptions.keepRatio"
+      (resizeStart)="onResizeStart($event)"
+      (resize)="onResize($event)"
+      (resizeEnd)="onResizeEnd($event)"
+      >
+    </ngx-moveable>
+  </ng-container>
+</ng-container>

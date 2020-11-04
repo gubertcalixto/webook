@@ -24,6 +24,8 @@
     wb-editor-properties-container {
       display: flex;
       flex: initial;
+      max-width: 25vw;
+      overflow: auto;
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 
 import { EditorDocumentPageInstanceService } from '../../../../services/document-page-instance.service';
+import { EditorPageBackgroundPatterns } from './page-background-patterns.const';
 
 @Component({
   selector: 'wb-page-properties',
@@ -10,24 +11,25 @@ import { EditorDocumentPageInstanceService } from '../../../../services/document
 })
 export class PagePropertiesComponent {
   public backgroundColor: string = '#fff';
-  public backgroundImage: string;
+  public backgroundPattern: string;
+  public backgroundPatterns = EditorPageBackgroundPatterns;
 
   constructor(private editorDocumentPageInstanceService: EditorDocumentPageInstanceService) {
     this.editorDocumentPageInstanceService.dataChanged.subscribe(res => {
       this.backgroundColor = typeof res?.backgroundColor !== 'string' ? '#fff' : res?.backgroundColor;
-      this.backgroundImage = typeof res?.backgroundImage !== 'string' ? undefined : res?.backgroundImage;
+      this.backgroundPattern = typeof res?.backgroundPattern !== 'string' ? undefined : res?.backgroundPattern;
     });
   }
 
-  public setBackground(type: 'color' | 'image', backgroundValue: string) {
+  public setBackground(type: 'color' | 'pattern', backgroundValue: string) {
     if (type === 'color') {
       this.backgroundColor = backgroundValue || '#fff';
     } else {
-      this.backgroundImage = backgroundValue;
+      this.backgroundPattern = backgroundValue;
     }
     this.editorDocumentPageInstanceService.setData({
       backgroundColor: this.backgroundColor,
-      backgroundImage: this.backgroundImage
+      backgroundPattern: this.backgroundPattern
     })
   }
 }
