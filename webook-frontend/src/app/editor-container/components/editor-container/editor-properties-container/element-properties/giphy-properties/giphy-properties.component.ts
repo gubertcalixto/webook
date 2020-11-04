@@ -34,14 +34,16 @@ export class GiphyPropertiesComponent implements OnInit {
   }
 
   public search(searchQuery: string = this.searchQuery): void {
-    if (!searchQuery) {
+    if (!searchQuery && searchQuery !== this.currentElementSelectedData.lastSearchValue) {
       this.setDataProperty('lastSearchValue', searchQuery);
       return;
     }
     this.giphyService.search(searchQuery, 'gifs', 25)
       .pipe(debounceTime(500), first())
       .subscribe((res) => {
-        this.setDataProperty('lastSearchValue', searchQuery);
+        if (this.currentElementSelectedData.lastSearchValue !== searchQuery) {
+          this.setDataProperty('lastSearchValue', searchQuery);
+        }
         this.result = res;
       });
   }

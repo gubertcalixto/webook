@@ -35,7 +35,9 @@ export class PixabayPropertiesComponent implements OnInit {
     this.pixabayService.search(searchQuery)
       .pipe(debounceTime(500))
       .subscribe((res) => {
-        this.setDataProperty('lastSearchValue', searchQuery);
+        if (this.currentElementSelectedData.lastSearchValue !== searchQuery) {
+          this.setDataProperty('lastSearchValue', searchQuery);
+        }
         this.result = res;
       });
   }
