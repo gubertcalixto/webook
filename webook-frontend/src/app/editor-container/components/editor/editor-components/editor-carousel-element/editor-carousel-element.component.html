@@ -1,0 +1,31 @@
+<ng-container *ngIf="hasFinishedDataEntry">
+  <nz-carousel *ngIf="!isResizingCarousel && carouselFotos?.length" [nzAutoPlaySpeed]="carouselOptions.speed"
+    [nzAutoPlay]="carouselOptions.autoplay" [nzEffect]="carouselOptions.effect"
+    [nzDotPosition]="carouselOptions.position">
+    <img *ngFor="let item of carouselFotos" nz-carousel-content
+    class="carousel-image"
+    [title]="'Imagem fornecida por ' + item.user"
+    [alt]="'Imagem fornecida por ' + item.user"
+    [src]="item.imageUrl || item.previewUrl"
+    />
+  </nz-carousel>
+  <nz-empty *ngIf="!visualizeMode && !isResizingCarousel && !carouselFotos?.length" nzNotFoundContent="Adicione uma imagem"></nz-empty>
+  <nz-empty *ngIf="!visualizeMode && isResizingCarousel && carouselFotos?.length" class="resize" nzNotFoundContent="Aguardando Resize" [nzNotFoundImage]="resizingTemplate"></nz-empty>
+  <ng-template #resizingTemplate>
+    <nz-spin nzSize="large"></nz-spin>
+  </ng-template>
+  <ng-container *ngIf="elementRef">
+    <ngx-moveable *ngIf="!visualizeMode" #moveable [target]="target" [className]="moveableClasses"
+      [origin]="dragOptions.hasOrigin"
+      [draggable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && dragOptions.draggable"
+      [dragTarget]="dragOptions.dragTarget" (dragStart)="onDragStart($event)" (drag)="onDrag($event)"
+      (dragEnd)="onDragEnd($event)"
+      [rotatable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && rotateOptions.rotatable"
+      [rotationPosition]="rotateOptions.rotatePosition" (rotateStart)="onRotateStart($event)"
+      (rotate)="onRotate($event)" (rotateEnd)="onRotateEnd($event)"
+      [resizable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && resizeOptions.resizable"
+      [keepRatio]="resizeOptions.keepRatio" (resizeStart)="onResizeStart($event)" (resize)="onResize($event)"
+      (resizeEnd)="onResizeEnd($event)">
+    </ngx-moveable>
+  </ng-container>
+</ng-container>

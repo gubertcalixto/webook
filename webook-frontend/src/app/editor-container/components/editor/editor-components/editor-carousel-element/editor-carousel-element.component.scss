@@ -1,0 +1,30 @@
+wb-editor-carousel-element {
+    nz-carousel {
+        .slick-slider {
+            height: 100% !important;
+            .slick-list {
+                @extend .slick-slider;
+                .slick-track {
+                    @extend .slick-slider;
+                    .slick-slide.carousel-image {
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+            }
+        }
+    }
+    nz-empty {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        &.resize .ant-empty-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+    }
+}

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { CarouselPropertiesModule } from './carousel-properties/carousel-properties.module';
 import { CheckboxPropertiesModule } from './checkbox-properties/checkbox-properties.module';
 import { GiphyPropertiesModule } from './giphy-properties/giphy-properties.module';
 import { ImagePropertiesModule } from './image-properties/image-properties.module';
@@ -25,6 +26,7 @@ import { YoutubePropertiesModule } from './youtube-properties/youtube-properties
     TextPropertiesModule,
     GiphyPropertiesModule,
     PixabayPropertiesModule,
+    CarouselPropertiesModule,
     YoutubePropertiesModule,
   ],
   exports: [
@@ -36,6 +38,7 @@ import { YoutubePropertiesModule } from './youtube-properties/youtube-properties
     TextPropertiesModule,
     GiphyPropertiesModule,
     PixabayPropertiesModule,
+    CarouselPropertiesModule,
     YoutubePropertiesModule,
   ],
 })

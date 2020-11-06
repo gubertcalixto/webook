@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { YouTubePlayerModule } from '@angular/youtube-player';
 import { FaIconsModule } from '@shared/components';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCarouselModule } from 'ng-zorro-antd/carousel';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzGridModule } from 'ng-zorro-antd/grid';
@@ -17,6 +18,7 @@ import { NgxSelectoModule } from 'ngx-selecto';
 import { TCC_GIPHY_API_KEY, TccGiphyModule } from 'projects/legacy-projects/tcc-giphy/src/public-api';
 import { authKeys } from 'src/app/setup/apis/auth-keys';
 
+import { EditorCarouselElementComponent } from './editor-carousel-element/editor-carousel-element.component';
 import { EditorCheckboxElementComponent } from './editor-checkbox-element/editor-checkbox-element.component';
 import { EditorGiphyElementComponent } from './editor-giphy-element/editor-giphy-element.component';
 import { EditorImageElementComponent } from './editor-image-element/editor-image-element.component';
@@ -35,6 +37,7 @@ import { EditorYoutubeElementComponent } from './editor-youtube-element/editor-y
     EditorRectangleElementComponent,
     EditorImageElementComponent,
     EditorCheckboxElementComponent,
+    EditorCarouselElementComponent,
     EditorGiphyElementComponent,
     EditorPixabayElementComponent,
     EditorYoutubeElementComponent,
@@ -56,6 +59,7 @@ import { EditorYoutubeElementComponent } from './editor-youtube-element/editor-y
     NzSpinModule,
     NzCheckboxModule,
     NzRadioModule,
+    NzCarouselModule,
     TccGiphyModule,
     NzEmptyModule,
   ],
@@ -67,6 +71,7 @@ import { EditorYoutubeElementComponent } from './editor-youtube-element/editor-y
     EditorRectangleElementComponent,
     EditorImageElementComponent,
     EditorCheckboxElementComponent,
+    EditorCarouselElementComponent,
     EditorGiphyElementComponent,
     EditorYoutubeElementComponent,
   ],

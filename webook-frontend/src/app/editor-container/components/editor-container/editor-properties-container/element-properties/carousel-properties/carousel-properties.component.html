@@ -1,0 +1,76 @@
+<h4 nz-typography>Carousel</h4>
+<div class="main-options">
+  <div class="field-container">
+    <span>Rotação automática</span>
+    <nz-switch [ngModel]="currentElementSelectedData.autoplay"
+      (ngModelChange)="setDataProperty('autoplay', $event)"></nz-switch>
+  </div>
+  <ng-container *ngIf="currentElementSelectedData.autoplay">
+    <p>Velocidade</p>
+    <nz-input-group nzAddOnAfter="segundos">
+      <input nz-input [ngModel]="(currentElementSelectedData.speed || 1000) / 1000"
+        (ngModelChange)="setDataProperty('speed', (($event || 1) * 1000))" />
+    </nz-input-group>
+  </ng-container>
+  <p>Efeito de Transição</p>
+  <nz-select class="w-100" [ngModel]="currentElementSelectedData.effect || 'fade'"
+    (ngModelChange)="setDataProperty('effect', $event)">
+    <nz-option nzValue="scrollx" nzLabel="Movimentar"></nz-option>
+    <nz-option nzValue="fade" nzLabel="Esmaecer"></nz-option>
+  </nz-select>
+  <p>Posição de Paginação</p>
+  <nz-select class="w-100" [ngModel]="currentElementSelectedData.position || 'top'"
+    (ngModelChange)="setDataProperty('position', $event)">
+    <nz-option nzValue="top" nzLabel="Cima"></nz-option>
+    <nz-option nzValue="bottom" nzLabel="Baixo"></nz-option>
+    <nz-option nzValue="left" nzLabel="Esquerda"></nz-option>
+    <nz-option nzValue="right" nzLabel="Direita"></nz-option>
+  </nz-select>
+  <nz-button-group *ngIf="carouselImages?.length" class="carousel-actions w-100">
+    <button nz-button (click)="isManagingImages = !isManagingImages">{{isManagingImages ? 'Pesquisar' : 'Gerenciar Imagens'}}</button>
+    <button nz-button nzType="danger" (click)="clearAllImages()">Limpar</button>
+  </nz-button-group>
+  <ng-template #imageSelectorTemplate>
+    <div class="image-selector-container">
+      <ng-container *ngFor="let carouselImage of carouselImages">
+        <img class="result-item-used" [title]="carouselImage.user" [alt]="carouselImage.user"
+          [src]="carouselImage.previewURL" />
+        <button nz-button (click)="removeImage(carouselImage.id)" nz-tooltip>
+          <i fa="minus-square"></i>
+        </button>
+      </ng-container>
+    </div>
+  </ng-template>
+</div>
+
+<div class="search-container" *ngIf="!isManagingImages">
+  <h2>Pesquisa</h2>
+  <input nz-input [(ngModel)]="searchQuery" placeholder="Pesquise no Pixabay" />
+  <ng-container *ngIf="pixabayResult">
+    <h3>Resultados <small>via <a href="https://pixabay.com/pt/" target="_blank">Pixabay</a></small></h3>
+    <div class="result-container">
+      <ng-container *ngFor="let item of pixabayResult.hits">
+        <a class="result-item" (click)="onImageSelect(item)">
+          <i *ngIf="!isItemInCarousel(item); else unmarkIconTemplate" class="mark" fa="check-circle"></i>
+          <ng-template #unmarkIconTemplate>
+            <i class="unmark" fa="times"></i>
+          </ng-template>
+          <img [title]="item.user" [alt]="item.user" [src]="item.previewURL" />
+        </a>
+      </ng-container>
+    </div>
+  </ng-container>
+  <nz-empty *ngIf="!pixabayResult"></nz-empty>
+</div>
+<div class="search-container" *ngIf="isManagingImages">
+  <h2>Gerenciar Imagens</h2>
+  <div *ngIf="carouselImages" class="result-container">
+    <ng-container *ngFor="let item of carouselImages">
+      <a class="result-item" (click)="onImageSelect(item)">
+        <i class="unmark" fa="times"></i>
+        <img [title]="item.user" [alt]="item.user" [src]="item.previewURL" />
+      </a>
+    </ng-container>
+  </div>
+  <nz-empty *ngIf="!pixabayResult"></nz-empty>
+</div>

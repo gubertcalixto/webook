@@ -1,4 +1,7 @@
 import {
+  EditorCarouselElementComponent,
+} from 'src/app/editor-container/components/editor/editor-components/editor-carousel-element/editor-carousel-element.component';
+import {
   EditorGiphyElementComponent,
 } from 'src/app/editor-container/components/editor/editor-components/editor-giphy-element/editor-giphy-element.component';
 import {
@@ -80,6 +83,15 @@ export const editorDefaultElements: EditorElementDefinition[] = [
     icon: 'image',
     imagePreviewPath: undefined,
   },
+  {
+    elementId: 'wb-carousel',
+    elementClass: EditorCarouselElementComponent,
+    pluginId: 'default',
+    label: 'Carousel',
+    icon: 'images',
+    imagePreviewPath: undefined,
+  },
+
   {
     elementId: 'wb-giphy',
     elementClass: EditorGiphyElementComponent,
