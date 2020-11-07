@@ -25,11 +25,11 @@ export class RadioPropertiesComponent {
       label: `Campo ${this.radioOptions.length + 1}`,
       isDisabled: false
     });
-    this.setDataProperty('radioOptions', this.radioOptions);
+    this.updateOptions();
   }
 
   public updateOptions(): void {
-    this.setDataProperty('radioOptions', this.radioOptions);
+    this.setDataProperty('radioOptions', [...this.radioOptions]);
   }
 
   public updateSelectedOption(optionId: string): void {
@@ -40,7 +40,7 @@ export class RadioPropertiesComponent {
     const index = this.radioOptions.findIndex(o => o.id === item.id);
     if (index !== -1) {
       this.radioOptions.splice(index, 1);
-      this.setDataProperty('radioOptions', this.radioOptions);
+      this.updateOptions();
     }
   }
 }
