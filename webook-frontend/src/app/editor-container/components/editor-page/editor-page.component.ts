@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '@oath/services/user.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -18,7 +18,7 @@ import { EditorPageService } from './editor-page.service';
   templateUrl: './editor-page.component.html',
   styleUrls: ['./editor-page.component.scss']
 })
-export class EditorPageComponent implements OnDestroy {
+export class EditorPageComponent implements OnInit, OnDestroy {
   private subs: Subscription[] = [];
   public document: DocumentOutput;
   public documentId: string;
@@ -31,6 +31,7 @@ export class EditorPageComponent implements OnDestroy {
   };
 
   constructor(
+    private changeDetectorRef: ChangeDetectorRef,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private documentService: DocumentService,
@@ -46,13 +47,15 @@ export class EditorPageComponent implements OnDestroy {
         return;
       }
       this.documentId = documentId;
-      // Waits for user be resolved
-      this.subs.push(this.userService.userSubject.pipe(filter(u => Boolean(u))).subscribe(() => {
-        this.getDocument();
-      }));
     });
-
     this.subs.push(this.editorPageService.documentChangedSubject.subscribe(() => {
+      this.getDocument();
+    }));
+  }
+
+  ngOnInit(): void {
+    // Waits for user be resolved
+    this.subs.push(this.userService.userSubject.pipe(filter(u => Boolean(u))).subscribe(() => {
       this.getDocument();
     }));
   }
@@ -75,6 +78,7 @@ export class EditorPageComponent implements OnDestroy {
         this.router.navigateByUrl(`/document/${this.documentId}/view`);
       }
       this.document = document;
+      this.changeDetectorRef.detectChanges();
     },
       () => {
         this.redirectBack();
