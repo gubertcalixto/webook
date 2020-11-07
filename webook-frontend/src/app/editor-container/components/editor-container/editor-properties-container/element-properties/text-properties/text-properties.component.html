@@ -1,6 +1,6 @@
 <h4 nz-typography>Texto</h4>
-<input nz-input [ngModel]="currentElementSelectedData.text" (ngModelChange)="setDataProperty('text', $event)"
-  placeholder="Escreva o texto aqui" />
+<textarea nz-input [ngModel]="currentElementSelectedData.text" (ngModelChange)="setDataProperty('text', $event)"
+  placeholder="Escreva o texto aqui"></textarea>
 <p>Tipo de Texto</p>
 <nz-select [ngModel]="currentElementSelectedData.textType || 'text'"
   (ngModelChange)="setDataProperty('textType', $event)">
