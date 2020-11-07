@@ -4,7 +4,7 @@ import { UserService } from '@oath/services/user.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Observable, Subscription } from 'rxjs';
-import { first, tap } from 'rxjs/operators';
+import { filter, first, tap } from 'rxjs/operators';
 import { DocumentService } from 'src/app/services/document.service';
 
 import { UserPreferencesService } from './user-preferences.service';
@@ -31,7 +31,8 @@ export class UserPreferencesComponent implements OnDestroy {
     private nzModal: NzModalService,
     private nzNotificationService: NzNotificationService
   ) {
-    this.subs.push(this.userPreferencesService.getUserPreferences().subscribe((userPreferences) => {
+    this.subs.push(this.userPreferencesService.hasLoadedSubject.pipe(filter((loaded) => loaded)).subscribe(() => {
+      const userPreferences = this.userPreferencesService.getUserPreferences();
       this.hasInitialPreference = Boolean(userPreferences);
       this.form = this.fb.group({
         autoplayAudios: [Boolean(userPreferences?.autoplayAudios)],

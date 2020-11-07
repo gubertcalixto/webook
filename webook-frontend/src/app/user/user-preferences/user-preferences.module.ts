@@ -15,7 +15,6 @@ import { DocumentService } from 'src/app/services/document.service';
 
 import { UserPreferencesRoutingModule } from './user-preferences-routing.module';
 import { UserPreferencesComponent } from './user-preferences.component';
-import { UserPreferencesService } from './user-preferences.service';
 
 @NgModule({
   declarations: [UserPreferencesComponent],
@@ -38,8 +37,7 @@ import { UserPreferencesService } from './user-preferences.service';
     UserPreferencesRoutingModule
   ],
   providers: [
-    DocumentService,
-    UserPreferencesService
+    DocumentService
   ]
 })
 export class UserPreferencesModule { }

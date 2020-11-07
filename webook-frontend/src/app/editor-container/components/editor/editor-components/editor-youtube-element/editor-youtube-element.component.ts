@@ -1,4 +1,7 @@
 import { Component, ElementRef, ViewEncapsulation } from '@angular/core';
+import { filter } from 'rxjs/operators';
+import { UserPreferenceOutput } from 'src/app/client/webook';
+import { UserPreferencesService } from 'src/app/user/user-preferences/user-preferences.service';
 
 import { EditorResizeBaseElement } from '../editor-element-base-classes/resize/editor-resize-base-element';
 
@@ -18,8 +21,13 @@ export class EditorYoutubeElementComponent extends EditorResizeBaseElement {
   private isInitingData = true;
   private videoChanged: boolean;
   private currentPlayer: YT.PlayerEvent;
+  private videoElement: YT.Player;
+  private userPreferences: UserPreferenceOutput;
 
-  constructor(public elementRef: ElementRef<HTMLElement>) {
+  constructor(
+    public elementRef: ElementRef<HTMLElement>,
+    public userPreferencesService: UserPreferencesService
+  ) {
     super(elementRef);
   }
 
@@ -31,6 +39,7 @@ export class EditorYoutubeElementComponent extends EditorResizeBaseElement {
       tag.src = 'https://www.youtube.com/iframe_api';
       document.body.appendChild(tag);
     }
+    this.getVideoUserPreferences();
   }
 
   protected setInitialSize(): void {
@@ -70,6 +79,13 @@ export class EditorYoutubeElementComponent extends EditorResizeBaseElement {
   }
 
   public onVideoReady(player: YT.PlayerEvent): void {
+    if (!this.userPreferences) {
+      this.videoElement = player.target;
+    } else {
+      this.videoElement = player.target;
+      this.setupVideoUsingUserPreferences();
+    }
+
   }
 
   public onVideoChanged(player: YT.PlayerEvent): void {
@@ -87,7 +103,7 @@ export class EditorYoutubeElementComponent extends EditorResizeBaseElement {
       setTimeout(() => {
         if (this.currentPlayer.target.getDuration() === 0 && tries <= 10) {
           tries++;
-            proceedWhenPlayerIsReady();
+          proceedWhenPlayerIsReady();
         } else {
           this.videoDuration = this.currentPlayer.target.getDuration();
           if (tries > 10) {
@@ -110,12 +126,29 @@ export class EditorYoutubeElementComponent extends EditorResizeBaseElement {
     proceedWhenPlayerIsReady();
   }
 
-  public onVideoError(player: YT.PlayerEvent): void {
-    // debugger
-    // this.videoDuration = player.target.getDuration();
-    // if (this.data.videoDuration !== this.videoDuration) {
-    //   this.data.videoDuration = this.videoDuration;
-    //   this.emitChange();
-    // }
+  private getVideoUserPreferences(): void {
+    // Use preferences only for visualize mode
+    if (!this.visualizeMode) {
+      return;
+    }
+    this.subs.push(this.userPreferencesService.hasLoadedSubject.pipe(filter((loaded) => loaded)).subscribe(() => {
+      this.userPreferences = this.userPreferencesService.getUserPreferences();
+      if (this.videoElement) {
+        this.userPreferences = this.userPreferencesService.getUserPreferences();
+        this.setupVideoUsingUserPreferences();
+      } else {
+        this.userPreferences = this.userPreferencesService.getUserPreferences();
+      }
+    }));
+  }
+  private setupVideoUsingUserPreferences(): void {
+    if (this.userPreferences.autoplayVideos) {
+      this.videoElement.playVideo();
+    }
+    if (!this.videoElement.isMuted() && !this.userPreferences.autoplayAudios) {
+      this.videoElement.mute();
+    } else if (this.userPreferences.autoplayAudios && this.videoElement.isMuted) {
+      this.videoElement.unMute();
+    }
   }
 }

@@ -3,10 +3,10 @@ import { Component, ElementRef, ViewEncapsulation } from '@angular/core';
 import { EditorResizeBaseElement } from '../editor-element-base-classes/resize/editor-resize-base-element';
 
 interface ICarouselOptions {
-  autoplay: boolean;
-  speed: number;
-  effect: 'scrollx' | 'fade';
-  position: 'top' | 'bottom' | 'left' | 'right';
+  autoplay?: boolean;
+  speed?: number;
+  effect?: 'scrollx' | 'fade';
+  position?: 'top' | 'bottom' | 'left' | 'right';
 }
 
 @Component({
@@ -17,7 +17,7 @@ interface ICarouselOptions {
 })
 export class EditorCarouselElementComponent extends EditorResizeBaseElement {
   public elementTypeId = 'wb-carousel';
-  public carouselOptions: ICarouselOptions;
+  public carouselOptions: ICarouselOptions = {};
   public carouselFotos: any[];
   public isResizingCarousel = false;
 

@@ -11,7 +11,6 @@
     [endSeconds]="endSecond"
     (ready)="onVideoReady($event)"
     (stateChange)="onVideoChanged($event)"
-    (error)="onVideoError($event)"
   ></youtube-player>
 
   <ng-container *ngIf="elementRef">

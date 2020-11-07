@@ -24,7 +24,7 @@
       </nz-select>
     </nz-input-group>
   </nz-form-item>
-  <nz-form-item class="document-access-field">
+  <nz-form-item *ngIf="userPreferences && !userPreferences.invisibleMode" class="document-access-field">
     <nz-form-control>
       <div class="switch-container">
         <ng-template #checkedTemplate><i fa="check"></i></ng-template>
@@ -36,7 +36,7 @@
       </div>
     </nz-form-control>
   </nz-form-item>
-  <span *ngIf="form.get('documentAccess').dirty && !form.get('documentAccess').value" class="document-access-info"
+  <span *ngIf="userPreferences?.invisibleMode || (form.get('documentAccess').dirty && !form.get('documentAccess').value)" class="document-access-info"
     nz-typography nzType="secondary">
     Este documento não será visivel para outras pessoas
   </span>

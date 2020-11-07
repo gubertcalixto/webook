@@ -2,8 +2,10 @@ import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { Subscription } from 'rxjs';
-import { EditorDocument, EditorDocumentAllowedAccess, Tags } from 'src/app/client/webook';
+import { filter } from 'rxjs/operators';
+import { EditorDocument, EditorDocumentAllowedAccess, Tags, UserPreferenceOutput } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
+import { UserPreferencesService } from 'src/app/user/user-preferences/user-preferences.service';
 
 @Component({
   selector: 'wb-editor-configuration-modal',
@@ -16,6 +18,7 @@ export class EditorConfigurationModalComponent implements OnInit, OnDestroy {
   public form: FormGroup;
   public errorDuringUpdate: boolean;
   public isUpdating: boolean;
+  public userPreferences: UserPreferenceOutput;
 
   @Input() public documentId: string;
 
@@ -23,6 +26,7 @@ export class EditorConfigurationModalComponent implements OnInit, OnDestroy {
     private modalRef: NzModalRef,
     private fb: FormBuilder,
     private documentService: DocumentService,
+    public userPreferencesService: UserPreferencesService
   ) { }
 
   ngOnInit(): void {
@@ -30,6 +34,13 @@ export class EditorConfigurationModalComponent implements OnInit, OnDestroy {
       return;
     }
     this.getDocument();
+
+    this.userPreferencesService.hasLoadedSubject.pipe(filter((loaded) => loaded)).subscribe(() => {
+      this.userPreferences = this.userPreferencesService.getUserPreferences();
+      if (this.form && this.userPreferences.invisibleMode) {
+        this.form.get('documentAccess').setValue(false);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -37,6 +48,9 @@ export class EditorConfigurationModalComponent implements OnInit, OnDestroy {
   }
 
   public documentAccessToggle(): void {
+    if (this.userPreferences?.invisibleMode) {
+      return;
+    }
     this.form.get('documentAccess').setValue(!this.form.get('documentAccess').value);
     this.form.get('documentAccess').markAsDirty();
   }
@@ -52,6 +66,9 @@ export class EditorConfigurationModalComponent implements OnInit, OnDestroy {
         image: [doc.image, Validators.nullValidator],
         documentAccess: [Boolean(doc.documentAccess)]
       });
+      if (this.userPreferences?.invisibleMode) {
+        this.form.get('documentAccess').setValue(false);
+      }
     }));
   }
 

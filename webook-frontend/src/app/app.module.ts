@@ -17,6 +17,7 @@ import { ApiModule as AuthenticationClientModule, BASE_PATH as AUTH_BASE_PATH } 
 import { ApiModule as WebookBackendClientModule, BASE_PATH as BACK_BASE_PATH } from './client/webook';
 import { NavigationContainerModule } from './navigation-container/navigation-container.module';
 import { AppOAuthModule } from './setup/oauth/oauth.module';
+import { UserPreferencesService } from './user/user-preferences/user-preferences.service';
 
 registerLocaleData(pt);
 
@@ -60,4 +61,8 @@ registerLocaleData(pt);
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule { 
+  constructor(userPreferencesService: UserPreferencesService) {
+    userPreferencesService.start();
+  }
+}
