@@ -2,6 +2,9 @@ import {
   EditorCarouselElementComponent,
 } from 'src/app/editor-container/components/editor/editor-components/editor-carousel-element/editor-carousel-element.component';
 import {
+  EditorElipseElementComponent,
+} from 'src/app/editor-container/components/editor/editor-components/editor-elipse-element/editor-elipse-element.component';
+import {
   EditorGiphyElementComponent,
 } from 'src/app/editor-container/components/editor/editor-components/editor-giphy-element/editor-giphy-element.component';
 import {
@@ -73,6 +76,14 @@ export const editorDefaultElements: EditorElementDefinition[] = [
     pluginId: 'default',
     label: 'Retângulo',
     icon: 'square',
+    imagePreviewPath: undefined,
+  },
+  {
+    elementId: 'wb-elipse',
+    elementClass: EditorElipseElementComponent,
+    pluginId: 'default',
+    label: 'Elipse',
+    icon: 'circle',
     imagePreviewPath: undefined,
   },
   {

@@ -20,6 +20,7 @@ import { authKeys } from 'src/app/setup/apis/auth-keys';
 
 import { EditorCarouselElementComponent } from './editor-carousel-element/editor-carousel-element.component';
 import { EditorCheckboxElementComponent } from './editor-checkbox-element/editor-checkbox-element.component';
+import { EditorElipseElementComponent } from './editor-elipse-element/editor-elipse-element.component';
 import { EditorGiphyElementComponent } from './editor-giphy-element/editor-giphy-element.component';
 import { EditorImageElementComponent } from './editor-image-element/editor-image-element.component';
 import { EditorPixabayElementComponent } from './editor-pixabay-element/editor-pixabay-element.component';
@@ -35,6 +36,7 @@ import { EditorYoutubeElementComponent } from './editor-youtube-element/editor-y
     EditorSliderElementComponent,
     EditorRadioElementComponent,
     EditorRectangleElementComponent,
+    EditorElipseElementComponent,
     EditorImageElementComponent,
     EditorCheckboxElementComponent,
     EditorCarouselElementComponent,
@@ -69,6 +71,7 @@ import { EditorYoutubeElementComponent } from './editor-youtube-element/editor-y
     EditorSliderElementComponent,
     EditorRadioElementComponent,
     EditorRectangleElementComponent,
+    EditorElipseElementComponent,
     EditorImageElementComponent,
     EditorCheckboxElementComponent,
     EditorCarouselElementComponent,

@@ -3,6 +3,7 @@
   <div class="container" [ngSwitch]="currentElementType">
     <wb-text-properties *ngSwitchCase="'wb-text'" [currentElementSelectedData]="currentElementSelectedData" [setDataProperty]="setDataProperty"></wb-text-properties>
     <wb-rectangle-properties *ngSwitchCase="'wb-rectangle'" [currentElementSelectedData]="currentElementSelectedData" [setDataProperty]="setDataProperty"></wb-rectangle-properties>
+    <wb-elipse-properties *ngSwitchCase="'wb-elipse'" [currentElementSelectedData]="currentElementSelectedData" [setDataProperty]="setDataProperty"></wb-elipse-properties>
     <wb-slider-properties *ngSwitchCase="'wb-slider'" [currentElementSelectedData]="currentElementSelectedData" [setDataProperty]="setDataProperty"></wb-slider-properties>
     <wb-checkbox-properties *ngSwitchCase="'wb-checkbox'" [currentElementSelectedData]="currentElementSelectedData" [setDataProperty]="setDataProperty"></wb-checkbox-properties>
     <wb-radio-properties *ngSwitchCase="'wb-radio'" [currentElementSelectedData]="currentElementSelectedData" [setDataProperty]="setDataProperty"></wb-radio-properties>

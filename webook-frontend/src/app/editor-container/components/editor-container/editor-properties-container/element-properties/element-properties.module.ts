@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CarouselPropertiesModule } from './carousel-properties/carousel-properties.module';
 import { CheckboxPropertiesModule } from './checkbox-properties/checkbox-properties.module';
+import { ElipsePropertiesModule } from './elipse-properties/elipse-properties.module';
 import { GiphyPropertiesModule } from './giphy-properties/giphy-properties.module';
 import { ImagePropertiesModule } from './image-properties/image-properties.module';
 import { PixabayPropertiesModule } from './pixabay-properties/pixabay-properties.module';
@@ -20,6 +21,7 @@ import { YoutubePropertiesModule } from './youtube-properties/youtube-properties
     ReactiveFormsModule,
     SliderPropertiesModule,
     RectanglePropertiesModule,
+    ElipsePropertiesModule,
     CheckboxPropertiesModule,
     RadioPropertiesModule,
     ImagePropertiesModule,
@@ -32,6 +34,7 @@ import { YoutubePropertiesModule } from './youtube-properties/youtube-properties
   exports: [
     SliderPropertiesModule,
     RectanglePropertiesModule,
+    ElipsePropertiesModule,
     CheckboxPropertiesModule,
     RadioPropertiesModule,
     ImagePropertiesModule,

@@ -1,0 +1,37 @@
+<ng-container *ngIf="hasFinishedDataEntry">
+  <div class="elipse"
+  [style.background-color]="backgroundColor"
+  [style.background-color]="backgroundColor"
+  [style.border-width]="hasBorder ? borderSize + 'px' : 0"
+  [style.border-color]="borderColor"
+  [style.border-style]="borderStyle"
+  ></div>
+  <ng-container *ngIf="elementRef">
+    <ngx-moveable
+        *ngIf="!visualizeMode"
+        #moveable
+        [target]="target"
+        [className]="moveableClasses"
+
+        [origin]="dragOptions.hasOrigin"
+        [draggable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && dragOptions.draggable"
+        [dragTarget]="dragOptions.dragTarget"
+        (dragStart)="onDragStart($event)"
+        (drag)="onDrag($event)"
+        (dragEnd)="onDragEnd($event)"
+
+        [rotatable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && rotateOptions.rotatable"
+        [rotationPosition]="rotateOptions.rotatePosition"
+        (rotateStart)="onRotateStart($event)"
+        (rotate)="onRotate($event)"
+        (rotateEnd)="onRotateEnd($event)"
+
+        [resizable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && resizeOptions.resizable"
+        [keepRatio]="resizeOptions.keepRatio"
+        (resizeStart)="onResizeStart($event)"
+        (resize)="onResize($event)"
+        (resizeEnd)="onResizeEnd($event)"
+        >
+    </ngx-moveable>
+  </ng-container>
+</ng-container>

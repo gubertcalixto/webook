@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  nz-input-number {
+    width: 100%;
+  }
+  .color-picker-container {
+    input.color-picker-input {
+      width: 100%;
+      cursor: pointer;
+    }
+  }
+}
