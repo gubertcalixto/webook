@@ -6,7 +6,7 @@ describe('TccPexelsService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: TccPexelsService = TestBed.get(TccPexelsService);
+    const service: TccPexelsService = TestBed.inject(TccPexelsService);
     expect(service).toBeTruthy();
   });
 });

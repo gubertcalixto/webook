@@ -6,7 +6,7 @@ describe('TccGiphyService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: TccGiphyService = TestBed.get(TccGiphyService);
+    const service: TccGiphyService = TestBed.inject(TccGiphyService);
     expect(service).toBeTruthy();
   });
 });
