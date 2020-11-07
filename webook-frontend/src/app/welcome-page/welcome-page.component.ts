@@ -21,6 +21,7 @@ export class WelcomePageComponent implements OnDestroy {
   public contactFormSent: boolean;
   public isScrollOnTop = true;
   public isNavigationCompactModeEnabled = false;
+  @ViewChild('backgroundVideo') private backgroundVideo: ElementRef<HTMLVideoElement>;
 
   @ViewChild('welcomeContentElement', { static: false, read: ElementRef }) private welcomeContentEl: ElementRef<HTMLElement>;
 
@@ -51,6 +52,7 @@ export class WelcomePageComponent implements OnDestroy {
     };
     setTimeout(() => {
       setIsNavigationCompactModeEnabled();
+      this.autoplayBackgroundVideo();
     });
     window.onresize = () => {
       setIsNavigationCompactModeEnabled();
@@ -114,5 +116,12 @@ export class WelcomePageComponent implements OnDestroy {
     this.subs.push(this.contactFormService.sendContactForm(userName, email, message, subject).subscribe(() => {
       this.contactFormSent = true;
     }));
+  }
+
+  private autoplayBackgroundVideo(): void {
+    if (this.backgroundVideo?.nativeElement) {
+      this.backgroundVideo.nativeElement.muted = true;
+      this.backgroundVideo.nativeElement.play();
+    }
   }
 }
