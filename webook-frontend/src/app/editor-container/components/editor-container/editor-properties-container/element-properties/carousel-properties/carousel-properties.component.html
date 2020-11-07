@@ -68,7 +68,7 @@
     <ng-container *ngFor="let item of carouselImages">
       <a class="result-item" (click)="onImageSelect(item)">
         <i class="unmark" fa="times"></i>
-        <img [title]="item.user" [alt]="item.user" [src]="item.previewURL" />
+        <img [title]="item.user" [alt]="item.user" [src]="item.imageUrl || item.previewUrl" />
       </a>
     </ng-container>
   </div>
