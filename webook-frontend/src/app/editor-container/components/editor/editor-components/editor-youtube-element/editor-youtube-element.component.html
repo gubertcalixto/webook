@@ -19,6 +19,8 @@
       #moveable
       [target]="target"
       [className]="moveableClasses"
+      [snappable]="true"
+      [elementGuidelines]="elementGuidelines"
 
       [origin]="dragOptions.hasOrigin"
       [draggable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && dragOptions.draggable"
