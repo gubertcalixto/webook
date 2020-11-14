@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { OauthManagerService } from '@oath/services/oauth-manager.service';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
@@ -18,7 +17,8 @@ import { documentCreationModels } from './tokens/consts/document-creation-models
 })
 export class MyDocumentsPageComponent implements OnInit, AfterViewInit, OnDestroy {
   private subs: Subscription[] = [];
-  private maximumCreatDocumenModelSize = 5;
+  public maximumCreateDocumentModelSize = 5;
+  public modelPageIndex = 0;
   public isAddContainerOpened = false;
   public createDocumentViewExpanded = false;
   public shouldHaveCreateDocumentViewExpanded = false;
@@ -29,13 +29,27 @@ export class MyDocumentsPageComponent implements OnInit, AfterViewInit, OnDestro
 
   public get createDocumentModels() {
     if (!this.createDocumentViewExpanded) {
-      return documentCreationModels.slice(0, this.maximumCreatDocumenModelSize);
+      const skip = this.modelPageIndex * this.maximumCreateDocumentModelSize;
+      return documentCreationModels.slice(skip, skip + this.maximumCreateDocumentModelSize);
     }
     return documentCreationModels;
   }
 
+  public get documentModelsSize(): number {
+    return documentCreationModels.length;
+  }
+
+  public get shouldShowModelsNavigateLeftArrow(): boolean {
+    return Boolean(!this.createDocumentViewExpanded && this.modelPageIndex);
+  }
+
+  public get shouldShowModelsNavigateRightArrow(): boolean {
+    return !this.createDocumentViewExpanded
+      && this.documentModelsSize > this.maximumCreateDocumentModelSize
+      && (this.modelPageIndex * this.maximumCreateDocumentModelSize) + this.maximumCreateDocumentModelSize < this.documentModelsSize;
+  }
+
   constructor(
-    private oAuthManagerService: OauthManagerService,
     public navigationService: NavigationService,
     private documentService: DocumentService,
     private router: Router
@@ -43,7 +57,7 @@ export class MyDocumentsPageComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngOnInit(): void {
-    this.shouldHaveCreateDocumentViewExpanded = documentCreationModels.length > this.maximumCreatDocumenModelSize;
+    this.shouldHaveCreateDocumentViewExpanded = documentCreationModels.length > this.maximumCreateDocumentModelSize;
   }
 
   ngAfterViewInit(): void {
@@ -75,6 +89,9 @@ export class MyDocumentsPageComponent implements OnInit, AfterViewInit, OnDestro
 
   public toggleCreateDocumentView(): void {
     this.createDocumentViewExpanded = !this.createDocumentViewExpanded;
+    if (!this.createDocumentViewExpanded) {
+      this.modelPageIndex = 0;
+    }
   }
 
   public createDocument(model?: DocumentCreationModel): void {

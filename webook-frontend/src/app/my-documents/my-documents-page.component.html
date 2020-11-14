@@ -13,19 +13,24 @@
       <div nz-col nzFlex="auto" class="actions">
         <ng-container *ngIf="shouldHaveCreateDocumentViewExpanded">
           <button *ngIf="!createDocumentViewExpanded" nz-button nzType="primary" (click)="toggleCreateDocumentView()">
-            Mostrar mais
+            Mostrar mais modelos
             <i fa="plus"></i>
           </button>
           <button *ngIf="createDocumentViewExpanded" nz-button nzType="primary" (click)="toggleCreateDocumentView()">
-            Mostrar menos
+            Mostrar menos modelos
             <i fa="chevron-up"></i>
           </button>
         </ng-container>
       </div>
     </div>
   </nz-header>
-  <nz-content>
-    <nz-space>
+  <nz-content class="models-content">
+    <div class="models-arrow left">
+      <button [disabled]="!shouldShowModelsNavigateLeftArrow" [class.hide]="!shouldShowModelsNavigateLeftArrow" class="no-button-style" (click)="modelPageIndex = modelPageIndex - 1">
+        <i fa="chevron-left"></i>
+      </button>
+    </div>
+    <nz-space [class.expanded]="createDocumentViewExpanded">
       <nz-space-item *ngFor="let model of createDocumentModels">
         <button class="no-button-style" (click)="createDocument(model)">
           <nz-card [nzCover]="coverTemplate" class="document-creation-model">
@@ -39,6 +44,11 @@
         </button>
       </nz-space-item>
     </nz-space>
+    <div class="models-arrow right">
+      <button [disabled]="!shouldShowModelsNavigateRightArrow" [class.hide]="!shouldShowModelsNavigateRightArrow" class="no-button-style" (click)="modelPageIndex = modelPageIndex + 1">
+        <i fa="chevron-right"></i>
+      </button>
+    </div>
   </nz-content>
 </nz-layout>
 <section class="my-documents-container" nz-row [nzGutter]="16">
