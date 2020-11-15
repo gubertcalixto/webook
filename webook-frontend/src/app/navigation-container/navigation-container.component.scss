@@ -80,6 +80,17 @@ wb-navigation-container {
   }
   nz-content {
     nz-page-header {
+      nz-page-header-title.unauthenticated-logo-container {
+        display: flex;
+        max-width: 150px;
+        > .unauthenticated-logo {
+          width: 100%;
+          > img {
+            max-width: 100%;
+            max-height: 100%;
+          }
+        }
+      }
       nz-page-header-extra {
         nz-input-group.navigation-search-input {
           width: auto;

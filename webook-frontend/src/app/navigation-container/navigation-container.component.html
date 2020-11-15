@@ -30,6 +30,11 @@
   <nz-layout>
     <nz-content id="content-area">
       <nz-page-header *ngIf="routeHasNavigation">
+        <nz-page-header-title *ngIf="!oAuthManagerService.isLogged" class="unauthenticated-logo-container">
+          <a routerLink="/welcome" class="unauthenticated-logo">
+            <img src="/assets/logos/text.png" alt="Webook Logo">
+          </a>
+        </nz-page-header-title>
         <nz-page-header-extra>
           <ng-container *ngIf="navigationService.hasSearch | async">
             <nz-input-group class="navigation-search-input" [nzSuffix]="searchInputSuffix">
