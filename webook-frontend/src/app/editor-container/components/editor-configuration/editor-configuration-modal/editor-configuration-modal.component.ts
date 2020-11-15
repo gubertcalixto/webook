@@ -19,6 +19,7 @@ export class EditorConfigurationModalComponent implements OnInit, OnDestroy {
   public errorDuringUpdate: boolean;
   public isUpdating: boolean;
   public userPreferences: UserPreferenceOutput;
+  public isLoading: boolean;
 
   @Input() public documentId: string;
 
@@ -56,7 +57,7 @@ export class EditorConfigurationModalComponent implements OnInit, OnDestroy {
   }
 
   private getDocument(): void {
-
+    this.isLoading = true;
     this.subs.push(this.documentService.getDocument(this.documentId).subscribe((doc: EditorDocument) => {
       const tagNames = doc.tags ? doc.tags.map((t: Tags) => t.tagName) : [];
       this.form = this.fb.group({
@@ -69,6 +70,7 @@ export class EditorConfigurationModalComponent implements OnInit, OnDestroy {
       if (this.userPreferences?.invisibleMode) {
         this.form.get('documentAccess').setValue(false);
       }
+      this.isLoading = false;
     }));
   }
 

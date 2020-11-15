@@ -3,7 +3,7 @@
 <div class="current-page" (click)="togglePageSelectionExpanded(undefined, $event)">
   <span class="page-number">{{pageIndex}}</span>
   <i *ngIf="!pageSelectionExpanded" (click)="togglePageSelectionExpanded(true, $event)" fa="angle-down"
-    class="page-selection-expand"></i>
+    class="page-selection-expand" nz-tooltip nzTooltipTitle="Gerenciar Páginas" nzTooltipPlacement="bottom" [nzMouseEnterDelay]="1"></i>
   <i *ngIf="pageSelectionExpanded" (click)="togglePageSelectionExpanded(false, $event)" fa="angle-up"
     class="page-selection-expand"></i>
 </div>
