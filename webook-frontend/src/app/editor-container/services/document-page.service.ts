@@ -99,4 +99,8 @@ export class EditorDocumentPageService {
       return undefined;
     })
   }
+
+  public deletePage(documentId: string, pageNumber: number): Observable<void> {
+    return this.documentInstanceService.documentDocumentIdPagePageNumberDelete(documentId, pageNumber);
+  }
 }

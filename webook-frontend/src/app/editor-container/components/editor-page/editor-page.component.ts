@@ -104,4 +104,8 @@ export class EditorPageComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  public onPageDeleted(): void {
+    this.getDocument();
+  }
 }

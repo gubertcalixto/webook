@@ -38,7 +38,8 @@
     </nz-page-header-extra>
     <nz-page-header-content *ngIf="pageSelectionExpanded">
       <wb-editor-document-page-expanded-navigation [documentId]="document.id" [(pageIndex)]="pageIndex"
-        [totalCount]="pageTotalCount" (pageSelected)="pageSelectionExpanded = false" [visualizeMode]="visualizeMode">
+        [totalCount]="pageTotalCount" (pageSelected)="pageSelectionExpanded = false" [visualizeMode]="visualizeMode"
+        (pageDeleted)="deletePage($event)">
       </wb-editor-document-page-expanded-navigation>
     </nz-page-header-content>
   </nz-page-header>

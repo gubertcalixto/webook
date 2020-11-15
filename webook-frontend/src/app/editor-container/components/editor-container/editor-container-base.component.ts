@@ -147,7 +147,7 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
     });
 
     this.instanciateDocument(elementId, instanceData);
-    this.emitDocumentPageSave(true);
+    this.emitDocumentPageSave();
   }
 
   protected updateExternalEventData(): void {
