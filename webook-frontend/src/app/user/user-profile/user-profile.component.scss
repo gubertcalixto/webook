@@ -1,4 +1,5 @@
 wb-user-profile {
+  overflow-y: auto;
   .profile-header {
     padding: 0 16px;
     .avatar-wrapper {
@@ -33,6 +34,11 @@ wb-user-profile {
     }
     .profile-user-name {
       margin-bottom: 0;
+      width: 100%;
+    }
+    .profile-user-location {
+      width: 100%;
+      margin-bottom: 0;
     }
     .profile-user-stats {
       place-content: space-evenly;
@@ -54,6 +60,17 @@ wb-user-profile {
       margin-top: 16px;
       margin-bottom: 16px;
       text-align: center;
+    }
+  }
+}
+
+@media(max-width: 500px) {
+  wb-user-profile {
+    .profile-header {
+      text-align: center;
+      .ant-statistic-content-suffix {
+        margin-left: 16px;
+      }
     }
   }
 }

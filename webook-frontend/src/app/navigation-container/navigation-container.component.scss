@@ -84,7 +84,7 @@ wb-navigation-container {
         nz-input-group.navigation-search-input {
           width: auto;
           i[fa="search"] + button > i[fa="times"] {
-            margin-left: 4px;
+            margin-left: 6px;
           }
         }
         .avatar-btn {
@@ -130,6 +130,9 @@ wb-navigation-container {
   nz-content {
     nz-page-header {
       nz-page-header-extra {
+        &.ant-page-header-heading-extra > * {
+          margin-left: 0;
+        }
         nz-input-group.navigation-search-input {
           max-width: 30vw;
         }

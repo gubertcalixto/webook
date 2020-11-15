@@ -10,7 +10,12 @@ export class NavigationService {
   public navigationActionsTemplate = new BehaviorSubject<TemplateRef<any>>(undefined);
 
   public setNavigationActionsTemplate(template: TemplateRef<any>) {
-    setTimeout(() => this.navigationActionsTemplate.next(template));
+    setTimeout(() => {
+      this.navigationActionsTemplate.next(template)
+      if(typeof template === 'undefined'){
+        this.search.next('');
+      }
+    });
   }
 
   public clearNavigationActionsTemplate() {

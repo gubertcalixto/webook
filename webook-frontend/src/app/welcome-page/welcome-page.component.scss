@@ -214,6 +214,11 @@ wb-welcome-page {
             min-width: 100%;
             min-height: 100%;
           }
+          .content {
+            .title {
+              margin-bottom: 16px;
+            }
+          }
         }
 
         section.form-section {
@@ -228,5 +233,15 @@ wb-welcome-page {
   }
   nz-header.ant-layout-header {
     padding: 0 12px;
+  }
+}
+
+@media (max-width: 500px) {
+  wb-welcome-page {
+    > nz-layout {
+      section.presentation {
+        text-align: center;
+      }
+    }
   }
 }

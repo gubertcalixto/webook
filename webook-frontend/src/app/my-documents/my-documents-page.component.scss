@@ -1,5 +1,6 @@
 wb-my-documents-page {
   padding: 0 16px;
+  overflow-y: auto;
   .create-document-container {
     .ant-layout-header {
       background-color: unset;
