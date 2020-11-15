@@ -7,9 +7,11 @@
       [class.waiting]="documentPageService.pageSaveStatus === 'waitingDebounce'">{{pageSaveStatusLabel.get(documentPageService.pageSaveStatus)}}</span>
   </ng-template>
   <ng-template #headerBack>
-    <i fa="arrow-left"></i>
+    <i fa="arrow-left" class="back-button" [class.disabled]="documentPageService.pageSaveStatus !== 'saved'" nz-tooltip
+      [nzTooltipTitle]="documentPageService.pageSaveStatus !== 'saved' ? 'Espere enquanto estamos salvando o documento' : ''"
+      nzTooltipPlacement="bottomLeft"></i>
   </ng-template>
-  <nz-page-header (nzBack)="redirectBack.next()" [nzTitle]="headerTitle" [nzBackIcon]="headerBack"
+  <nz-page-header (nzBack)="onBackButtonClick()" [nzTitle]="headerTitle" [nzBackIcon]="headerBack"
     class="site-page-header">
     <nz-page-header-extra class="page-navigation-container">
       <wb-editor-document-page-navigation [(pageIndex)]="pageIndex" [totalCount]="pageTotalCount"
@@ -24,10 +26,9 @@
         <button nz-button nzType="link" [disabled]="!editorExternalEvent?.hasRedo" nz-tooltip
           [nzTooltipTitle]="editorExternalEvent?.hasRedo ? 'Refazer' : undefined" nzTooltipPlacement="bottomRight"
           (click)="editorExternalEvent?.eventSubject?.next('redo')"><i fa="redo"></i></button>
-        <button (click)="openDocumentConfiguration.next()" nz-button nzType="primary"
-          nzShape="round">
-        <span class="expanded">Configurações</span>
-        <i fa="cogs" class="collapsed"></i>
+        <button (click)="openDocumentConfiguration.next()" nz-button nzType="primary" nzShape="round">
+          <span class="expanded">Configurações</span>
+          <i fa="cogs" class="collapsed"></i>
         </button>
       </ng-container>
       <ng-container *ngIf="visualizeMode">

@@ -55,4 +55,10 @@ export class EditorHeaderComponent implements OnDestroy {
     }
     this.pageIndex += 1;
   }
+
+  public onBackButtonClick(): void {
+    if (this.documentPageService.pageSaveStatus === 'saved') {
+      this.redirectBack.next();
+    }
+  }
 }

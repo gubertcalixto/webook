@@ -1,5 +1,5 @@
 <button *ngIf="!pageSelectionExpanded" [disabled]="pageIndex <= 1" nz-button nzType="link"
-  (click)="goToPreviousPage()"><i fa="chevron-left"></i></button>
+  (click)="goToPreviousPage()" nz-tooltip [nzTooltipTitle]="pageIndex <= 1 ? '' : 'Página Anterior'" nzTooltipPlacement="bottomRight"><i fa="chevron-left"></i></button>
 <div class="current-page" (click)="togglePageSelectionExpanded(undefined, $event)">
   <span class="page-number">{{pageIndex}}</span>
   <i *ngIf="!pageSelectionExpanded" (click)="togglePageSelectionExpanded(true, $event)" fa="angle-down"
@@ -8,6 +8,6 @@
     class="page-selection-expand"></i>
 </div>
 <button *ngIf="!pageSelectionExpanded && pageIndex !== totalCount" nz-button nzType="link"
-  (click)="goToNextPage()"><i fa="chevron-right"></i></button>
+  (click)="goToNextPage()" nz-tooltip nzTooltipTitle="Próxima Página" nzTooltipPlacement="bottomLeft"><i fa="chevron-right"></i></button>
 <button *ngIf="!visualizeMode && !pageSelectionExpanded && pageIndex === totalCount" nz-button nzType="link"
-  (click)="emitToAddPage()"><i fa="plus"></i></button>
+  (click)="emitToAddPage()" nz-tooltip nzTooltipTitle="Adicionar Página" nzTooltipPlacement="bottomLeft"><i fa="plus"></i></button>
