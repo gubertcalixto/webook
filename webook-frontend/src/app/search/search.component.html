@@ -24,7 +24,8 @@
         [nzNotFoundFooter]="myDocumentsEmptyFooter">
         <ng-template #myDocumentsEmptyContent>
           <span>Nenhum documento encontrado</span>
-          <p *ngIf="!oauthManagerService.isLogged">Por que você não experimenta criar um?</p>
+          <p *ngIf="oauthManagerService.isLogged">Por que você não experimenta criar um?</p>
+          <p *ngIf="!oauthManagerService.isLogged && hasSearchFilterActivated">Por que não tenta pesquisar algo diferente?</p>
         </ng-template>
         <ng-template #myDocumentsEmptyFooter>
           <button *ngIf="!hasSearchFilterActivated && oauthManagerService.isLogged" nz-button nzType="primary">

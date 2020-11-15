@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Scrapbook.Domain.Entities.Editor.Document;
@@ -19,6 +20,7 @@ namespace Scrapbook.Host.Controllers.Document
         }
         
         [HttpGet("/documents/tags")]
+        [AllowAnonymous]
         public async Task<List<string>> GetTags(string tagName, int skipCount = 0, int pageSize = 20)
         {
             var normalizedTagName = tagName?.ToLower();

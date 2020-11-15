@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Scrapbook.Domain.Entities.Editor.Document;
@@ -31,6 +32,7 @@ namespace Scrapbook.Host.Controllers.Document
         }
 
         [HttpGet("/document/{documentId}/page/{pageNumber}")]
+        [AllowAnonymous]
         public async Task<DocumentPageOutput> GetPage(Guid documentId, int pageNumber)
         {
             var page = await _pageRepository
@@ -43,6 +45,7 @@ namespace Scrapbook.Host.Controllers.Document
         }
 
         [HttpGet("/document/{documentId}/pages/thumbnails")]
+        [AllowAnonymous]
         public async Task<Dictionary<string, string>> GetPagesThumbnails(DocumentPagesThumbnailInput input)
         {
             var pagesThumbnails = await _pageRepository

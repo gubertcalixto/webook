@@ -27,6 +27,7 @@ namespace Scrapbook.Host.Controllers.Document
         }
         
         [HttpGet("/documents/user/{userId}")]
+        [AllowAnonymous]
         public async Task<PagedResultOutput<EditorDocument>> GetAllFromUser(Guid userId, PagedResultInput input)
         {
             var isOwnUser = JwtReader.GetUserId() == userId;
@@ -93,9 +94,10 @@ namespace Scrapbook.Host.Controllers.Document
         }
 
         [HttpGet("/documents")]
+        [AllowAnonymous]
         public async Task<List<EditorDocument>> GetAllDocuments(string querySearch)
         {
-            var query = Repository.WhereIf(querySearch!=null, r => r.Description.Contains(querySearch) || r.Title.Contains(querySearch));
+            var query = Repository.WhereIf(querySearch != null, r => r.Description.Contains(querySearch) || r.Title.Contains(querySearch));
             
             var documentEntities = await query.ToListAsync();
             var output = Mapper.Map<List<EditorDocument>>(documentEntities);
