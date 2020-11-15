@@ -10,6 +10,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { ShortcutEventOutput, ShortcutInput } from 'ng-keyboard-shortcuts';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { DocumentOutput } from 'src/app/client/webook';
@@ -70,9 +71,10 @@ export class EditorContainerComponent extends EditorContainerClipboardBaseCompon
     editorElementsManagerService: EditorElementsDefinitionManagerService,
     instanceManagerService: EditorElementsInstanceManagerService,
     documentPageService: EditorDocumentPageService,
-    editorInteractionService: EditorInteractionService
+    editorInteractionService: EditorInteractionService,
+    notificationService: NzNotificationService
   ) {
-    super(editorDocumentPageInstanceService, editorElementsManagerService, instanceManagerService, documentPageService, editorInteractionService);
+    super(editorDocumentPageInstanceService, editorElementsManagerService, instanceManagerService, documentPageService, editorInteractionService, notificationService);
   }
 
   ngAfterViewInit(): void {

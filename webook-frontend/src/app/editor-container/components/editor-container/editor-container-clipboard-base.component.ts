@@ -1,9 +1,35 @@
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+
+import { EditorDocumentPageInstanceService } from '../../services/document-page-instance.service';
+import { EditorDocumentPageService } from '../../services/document-page.service';
+import {
+  EditorElementsDefinitionManagerService,
+} from '../../services/element/definition/editor-elements-definition-manager.service';
+import {
+  EditorElementsInstanceManagerService,
+} from '../../services/element/instance/editor-elements-instance-manager.service';
+import { EditorInteractionService } from '../../services/interactions/editor-interaction.service';
 import { EditorElementInstanceData } from '../../tokens/classes/element/instance/editor-element-instance-data.class';
+import {
+  DEFAULT_EDITOR_NOTIFICATION_SETTINGS,
+  ENABLE_EDITOR_NOTIFICATION,
+} from '../../tokens/consts/editor-notifications-settings.const';
 import { EditorBaseElement } from '../editor/editor-components/editor-element-base-classes/editor-base-element';
 import { EditorContainerBaseComponent } from './editor-container-base.component';
 
 export abstract class EditorContainerClipboardBaseComponent extends EditorContainerBaseComponent {
   private copiedElementsData: { elementTypeId: string; data: EditorElementInstanceData }[] = [];
+
+  constructor(
+    editorDocumentPageInstanceService: EditorDocumentPageInstanceService,
+    editorElementsManagerService: EditorElementsDefinitionManagerService,
+    instanceManagerService: EditorElementsInstanceManagerService,
+    documentPageService: EditorDocumentPageService,
+    editorInteractionService: EditorInteractionService,
+    notificationService: NzNotificationService
+  ) {
+    super(editorDocumentPageInstanceService, editorElementsManagerService, instanceManagerService, documentPageService, editorInteractionService, notificationService);
+  }
 
   private getCopiedDataFromElement(element: EditorBaseElement, keepsSamePosition = false) {
     const getNumberOfPosition = (position: string = '') => {
@@ -18,7 +44,7 @@ export abstract class EditorContainerClipboardBaseComponent extends EditorContai
     if (!keepsSamePosition) {
       const maxWidth = this.editorElement.elementRef.nativeElement.scrollWidth;
       const maxHeight = this.editorElement.elementRef.nativeElement.scrollHeight;
-      const spacerMultipler = 1.1;
+      const spacerMultipler = .15;
       if (left + (elWidth * spacerMultipler) + spacingBetweenItems <= maxWidth) {
         left = left + (elWidth * spacerMultipler) + spacingBetweenItems;
       } else if (left - (elWidth * spacerMultipler) - spacingBetweenItems >= 0) {
@@ -65,11 +91,14 @@ export abstract class EditorContainerClipboardBaseComponent extends EditorContai
     if (!this.editorElement.isFocused || this.editorElement.selectedElementIds.length === 0) {
       return;
     }
-    this.copy(true);
+    this.copy(true, false);
     this.deleteEditorSelectedElements();
+    if (ENABLE_EDITOR_NOTIFICATION) {
+      this.notificationService.info('Recortado com sucesso', '', DEFAULT_EDITOR_NOTIFICATION_SETTINGS);
+    }
   }
 
-  protected copy(keepsSamePosition = false): void {
+  protected copy(keepsSamePosition = false, showNotification = true): void {
     if (!this.editorElement.isFocused) {
       return;
     }
@@ -87,6 +116,9 @@ export abstract class EditorContainerClipboardBaseComponent extends EditorContai
       }
     });
     navigator.clipboard.writeText('[webook.copiedElements]');
+    if (showNotification && ENABLE_EDITOR_NOTIFICATION) {
+      this.notificationService.info('Copiado com sucesso', '', DEFAULT_EDITOR_NOTIFICATION_SETTINGS);
+    }
   }
 
   protected paste(): void {

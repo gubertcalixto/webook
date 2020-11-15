@@ -29,7 +29,7 @@ export class UserPreferencesComponent implements OnDestroy {
     public documentService: DocumentService,
     private fb: FormBuilder,
     private nzModal: NzModalService,
-    private nzNotificationService: NzNotificationService
+    private notificationService: NzNotificationService
   ) {
     this.subs.push(this.userPreferencesService.hasLoadedSubject.pipe(filter((loaded) => loaded)).subscribe(() => {
       const userPreferences = this.userPreferencesService.getUserPreferences();
@@ -67,9 +67,11 @@ export class UserPreferencesComponent implements OnDestroy {
     this.subs.push(request.subscribe(() => {
       this.form.markAsPristine();
       this.isSaving = false;
+      this.notificationService.success('Preferências Salvas', '');
     }, () => {
       this.isSaving = false;
       this.errorDuringSave = true;
+      this.notificationService.error('Erro', 'Parece que aconteceu um problema ao salvar suas preferências. Tente mais tarde por favor');
     }));
   }
 
@@ -94,8 +96,8 @@ export class UserPreferencesComponent implements OnDestroy {
   private deleteDocumentsCall(): Observable<any> {
     return this.documentService.deleteAllMyDocument().pipe(
       first(),
-      tap(res => {
-        this.nzNotificationService.success('Ação Concluida', 'Todos seus documentos foram deletados', {
+      tap(() => {
+        this.notificationService.success('Ação Concluida', 'Todos seus documentos foram deletados', {
           nzPlacement: 'topRight'
         });
       })
