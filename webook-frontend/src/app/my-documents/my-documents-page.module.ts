@@ -7,6 +7,7 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
@@ -30,6 +31,7 @@ import { MyDocumentsPageComponent } from './my-documents-page.component';
     NzGridModule,
     NzInputModule,
     NzLayoutModule,
+    NzNotificationModule,
     NzSpinModule,
     NzSpaceModule,
     NzTypographyModule,

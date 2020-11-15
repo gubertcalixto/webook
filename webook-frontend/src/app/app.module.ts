@@ -24,7 +24,8 @@ registerLocaleData(pt);
 
 const ngZorroConfig: NzConfig = {
   notification: {
-    nzDuration: 2000
+    nzDuration: 2000,
+    nzTop: '80px'
   }
 };
 

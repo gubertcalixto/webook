@@ -37,7 +37,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private profileService: ProfileService,
     private documentService: DocumentService,
-    private nzNotification: NzNotificationService,
+    private notificationService: NzNotificationService,
     public userService: UserService,
   ) { }
 
@@ -130,9 +130,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   public deleteDocument(documentId: string): void {
+    const documentToDelete = this.userDocuments.find(d => d.id === documentId);
     this.subs.push(this.documentService.deleteDocument(documentId)
       .subscribe(() => {
         this.getProfileDocuments();
+        const message = documentToDelete ? `O documento "${documentToDelete.title}" foi deletado com sucesso` : '';
+        this.notificationService.success('Documento deletado', message);
       }));
   }
 
@@ -146,7 +149,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   public follow(): void {
     this.subs.push(this.profileService.followUser(this.userId).subscribe(() => {
       this.isFollowingUser = true;
-      this.nzNotification.success('Você está seguindo este usuário', '', { nzPlacement: 'bottomRight', nzDuration: 2500 });
+      this.notificationService.success('Você está seguindo este usuário', '');
       this.getFollowersNumber();
     }));
   }
@@ -154,7 +157,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   public unfollow(): void {
     this.subs.push(this.profileService.unfollowUser(this.userId).subscribe(() => {
       this.isFollowingUser = false;
-      this.nzNotification.info('Você parou de seguir este usuário', '', { nzPlacement: 'bottomRight', nzDuration: 2500 });
+      this.notificationService.info('Você parou de seguir este usuário', '');
       this.getFollowersNumber();
     }));
   }
@@ -184,6 +187,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.userService.updateUserImage(image).pipe(first()).subscribe(resultImage => {
       this.userImage = resultImage;
       this.isUserImageLoading = false;
+      this.notificationService.success('Imagem de perfil atualizada', '');
     });
   }
 }

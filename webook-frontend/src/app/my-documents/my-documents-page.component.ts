@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
@@ -52,7 +53,8 @@ export class MyDocumentsPageComponent implements OnInit, AfterViewInit, OnDestro
   constructor(
     public navigationService: NavigationService,
     private documentService: DocumentService,
-    private router: Router
+    private router: Router,
+    private notificationService: NzNotificationService
   ) {
   }
 
@@ -108,9 +110,12 @@ export class MyDocumentsPageComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   public deleteDocument(documentId: string): void {
+    const documentToDelete = this.myDocuments.find(d => d.id === documentId);
     this.subs.push(this.documentService.deleteDocument(documentId)
       .subscribe(() => {
         this.getMyDocuments(this.navigationService.search.value);
+        const message = documentToDelete ? `O documento "${documentToDelete.title}" foi deletado com sucesso` : '';
+        this.notificationService.success('Documento deletado', message);
       }));
   }
 }

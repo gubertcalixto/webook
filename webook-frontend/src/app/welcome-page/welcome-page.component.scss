@@ -160,6 +160,13 @@ wb-welcome-page {
               text-align: right;
             }
           }
+          nz-result  {
+            display: flex;
+            flex: auto;
+            flex-direction: column;
+            align-items: center;
+            place-content: center;
+          }
           .image-container {
             display: flex;
             flex: initial;
