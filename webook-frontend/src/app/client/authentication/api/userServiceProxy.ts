@@ -10,15 +10,19 @@
  * Do not edit the class manually.
  */
 /* tslint:disable:no-unused-variable member-ordering */
-import { HttpClient, HttpEvent, HttpHeaders, HttpParameterCodec, HttpParams, HttpResponse } from '@angular/common/http';
-import { Inject, Injectable, Optional } from '@angular/core';
-import { Observable } from 'rxjs';
 
-import { Configuration } from '../configuration';
-import { CustomHttpParameterCodec } from '../encoder';
+import { Inject, Injectable, Optional }                      from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams,
+         HttpResponse, HttpEvent, HttpParameterCodec }       from '@angular/common/http';
+import { CustomHttpParameterCodec }                          from '../encoder';
+import { Observable }                                        from 'rxjs';
+
+import { InfosOutput } from '../model/models';
 import { SimplifiedUser } from '../model/models';
-import { BASE_PATH } from '../variables';
+import { UserImageInput } from '../model/models';
 
+import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
+import { Configuration }                                     from '../configuration';
 
 
 
@@ -79,6 +83,52 @@ export class UserServiceProxy {
             throw Error("key may not be null if value is not object or array");
         }
         return httpParams;
+    }
+
+    /**
+     * @param id 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public userIdBasicInfoGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<InfosOutput>;
+    public userIdBasicInfoGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<InfosOutput>>;
+    public userIdBasicInfoGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<InfosOutput>>;
+    public userIdBasicInfoGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling userIdBasicInfoGet.');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'text/plain',
+                'application/json',
+                'text/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.get<InfosOutput>(`${this.configuration.basePath}/user/${encodeURIComponent(String(id))}/basic-info`,
+            {
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
     }
 
     /**
@@ -174,18 +224,14 @@ export class UserServiceProxy {
     }
 
     /**
-     * @param image
-     * @param body 
+     * @param userImageInput 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public userIdImagePut(image: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<string>;
-    public userIdImagePut(image: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpResponse<string>>;
-    public userIdImagePut(image: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<HttpEvent<string>>;
-    public userIdImagePut(image: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json' }): Observable<any> {
-        if (image === null || image === undefined) {
-            throw new Error('Required parameter image was null or undefined when calling userIdImagePut.');
-        }
+    public userImagePut(userImageInput?: UserImageInput, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<string>;
+    public userImagePut(userImageInput?: UserImageInput, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<string>>;
+    public userImagePut(userImageInput?: UserImageInput, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<string>>;
+    public userImagePut(userImageInput?: UserImageInput, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -221,7 +267,7 @@ export class UserServiceProxy {
         }
 
         return this.httpClient.put<string>(`${this.configuration.basePath}/user/image`,
-            { userImage: image },
+            userImageInput,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
@@ -279,7 +325,7 @@ export class UserServiceProxy {
             responseType = 'text';
         }
 
-        return this.httpClient.get<Array<SimplifiedUser>>(`${this.configuration.basePath}/users/${encodeURIComponent(String(userName))}`,
+        return this.httpClient.get<Array<SimplifiedUser>>(`${this.configuration.basePath}/users/${encodeURIComponent(String(username))}`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,
