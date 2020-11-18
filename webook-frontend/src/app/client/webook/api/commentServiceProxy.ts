@@ -17,9 +17,11 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { DocumentPageImageOutput } from '../model/models';
-import { DocumentPageOutput } from '../model/models';
-import { DocumentSavePageInput } from '../model/models';
+import { CommentOutput } from '../model/models';
+import { CreateCommentInput } from '../model/models';
+import { EditorInteractionComment } from '../model/models';
+import { EditorObjectTypeEnum } from '../model/models';
+import { UpdateCommentInput } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -27,7 +29,7 @@ import { Configuration }                                     from '../configurat
 
 
 @Injectable()
-export class DocumentInstanceServiceProxy {
+export class CommentServiceProxy {
 
     protected basePath = 'http://localhost';
     public defaultHeaders = new HttpHeaders();
@@ -86,175 +88,28 @@ export class DocumentInstanceServiceProxy {
     }
 
     /**
-     * @param documentId 
-     * @param pageNumber 
+     * @param interactionId 
+     * @param objectId 
+     * @param objectTypeEnum 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public documentDocumentIdPagePageNumberDelete(documentId: string, pageNumber: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
-    public documentDocumentIdPagePageNumberDelete(documentId: string, pageNumber: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
-    public documentDocumentIdPagePageNumberDelete(documentId: string, pageNumber: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
-    public documentDocumentIdPagePageNumberDelete(documentId: string, pageNumber: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
-        if (documentId === null || documentId === undefined) {
-            throw new Error('Required parameter documentId was null or undefined when calling documentDocumentIdPagePageNumberDelete.');
-        }
-        if (pageNumber === null || pageNumber === undefined) {
-            throw new Error('Required parameter pageNumber was null or undefined when calling documentDocumentIdPagePageNumberDelete.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType = 'text';
-        }
-
-        return this.httpClient.delete<any>(`${this.configuration.basePath}/document/${encodeURIComponent(String(documentId))}/page/${encodeURIComponent(String(pageNumber))}`,
-            {
-                responseType: <any>responseType,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * @param documentId 
-     * @param pageNumber 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public documentDocumentIdPagePageNumberGet(documentId: string, pageNumber: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<DocumentPageOutput>;
-    public documentDocumentIdPagePageNumberGet(documentId: string, pageNumber: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<DocumentPageOutput>>;
-    public documentDocumentIdPagePageNumberGet(documentId: string, pageNumber: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<DocumentPageOutput>>;
-    public documentDocumentIdPagePageNumberGet(documentId: string, pageNumber: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
-        if (documentId === null || documentId === undefined) {
-            throw new Error('Required parameter documentId was null or undefined when calling documentDocumentIdPagePageNumberGet.');
-        }
-        if (pageNumber === null || pageNumber === undefined) {
-            throw new Error('Required parameter pageNumber was null or undefined when calling documentDocumentIdPagePageNumberGet.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'text/plain',
-                'application/json',
-                'text/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType = 'text';
-        }
-
-        return this.httpClient.get<DocumentPageOutput>(`${this.configuration.basePath}/document/${encodeURIComponent(String(documentId))}/page/${encodeURIComponent(String(pageNumber))}`,
-            {
-                responseType: <any>responseType,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * @param documentId 
-     * @param pageNumber 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public documentDocumentIdPagePageNumberImageGet(documentId: string, pageNumber: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<DocumentPageImageOutput>;
-    public documentDocumentIdPagePageNumberImageGet(documentId: string, pageNumber: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<DocumentPageImageOutput>>;
-    public documentDocumentIdPagePageNumberImageGet(documentId: string, pageNumber: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<DocumentPageImageOutput>>;
-    public documentDocumentIdPagePageNumberImageGet(documentId: string, pageNumber: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
-        if (documentId === null || documentId === undefined) {
-            throw new Error('Required parameter documentId was null or undefined when calling documentDocumentIdPagePageNumberImageGet.');
-        }
-        if (pageNumber === null || pageNumber === undefined) {
-            throw new Error('Required parameter pageNumber was null or undefined when calling documentDocumentIdPagePageNumberImageGet.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'text/plain',
-                'application/json',
-                'text/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType = 'text';
-        }
-
-        return this.httpClient.get<DocumentPageImageOutput>(`${this.configuration.basePath}/document/${encodeURIComponent(String(documentId))}/page/${encodeURIComponent(String(pageNumber))}/image`,
-            {
-                responseType: <any>responseType,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * @param documentId 
-     * @param skipCount 
-     * @param pageSize 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public documentDocumentIdPagesThumbnailsGet(documentId: string, skipCount?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<{ [key: string]: string; }>;
-    public documentDocumentIdPagesThumbnailsGet(documentId: string, skipCount?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<{ [key: string]: string; }>>;
-    public documentDocumentIdPagesThumbnailsGet(documentId: string, skipCount?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<{ [key: string]: string; }>>;
-    public documentDocumentIdPagesThumbnailsGet(documentId: string, skipCount?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
-        if (documentId === null || documentId === undefined) {
-            throw new Error('Required parameter documentId was null or undefined when calling documentDocumentIdPagesThumbnailsGet.');
+    public interactionCommentInteractionIdDelete(interactionId: string, objectId?: string, objectTypeEnum?: EditorObjectTypeEnum, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
+    public interactionCommentInteractionIdDelete(interactionId: string, objectId?: string, objectTypeEnum?: EditorObjectTypeEnum, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
+    public interactionCommentInteractionIdDelete(interactionId: string, objectId?: string, objectTypeEnum?: EditorObjectTypeEnum, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
+    public interactionCommentInteractionIdDelete(interactionId: string, objectId?: string, objectTypeEnum?: EditorObjectTypeEnum, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+        if (interactionId === null || interactionId === undefined) {
+            throw new Error('Required parameter interactionId was null or undefined when calling interactionCommentInteractionIdDelete.');
         }
 
         let queryParameters = new HttpParams({encoder: this.encoder});
-        if (skipCount !== undefined && skipCount !== null) {
+        if (objectId !== undefined && objectId !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
-            <any>skipCount, 'SkipCount');
+            <any>objectId, 'ObjectId');
         }
-        if (pageSize !== undefined && pageSize !== null) {
+        if (objectTypeEnum !== undefined && objectTypeEnum !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
-            <any>pageSize, 'PageSize');
+            <any>objectTypeEnum, 'ObjectTypeEnum');
         }
 
         let headers = this.defaultHeaders;
@@ -263,9 +118,6 @@ export class DocumentInstanceServiceProxy {
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'text/plain',
-                'application/json',
-                'text/json'
             ];
             httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -279,7 +131,7 @@ export class DocumentInstanceServiceProxy {
             responseType = 'text';
         }
 
-        return this.httpClient.get<{ [key: string]: string; }>(`${this.configuration.basePath}/document/${encodeURIComponent(String(documentId))}/pages/thumbnails`,
+        return this.httpClient.delete<any>(`${this.configuration.basePath}/interaction/comment/${encodeURIComponent(String(interactionId))}`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,
@@ -292,14 +144,77 @@ export class DocumentInstanceServiceProxy {
     }
 
     /**
-     * @param documentSavePageInput 
+     * @param interactionId 
+     * @param objectId 
+     * @param objectTypeEnum 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public documentPagePost(documentSavePageInput?: DocumentSavePageInput, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
-    public documentPagePost(documentSavePageInput?: DocumentSavePageInput, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
-    public documentPagePost(documentSavePageInput?: DocumentSavePageInput, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
-    public documentPagePost(documentSavePageInput?: DocumentSavePageInput, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+    public interactionCommentInteractionIdGet(interactionId: string, objectId?: string, objectTypeEnum?: EditorObjectTypeEnum, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<EditorInteractionComment>;
+    public interactionCommentInteractionIdGet(interactionId: string, objectId?: string, objectTypeEnum?: EditorObjectTypeEnum, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<EditorInteractionComment>>;
+    public interactionCommentInteractionIdGet(interactionId: string, objectId?: string, objectTypeEnum?: EditorObjectTypeEnum, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<EditorInteractionComment>>;
+    public interactionCommentInteractionIdGet(interactionId: string, objectId?: string, objectTypeEnum?: EditorObjectTypeEnum, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+        if (interactionId === null || interactionId === undefined) {
+            throw new Error('Required parameter interactionId was null or undefined when calling interactionCommentInteractionIdGet.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (objectId !== undefined && objectId !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>objectId, 'ObjectId');
+        }
+        if (objectTypeEnum !== undefined && objectTypeEnum !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>objectTypeEnum, 'ObjectTypeEnum');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'text/plain',
+                'application/json',
+                'text/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.get<EditorInteractionComment>(`${this.configuration.basePath}/interaction/comment/${encodeURIComponent(String(interactionId))}`,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param interactionId 
+     * @param updateCommentInput 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public interactionCommentInteractionIdPut(interactionId: string, updateCommentInput?: UpdateCommentInput, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
+    public interactionCommentInteractionIdPut(interactionId: string, updateCommentInput?: UpdateCommentInput, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
+    public interactionCommentInteractionIdPut(interactionId: string, updateCommentInput?: UpdateCommentInput, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
+    public interactionCommentInteractionIdPut(interactionId: string, updateCommentInput?: UpdateCommentInput, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+        if (interactionId === null || interactionId === undefined) {
+            throw new Error('Required parameter interactionId was null or undefined when calling interactionCommentInteractionIdPut.');
+        }
 
         let headers = this.defaultHeaders;
 
@@ -331,8 +246,8 @@ export class DocumentInstanceServiceProxy {
             responseType = 'text';
         }
 
-        return this.httpClient.post<any>(`${this.configuration.basePath}/document/page`,
-            documentSavePageInput,
+        return this.httpClient.put<any>(`${this.configuration.basePath}/interaction/comment/${encodeURIComponent(String(interactionId))}`,
+            updateCommentInput,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
@@ -344,19 +259,29 @@ export class DocumentInstanceServiceProxy {
     }
 
     /**
-     * @param id 
+     * @param objectId 
+     * @param objectTypeEnum 
+     * @param interactionId 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public pageCountGet(id?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<number>;
-    public pageCountGet(id?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<number>>;
-    public pageCountGet(id?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<number>>;
-    public pageCountGet(id?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
+    public interactionCommentsGet(objectId?: string, objectTypeEnum?: EditorObjectTypeEnum, interactionId?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<Array<CommentOutput>>;
+    public interactionCommentsGet(objectId?: string, objectTypeEnum?: EditorObjectTypeEnum, interactionId?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpResponse<Array<CommentOutput>>>;
+    public interactionCommentsGet(objectId?: string, objectTypeEnum?: EditorObjectTypeEnum, interactionId?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<HttpEvent<Array<CommentOutput>>>;
+    public interactionCommentsGet(objectId?: string, objectTypeEnum?: EditorObjectTypeEnum, interactionId?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json'}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
-        if (id !== undefined && id !== null) {
+        if (objectId !== undefined && objectId !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
-            <any>id, 'id');
+            <any>objectId, 'ObjectId');
+        }
+        if (objectTypeEnum !== undefined && objectTypeEnum !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>objectTypeEnum, 'ObjectTypeEnum');
+        }
+        if (interactionId !== undefined && interactionId !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>interactionId, 'InteractionId');
         }
 
         let headers = this.defaultHeaders;
@@ -381,9 +306,61 @@ export class DocumentInstanceServiceProxy {
             responseType = 'text';
         }
 
-        return this.httpClient.get<number>(`${this.configuration.basePath}/PageCount`,
+        return this.httpClient.get<Array<CommentOutput>>(`${this.configuration.basePath}/interaction/comments`,
             {
                 params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param createCommentInput 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public interactionCommentsPost(createCommentInput?: CreateCommentInput, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
+    public interactionCommentsPost(createCommentInput?: CreateCommentInput, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
+    public interactionCommentsPost(createCommentInput?: CreateCommentInput, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
+    public interactionCommentsPost(createCommentInput?: CreateCommentInput, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'text/json',
+            'application/_*+json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<any>(`${this.configuration.basePath}/interaction/comments`,
+            createCommentInput,
+            {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
