@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { UserInfo } from 'angular-oauth2-oidc';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { first, tap } from 'rxjs/operators';
 import {
   AccountServiceProxy,
   InfosOutput,
@@ -18,6 +18,7 @@ import { OauthManagerService } from './oauth-manager.service';
   providedIn: 'root'
 })
 export class UserService {
+  private userInfoList = new Map<string, InfosOutput>();
   private internalUser: OAuthUser;
   private internalUserSubject = new BehaviorSubject<OAuthUser>(undefined);
 
@@ -73,8 +74,15 @@ export class UserService {
     return this.userServiceProxy.userIdImageGet(userId);
   }
 
-  public getInfosUserById(userId: string): Observable<InfosOutput> {
-    return this.userServiceProxy.userIdBasicInfoGet(userId);
+  public getUserBasicInfo(userId: string): Observable<InfosOutput> {
+    if(this.userInfoList.has(userId)){
+      return of(this.userInfoList.get(userId));
+    }
+    return this.userServiceProxy.userIdBasicInfoGet(userId).pipe(tap(result => {
+      if (result && userId) {
+        this.userInfoList.set(userId, result);
+      }
+    }));
   }
 
   public updateUserImage(base64Image: string): Observable<string> {
@@ -94,15 +102,15 @@ export class UserService {
         nzCancelText: 'Cancelar',
         nzOnOk: () => {
           this.accountServiceProxy.accountDeleteAccountDelete()
-          .pipe(first())
-          .subscribe(isDeleted => {
-            if (isDeleted) {
-              customFn().pipe(first()).subscribe(() => {
-                this.authManagerService.logOut();
-              });
-            }
-            res(isDeleted);
-          }, (e) => rej(e))
+            .pipe(first())
+            .subscribe(isDeleted => {
+              if (isDeleted) {
+                customFn().pipe(first()).subscribe(() => {
+                  this.authManagerService.logOut();
+                });
+              }
+              res(isDeleted);
+            }, (e) => rej(e))
         },
       });
     });

@@ -2,10 +2,47 @@ wb-document-card {
   display: flex;
   flex-direction: column;
   height: 100%;
+  .user-info-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2% 0 2% 2%;
+    a.username {
+      margin-left: 5%;
+      padding: 0;
+    }
+  }
   > nz-card {
     height: 100%;
-    .document-image {
-      max-width: 100%;
+    .ant-card-cover {
+      position: relative;
+      .document-image {
+        max-width: 100%;
+      }
+      button.document-page-arrow {
+        $document-page-arrow-space-from-border: 10%;
+        $document-page-arrow-height: 40px;
+        position: absolute;
+        width: initial;
+        height: $document-page-arrow-height;
+        top: calc(50% - #{$document-page-arrow-height / 2});
+        padding: 0 16px;
+        opacity: 0;
+        font-size: 200%;
+        text-shadow: 2px 2px 2px #cacaca;
+        transition: opacity 0.25s;
+        &.left-arrow {
+          right: $document-page-arrow-space-from-border;
+        }
+        &.right-arrow {
+          left: $document-page-arrow-space-from-border;
+        }
+      }
+    }
+    &:hover {
+      button.document-page-arrow {
+        opacity: 1;
+      }
     }
     .document-title-container {
       flex-wrap: nowrap;
