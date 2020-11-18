@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Injector, ViewChild } from '@angular/core';
 
 import { EditorResizeBaseElement } from '../editor-element-base-classes/resize/editor-resize-base-element';
 
@@ -14,8 +14,12 @@ export class EditorTextElementComponent extends EditorResizeBaseElement {
 
   @ViewChild('inputToSave') inputToSave: ElementRef<HTMLInputElement>;
 
-  constructor(public elementRef: ElementRef<HTMLElement>, private changeDetectorRef: ChangeDetectorRef) {
-    super(elementRef);
+  constructor(
+    public elementRef: ElementRef<HTMLElement>,
+    private changeDetectorRef: ChangeDetectorRef,
+    injector: Injector
+  ) {
+    super(elementRef, injector);
   }
 
   protected setInitialSize(): void {

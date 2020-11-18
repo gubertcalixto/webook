@@ -1,4 +1,4 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, Injector } from '@angular/core';
 import { v4 as uuid } from 'uuid';
 
 import { EditorResizeBaseElement } from '../editor-element-base-classes/resize/editor-resize-base-element';
@@ -25,8 +25,11 @@ export class EditorRadioElementComponent extends EditorResizeBaseElement {
     }
   }
 
-  constructor(public elementRef: ElementRef<HTMLElement>) {
-    super(elementRef);
+  constructor(
+    public elementRef: ElementRef<HTMLElement>,
+    injector: Injector
+  ) {
+    super(elementRef, injector);
   }
 
   protected setInitialSize(): void {

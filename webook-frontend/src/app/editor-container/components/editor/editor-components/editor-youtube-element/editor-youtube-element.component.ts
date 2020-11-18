@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, Injector, ViewEncapsulation } from '@angular/core';
 import { filter } from 'rxjs/operators';
 import { UserPreferenceOutput } from 'src/app/client/webook';
 import { UserPreferencesService } from 'src/app/user/user-preferences/user-preferences.service';
@@ -26,9 +26,10 @@ export class EditorYoutubeElementComponent extends EditorResizeBaseElement {
 
   constructor(
     public elementRef: ElementRef<HTMLElement>,
-    public userPreferencesService: UserPreferencesService
+    public userPreferencesService: UserPreferencesService,
+    injector: Injector
   ) {
-    super(elementRef);
+    super(elementRef, injector);
   }
 
   ngOnInit(): void {

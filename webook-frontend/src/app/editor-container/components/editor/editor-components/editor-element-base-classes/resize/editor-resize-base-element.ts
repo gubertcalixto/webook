@@ -1,4 +1,4 @@
-import { ElementRef } from '@angular/core';
+import { ElementRef, Injector } from '@angular/core';
 import { MoveableEventsParameters } from 'moveable';
 
 import { EditorRotateBaseElement } from '../rotate/editor-rotate-base-element';
@@ -7,8 +7,11 @@ import { EditorResizeBaseElementOptions } from './editor-resize-base-element-opt
 export abstract class EditorResizeBaseElement extends EditorRotateBaseElement {
   public resizeOptions: Partial<EditorResizeBaseElementOptions> = new EditorResizeBaseElementOptions();
 
-  constructor(public elementRef: ElementRef<HTMLElement>) {
-    super(elementRef);
+  constructor(
+    public elementRef: ElementRef<HTMLElement>,
+    injector: Injector
+  ) {
+    super(elementRef, injector);
   }
 
   public onResizeStart(event: MoveableEventsParameters['resizeStart']): void {

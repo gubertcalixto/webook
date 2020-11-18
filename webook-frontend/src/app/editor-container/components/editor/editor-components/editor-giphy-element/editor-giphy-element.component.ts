@@ -1,4 +1,4 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, Injector } from '@angular/core';
 import { TccGiphyService } from 'projects/legacy-projects/tcc-giphy/src/public-api';
 import { first } from 'rxjs/operators';
 
@@ -18,9 +18,10 @@ export class EditorGiphyElementComponent extends EditorResizeBaseElement {
 
   constructor(
     public elementRef: ElementRef<HTMLElement>,
-    private service: TccGiphyService
+    private service: TccGiphyService,
+    injector: Injector
   ) {
-    super(elementRef);
+    super(elementRef, injector);
   }
 
   public getGif(itemId: string): void {

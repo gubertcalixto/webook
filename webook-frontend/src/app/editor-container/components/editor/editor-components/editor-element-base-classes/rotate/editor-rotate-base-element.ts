@@ -1,4 +1,4 @@
-import { ElementRef } from '@angular/core';
+import { ElementRef, Injector } from '@angular/core';
 import { MoveableEventsParameters } from 'moveable';
 
 import { EditorDragBaseElement } from '../drag/editor-drag-base-element';
@@ -7,8 +7,11 @@ import { EditorRotateBaseElementOptions } from './editor-rotate-base-element-opt
 export abstract class EditorRotateBaseElement extends EditorDragBaseElement {
   public rotateOptions: Partial<EditorRotateBaseElementOptions> = new EditorRotateBaseElementOptions();
 
-  constructor(public elementRef: ElementRef<HTMLElement>) {
-    super(elementRef);
+  constructor(
+    public elementRef: ElementRef<HTMLElement>,
+    injector: Injector
+  ) {
+    super(elementRef, injector);
     this.postUpdateFrame.set('editor-rotate', () => {
       this.updateRotation(this.rotateOptions.temporaryRotation ? this.rotateOptions.temporaryRotation : this.rotateOptions.rotation, false);
     });
