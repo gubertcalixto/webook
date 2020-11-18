@@ -10,19 +10,15 @@
  * Do not edit the class manually.
  */
 /* tslint:disable:no-unused-variable member-ordering */
+import { HttpClient, HttpEvent, HttpHeaders, HttpParameterCodec, HttpParams, HttpResponse } from '@angular/common/http';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { Observable } from 'rxjs';
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
-import { Observable }                                        from 'rxjs';
+import { Configuration } from '../configuration';
+import { CustomHttpParameterCodec } from '../encoder';
+import { InfosOutput, SimplifiedUser, UserImageInput } from '../model/models';
+import { BASE_PATH } from '../variables';
 
-import { InfosOutput } from '../model/models';
-import { SimplifiedUser } from '../model/models';
-import { UserImageInput } from '../model/models';
-
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { Configuration }                                     from '../configuration';
 
 
 
@@ -325,7 +321,7 @@ export class UserServiceProxy {
             responseType = 'text';
         }
 
-        return this.httpClient.get<Array<SimplifiedUser>>(`${this.configuration.basePath}/users/${encodeURIComponent(String(username))}`,
+        return this.httpClient.get<Array<SimplifiedUser>>(`${this.configuration.basePath}/users/${encodeURIComponent(String(userName))}`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,
