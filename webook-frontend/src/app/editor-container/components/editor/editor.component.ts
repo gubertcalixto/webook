@@ -60,28 +60,50 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private editorDocumentPageInstanceService: EditorDocumentPageInstanceService,
-    public elementRef: ElementRef<HTMLElement>) { }
+    public elementRef: ElementRef<HTMLElement>) {}
 
   ngAfterViewInit(): void {
     this.subscribeToPageDataChange();
   }
+  
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
   }
 
   private subscribeToPageDataChange(): void {
-    this.subs.push(this.editorDocumentPageInstanceService.dataChanged.subscribe(data => {
+    this.subs.push(this.editorDocumentPageInstanceService.dataChanged.pipe().subscribe(data => {
       if (data?.backgroundColor) {
+        if(this.visualizeMode){
+          this.elementRef.nativeElement.parentElement.style['background-color'] = data.backgroundColor;
+        }
+        else
+        {
         this.elementRef.nativeElement.style['background-color'] = data.backgroundColor;
+        }
       }
       if (data?.backgroundPattern) {
         const backgroundPattern = EditorPageBackgroundPatterns.find(f => f.id == data.backgroundPattern);
         if (backgroundPattern?.src) {
           const backgroundImage = `url('${backgroundPattern.src}')`;
+          if(this.visualizeMode)
+          {
+            this.elementRef.nativeElement.parentElement.style['background-image'] = backgroundImage;
+          }
+          else
+          {
           this.elementRef.nativeElement.style['background-image'] = backgroundImage;
+          }
         } else {
-          this.elementRef.nativeElement.style['background-image'] = 'unset';
+          if(this.visualizeMode)
+          {
+            this.elementRef.nativeElement.parentElement.style['background-image'] = 'unset';
+          
+          }
+          else
+          { 
+            this.elementRef.nativeElement.style['background-image'] = 'unset';
+          }
         }
       }
     }))
