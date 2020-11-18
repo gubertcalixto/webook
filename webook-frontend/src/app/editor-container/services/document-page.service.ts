@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import html2canvas from 'html2canvas';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { debounceTime, first } from 'rxjs/operators';
+import { DocumentPageImageOutput } from 'src/app/client/webook/model/documentPageImageOutput';
 
 import { DocumentInstanceServiceProxy, DocumentPageOutput, DocumentSavePageInput } from '../../client/webook';
 import { EditorElementHistoryData } from '../tokens/classes/history/editor-history-pre-serialize.class';
@@ -27,7 +28,7 @@ export class EditorDocumentPageService {
       .pipe(debounceTime(EditorDocumentPageService.debounceTimeToSave))
       .subscribe((data: IDocumentPageSaveData) => {
         this.doSave(data);
-      })
+      });
   }
 
   public emitPageSaveStatus(status: DocumentPageSaveStatus) {
@@ -38,6 +39,14 @@ export class EditorDocumentPageService {
 
   public getPage(documentId: string, pageNumber: number): Observable<DocumentPageOutput> {
     return this.documentInstanceService.documentDocumentIdPagePageNumberGet(documentId, pageNumber);
+  }
+
+  public getPageImage(documentId: string, pageNumber: number): Observable<DocumentPageImageOutput> {
+    return this.documentInstanceService.documentDocumentIdPagePageNumberImageGet(documentId, pageNumber);
+  }
+
+  public getPageCount(documentId: string): Observable<number> {
+    return this.documentInstanceService.pageCountGet(documentId);
   }
 
   public getPageThumbnails(documentId: string, skipCount: number, pageSize: number): Observable<{ [key: string]: string; }> {

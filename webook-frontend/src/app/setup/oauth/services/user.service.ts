@@ -3,7 +3,13 @@ import { UserInfo } from 'angular-oauth2-oidc';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { AccountServiceProxy, SimplifiedUser, UserImageInput, UserServiceProxy } from 'src/app/client/authentication';
+import {
+  AccountServiceProxy,
+  InfosOutput,
+  SimplifiedUser,
+  UserImageInput,
+  UserServiceProxy,
+} from 'src/app/client/authentication';
 
 import { OAuthUser } from '../tokens/oauth-user';
 import { OauthManagerService } from './oauth-manager.service';
@@ -65,6 +71,10 @@ export class UserService {
 
   public getUserImage(userId: string = this.userId): Observable<string> {
     return this.userServiceProxy.userIdImageGet(userId);
+  }
+
+  public getInfosUserById(userId: string): Observable<InfosOutput> {
+    return this.userServiceProxy.userIdBasicInfoGet(userId);
   }
 
   public updateUserImage(base64Image: string): Observable<string> {
