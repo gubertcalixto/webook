@@ -1,11 +1,33 @@
+import { ElementRef, OnDestroy } from '@angular/core';
 import { MoveableEventsParameters } from 'moveable';
 
 import { EditorBaseElement } from '../editor-base-element';
 import { EditorDragBaseElementOptions } from './editor-drag-base-element-options';
 
-export abstract class EditorDragBaseElement extends EditorBaseElement {
+export abstract class EditorDragBaseElement extends EditorBaseElement implements OnDestroy {
+  private elementGuidelinesInterval: any;
+  private elementGuidelinesIntervalTime = 750;
+  public elementGuidelines: Element[] = [];
   public get boundaryEl(): HTMLElement {
     return this.editor?.elementHTML;
+  }
+
+  constructor(public elementRef: ElementRef<HTMLElement>) {
+    super(elementRef);
+    this.autoUpdateGuidelines();
+  }
+
+  private autoUpdateGuidelines() {
+    this.elementGuidelinesInterval = setInterval(() => {
+      this.elementGuidelines = Array.from(document.querySelectorAll('.editor-element'));
+    }, this.elementGuidelinesIntervalTime);
+  }
+
+  ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.elementGuidelinesInterval) {
+      clearInterval(this.elementGuidelinesInterval);
+    }
   }
 
   public get limitsCoords() {

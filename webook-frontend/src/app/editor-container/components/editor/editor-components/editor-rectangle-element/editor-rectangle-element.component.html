@@ -12,6 +12,8 @@
         #moveable
         [target]="target"
         [className]="moveableClasses"
+        [snappable]="true"
+        [elementGuidelines]="elementGuidelines"
 
         [origin]="dragOptions.hasOrigin"
         [draggable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && dragOptions.draggable"
@@ -25,7 +27,7 @@
         (rotateStart)="onRotateStart($event)"
         (rotate)="onRotate($event)"
         (rotateEnd)="onRotateEnd($event)"
-
+        
         [resizable]="(forceMoveableEnable || (isOnlySelected && hasSelectionEnded)) && resizeOptions.resizable"
         [keepRatio]="resizeOptions.keepRatio"
         (resizeStart)="onResizeStart($event)"

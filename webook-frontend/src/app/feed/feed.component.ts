@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { OauthManagerService } from '@oath/services/oauth-manager.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
 import { EditorDocument } from 'src/app/client/webook';
@@ -27,6 +28,7 @@ export class FeedComponent implements OnInit {
     private feedService: FeedService,
     private documentService: DocumentService,
     public oauthManagerService: OauthManagerService,
+    private notificationService: NzNotificationService
   ) {
     this.subs.push(oauthManagerService.finishedLoadingSubject
       .pipe(switchMap(() => oauthManagerService.hasValidToken()))
@@ -61,10 +63,13 @@ export class FeedComponent implements OnInit {
     this.router.navigateByUrl(`/document/${documentId}`);
   }
   public deleteDocument(documentId: string): void {
+    const documentToDelete = this.documents.find(d => d.id === documentId);
     this.documentService.deleteDocument(documentId)
       .pipe(first())
       .subscribe(() => {
-        this.getFeed()
+        this.getFeed();
+        const message = documentToDelete ? `O documento "${documentToDelete.title}" foi deletado com sucesso` : '';
+        this.notificationService.success('Documento deletado', message);
       });
   }
 }

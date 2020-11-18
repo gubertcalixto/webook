@@ -12,7 +12,7 @@ import { oAuthConfig } from '../consts/oauth.settings';
 })
 export class OauthManagerService {
   private loginFailed: boolean;
-  public internalUserInfo: UserInfo;
+  private internalUserInfo: UserInfo;
 
   public finishedLoadingSubject = new BehaviorSubject<boolean>(false);
   public hasLoginProccessInited = false;

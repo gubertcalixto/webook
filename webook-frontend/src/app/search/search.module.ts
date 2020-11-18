@@ -15,6 +15,7 @@ import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzRateModule } from 'ng-zorro-antd/rate';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 import { DocumentListModule } from '../document-list/document-list.module';
 import { DocumentService } from '../services/document.service';
@@ -39,6 +40,7 @@ import { SearchComponent } from './search.component';
     NzInputModule,
     NzButtonModule,
     NzEmptyModule,
+    NzToolTipModule,
     NzPaginationModule,
     NzFormModule,
     NzModalModule,

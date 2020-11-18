@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Scrapbook.Domain.Entities.Editor.Document;
@@ -23,6 +24,7 @@ namespace Scrapbook.Host.Controllers.Document
         }
         
         [HttpPost("/document/{id}/denounce")]
+        [AllowAnonymous]
         public async Task Denounce([FromBody] DenounceInput input)
         {
             var userId = JwtReader.GetUserId(false);

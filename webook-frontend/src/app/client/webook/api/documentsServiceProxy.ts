@@ -10,15 +10,19 @@
  * Do not edit the class manually.
  */
 /* tslint:disable:no-unused-variable member-ordering */
-import { HttpClient, HttpEvent, HttpHeaders, HttpParameterCodec, HttpParams, HttpResponse } from '@angular/common/http';
-import { Inject, Injectable, Optional } from '@angular/core';
-import { Observable } from 'rxjs';
 
-import { Configuration } from '../configuration';
-import { CustomHttpParameterCodec } from '../encoder';
-import { EditorDocument, EditorDocumentPagedResultOutput, MyEditorDocument } from '../model/models';
-import { BASE_PATH } from '../variables';
+import { Inject, Injectable, Optional }                      from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams,
+         HttpResponse, HttpEvent, HttpParameterCodec }       from '@angular/common/http';
+import { CustomHttpParameterCodec }                          from '../encoder';
+import { Observable }                                        from 'rxjs';
 
+import { EditorDocument } from '../model/models';
+import { EditorDocumentPagedResultOutput } from '../model/models';
+import { MyEditorDocument } from '../model/models';
+
+import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
+import { Configuration }                                     from '../configuration';
 
 
 

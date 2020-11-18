@@ -29,10 +29,10 @@
     "ng-keyboard-shortcuts": "^9.0.0",
     "ng-zorro-antd": "^9.1.2",
     "ngx-color-picker": "^10.0.1",
-    "ngx-moveable": "0.14.2",
-    "ngx-selecto": "^1.5.0",
+    "ngx-moveable": "0.17.0",
+    "ngx-selecto": "^1.9.2",
     "rxjs": "~6.5.4",
-    "scenejs": "^1.1.7",
+    "scenejs": "^1.4.3",
     "tslib": "^1.10.0",
     "uuid": "^8.3.0",
     "zone.js": "~0.10.2"

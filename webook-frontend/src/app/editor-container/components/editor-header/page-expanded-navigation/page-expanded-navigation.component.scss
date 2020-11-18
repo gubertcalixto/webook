@@ -21,6 +21,7 @@
     display: flex;
     place-content: center;
     button.page {
+      position: relative;
       cursor: pointer;
       background: none;
       border: 1px solid #000;
@@ -30,6 +31,19 @@
       img {
         max-width: 100%;
         max-height: 100%;
+      }
+      button.remove-page {
+        position: absolute;
+        top: 2%;
+        right: 5%;
+        text-shadow: 1px 1px 1px #404040;
+        opacity: .15;
+        transition: opacity .5s;
+      }
+      &:hover {
+        button.remove-page {
+          opacity: 1;
+        }
       }
     }
   }

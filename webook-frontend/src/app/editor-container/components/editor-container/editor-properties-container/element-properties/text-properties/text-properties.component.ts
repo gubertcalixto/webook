@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'wb-text-properties',
@@ -6,13 +6,12 @@ import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
   styleUrls: ['./text-properties.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class TextPropertiesComponent implements OnInit {
+export class TextPropertiesComponent {
   @Input() public currentElementSelectedData: any;
   @Input() public setDataProperty: (fieldName: string, fieldValue: any) => void;
-
-  constructor() { }
-
-  ngOnInit(): void {
+  
+  public setTextType(textType: string): void {
+    this.setDataProperty('textType', textType)
+    this.setDataProperty('textSize', undefined)
   }
-
 }

@@ -1,4 +1,5 @@
 import { ComponentRef, isDevMode, OnDestroy, OnInit } from '@angular/core';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { merge, Subscription } from 'rxjs';
 
 import { DocumentOutput } from '../../../client/webook/model/models';
@@ -17,6 +18,10 @@ import { ImageUtils } from '../../tokens/classes/element/image-utils';
 import { EditorElementInstanceData } from '../../tokens/classes/element/instance/editor-element-instance-data.class';
 import { EditorElementHistoryData } from '../../tokens/classes/history/editor-history-pre-serialize.class';
 import { EditorHistoryManager } from '../../tokens/classes/history/editor-history-stack.class';
+import {
+  DEFAULT_EDITOR_NOTIFICATION_SETTINGS,
+  ENABLE_EDITOR_NOTIFICATION,
+} from '../../tokens/consts/editor-notifications-settings.const';
 import { EditorBaseElement } from '../editor/editor-components/editor-element-base-classes/editor-base-element';
 import { EditorComponent } from '../editor/editor.component';
 
@@ -43,7 +48,8 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
     protected editorElementsManagerService: EditorElementsDefinitionManagerService,
     protected instanceManagerService: EditorElementsInstanceManagerService,
     protected documentPageService: EditorDocumentPageService,
-    protected editorInteractionService: EditorInteractionService
+    protected editorInteractionService: EditorInteractionService,
+    public notificationService: NzNotificationService
   ) {
     this.subscribeToPageChange();
   }
@@ -147,7 +153,7 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
     });
 
     this.instanciateDocument(elementId, instanceData);
-    this.emitDocumentPageSave(true);
+    this.emitDocumentPageSave();
   }
 
   protected updateExternalEventData(): void {
@@ -163,6 +169,9 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
     this.instanciateElementsFromData(data);
     this.emitDocumentPageSave(false, true);
     this.updateExternalEventData();
+    if (ENABLE_EDITOR_NOTIFICATION) {
+      this.notificationService.info('Desfeito com sucesso', '', DEFAULT_EDITOR_NOTIFICATION_SETTINGS);
+    }
   }
 
   protected redo(): void {
@@ -171,6 +180,9 @@ export abstract class EditorContainerBaseComponent implements OnInit, OnDestroy 
     this.instanciateElementsFromData(data);
     this.emitDocumentPageSave(false, true);
     this.updateExternalEventData();
+    if (ENABLE_EDITOR_NOTIFICATION) {
+      this.notificationService.info('Refeito com sucesso', '', DEFAULT_EDITOR_NOTIFICATION_SETTINGS);
+    }
   }
 
   protected instanciateElementsFromData(data: EditorElementHistoryData[]): void {

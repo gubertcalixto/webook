@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -78,6 +79,7 @@ namespace Scrapbook.Host.Controllers.Document
         }
 
         [HttpGet("/document/{id}")]
+        [AllowAnonymous]
         public async Task<DocumentOutput> GetDocumentWithMetadata(Guid id)
         {
             var getResult = await Repository.Include(d => d.Tags).FirstOrDefaultAsync(d => d.Id == id);

@@ -9,6 +9,8 @@ import { EditorDocumentPageService } from 'src/app/editor-container/services/doc
 })
 export class EditorDocumentPageExpandedNavigationComponent implements OnInit, OnDestroy {
   private getThumbnailSubscription: Subscription;
+  private internalTotalCount = 0;
+  private hasStarted = false;
 
   public itemsPerPage = 3;
   public pageThumbnails: Map<number, string>;
@@ -17,10 +19,19 @@ export class EditorDocumentPageExpandedNavigationComponent implements OnInit, On
 
   @Input() public documentId: string;
   @Input() public pageIndex = 1;
-  @Input() public totalCount = 0;
+  @Input() public get totalCount() { return this.internalTotalCount; }
+  public set totalCount(value) {
+    if (value !== this.internalTotalCount) {
+      this.internalTotalCount = value;
+      if (this.hasStarted) {
+        this.getThumbnails(true);
+      }
+    }
+  }
   @Input() public visualizeMode = false;
   @Output() private pageIndexChange = new EventEmitter<number>();
   @Output() private pageSelected = new EventEmitter<void>();
+  @Output() private pageDeleted = new EventEmitter<number>();
 
   private lastCurrentPageThumbnails: { pageNavigationIndex: number; pageThumbnailsAsString: string, currentPageThumbnails: any; };
   public get currentPageThumbnails(): { index: number; thumbnail: string }[] {
@@ -30,29 +41,15 @@ export class EditorDocumentPageExpandedNavigationComponent implements OnInit, On
     ) {
       return this.lastCurrentPageThumbnails.currentPageThumbnails;
     }
-    const skipCount = (this.pageNavigationIndex - 1) * this.itemsPerPage;
-    let itemsPerPage = this.itemsPerPage;
-    const thumbnails = [];
-    const thumbnailLimit = skipCount + itemsPerPage >= this.totalCount ? this.totalCount : skipCount + itemsPerPage;
-    for (let i = skipCount + 1; i <= thumbnailLimit; i++) {
-      thumbnails.push({
-        index: i,
-        thumbnail: this.pageThumbnails.get(i),
-      });
-    }
-    this.lastCurrentPageThumbnails = {
-      pageNavigationIndex: this.pageNavigationIndex,
-      pageThumbnailsAsString: this.getPageThumbnailsAsString(this.pageThumbnails),
-      currentPageThumbnails: thumbnails,
-    }
+    const thumbnails = this.recalculateThumbnails();
     return thumbnails;
-  };
+  }
 
-  public get maxNavigationIndex() {
+  public get maxNavigationIndex(): number {
     return this.totalCount == this.itemsPerPage
       ? 1
       : Math.ceil(this.totalCount / this.itemsPerPage);
-  };
+  }
 
   constructor(private editorDocumentPageService: EditorDocumentPageService) { }
 
@@ -65,6 +62,7 @@ export class EditorDocumentPageExpandedNavigationComponent implements OnInit, On
 
     this.pageNavigationIndex = this.getNavigationIndexByPageIndex();
     this.getThumbnails();
+    this.hasStarted = true;
   }
 
   ngOnDestroy(): void {
@@ -73,15 +71,17 @@ export class EditorDocumentPageExpandedNavigationComponent implements OnInit, On
     }
   }
 
-  private getThumbnails(): void {
+  private getThumbnails(forceRecalculation = false): void {
     this.isGettingThumbnails = true;
     const skipCount = (this.pageNavigationIndex - 1) * this.itemsPerPage;
 
-    let hasThumbnailCache = true;
-    for (let i = skipCount + 1; i < skipCount + 1 + this.itemsPerPage; i++) {
-      if (!this.pageThumbnails.has(i)) {
-        hasThumbnailCache = false;
-        break;
+    let hasThumbnailCache = !forceRecalculation;
+    if (hasThumbnailCache) {
+      for (let i = skipCount + 1; i < skipCount + 1 + this.itemsPerPage; i++) {
+        if (!this.pageThumbnails.has(i)) {
+          hasThumbnailCache = false;
+          break;
+        }
       }
     }
 
@@ -101,6 +101,9 @@ export class EditorDocumentPageExpandedNavigationComponent implements OnInit, On
             const currentItem = result[indexAsString]
             this.pageThumbnails.set(i, currentItem);
             this.isGettingThumbnails = false;
+          }
+          if (forceRecalculation) {
+            this.recalculateThumbnails();
           }
         }, () => { this.isGettingThumbnails = false; });
   }
@@ -149,5 +152,30 @@ export class EditorDocumentPageExpandedNavigationComponent implements OnInit, On
 
   public goToLastPage(): void {
     this.pageNavigationIndexChange(this.maxNavigationIndex);
+  }
+
+  public deletePage(pageNumber: number, event: MouseEvent) {
+    event?.stopPropagation();
+    event?.preventDefault();
+    this.pageDeleted.next(pageNumber);
+  }
+
+  private recalculateThumbnails(): any[] {
+    const skipCount = (this.pageNavigationIndex - 1) * this.itemsPerPage;
+    let itemsPerPage = this.itemsPerPage;
+    const thumbnails = [];
+    const thumbnailLimit = skipCount + itemsPerPage >= this.totalCount ? this.totalCount : skipCount + itemsPerPage;
+    for (let i = skipCount + 1; i <= thumbnailLimit; i++) {
+      thumbnails.push({
+        index: i,
+        thumbnail: this.pageThumbnails.get(i),
+      });
+    }
+    this.lastCurrentPageThumbnails = {
+      pageNavigationIndex: this.pageNavigationIndex,
+      pageThumbnailsAsString: this.getPageThumbnailsAsString(this.pageThumbnails),
+      currentPageThumbnails: thumbnails,
+    };
+    return thumbnails;
   }
 }

@@ -32,6 +32,7 @@ wb-editor {
   }
 }
 .moveable-control-box {
+  z-index: 5 !important;
   &:not(.selected) {
     display: none !important;
   }

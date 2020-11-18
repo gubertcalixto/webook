@@ -15,7 +15,7 @@ export type DocumentPageSaveStatus = 'waitingDebounce' | 'saved' | 'saving';
 
 @Injectable()
 export class EditorDocumentPageService {
-  static debounceTimeToSave = 1000; // 1s
+  static debounceTimeToSave = 500; // 500 ms
 
   private savePageSubject = new Subject<IDocumentPageSaveData>();
   public savedPageSubject = new Subject<void>();
@@ -98,5 +98,9 @@ export class EditorDocumentPageService {
     }).catch(error => {
       return undefined;
     })
+  }
+
+  public deletePage(documentId: string, pageNumber: number): Observable<void> {
+    return this.documentInstanceService.documentDocumentIdPagePageNumberDelete(documentId, pageNumber);
   }
 }

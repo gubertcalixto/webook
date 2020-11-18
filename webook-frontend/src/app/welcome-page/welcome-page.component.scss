@@ -160,6 +160,13 @@ wb-welcome-page {
               text-align: right;
             }
           }
+          nz-result  {
+            display: flex;
+            flex: auto;
+            flex-direction: column;
+            align-items: center;
+            place-content: center;
+          }
           .image-container {
             display: flex;
             flex: initial;
@@ -214,6 +221,11 @@ wb-welcome-page {
             min-width: 100%;
             min-height: 100%;
           }
+          .content {
+            .title {
+              margin-bottom: 16px;
+            }
+          }
         }
 
         section.form-section {
@@ -228,5 +240,15 @@ wb-welcome-page {
   }
   nz-header.ant-layout-header {
     padding: 0 12px;
+  }
+}
+
+@media (max-width: 500px) {
+  wb-welcome-page {
+    > nz-layout {
+      section.presentation {
+        text-align: center;
+      }
+    }
   }
 }

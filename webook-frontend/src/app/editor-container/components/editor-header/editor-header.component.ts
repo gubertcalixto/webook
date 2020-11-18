@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { DocumentOutput } from 'src/app/client/webook';
 
 import { EditorDocumentPageService } from '../../services/document-page.service';
@@ -54,5 +55,22 @@ export class EditorHeaderComponent implements OnDestroy {
       this.document.pageNumber += 1;
     }
     this.pageIndex += 1;
+  }
+
+  public onBackButtonClick(): void {
+    if (this.documentPageService.pageSaveStatus === 'saved') {
+      this.redirectBack.next();
+    }
+  }
+
+  public deletePage(pageNumber: number): void {
+    this.documentPageService.deletePage(this.document.id, pageNumber).pipe(first()).subscribe(() => {
+      if (this.pageIndex !== 1) {
+        this.pageIndex -= 1;
+      } else {
+        this.pageIndex = 1;
+      }
+      this.document.pageNumber -= 1;
+    });
   }
 }

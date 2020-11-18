@@ -10,6 +10,7 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
@@ -35,6 +36,7 @@ import { WelcomePageComponent } from './welcome-page.component';
     NzInputModule,
     NzLayoutModule,
     NzMenuModule,
+    NzNotificationModule,
     NzResultModule,
     NzSelectModule,
     NzToolTipModule,

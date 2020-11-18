@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { OauthManagerService } from '@oath/services/oauth-manager.service';
+import { UserService } from '@oath/services/user.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { first, tap } from 'rxjs/operators';
+import { filter, first, tap } from 'rxjs/operators';
 import { UserPreferenceOutput, UserPreferencesServiceProxy } from 'src/app/client/webook';
 
 @Injectable({
@@ -10,17 +12,28 @@ export class UserPreferencesService {
   private isStarted = false;
   public hasLoadedSubject = new BehaviorSubject<boolean>(false);
   private userPreferences: UserPreferenceOutput;
-  constructor(private userPreferencesServiceProxy: UserPreferencesServiceProxy) { }
+  constructor(
+    private oauthManagerService: OauthManagerService,
+    private userService: UserService,
+    private userPreferencesServiceProxy: UserPreferencesServiceProxy
+  ) { }
 
   public start(): void {
     if (this.isStarted) {
       return;
     }
     this.isStarted = true;
-    this.getUserPreferencesRequest().pipe(first()).subscribe((preferences) => {
-      this.userPreferences = preferences;
-      this.hasLoadedSubject.next(true);
-    });
+    this.userService.userSubject
+      .pipe(
+        filter((user) => Boolean(user)),
+        filter(() => Boolean(this.oauthManagerService.isLogged))
+      )
+      .subscribe(() => {
+        this.getUserPreferencesRequest().pipe(first()).subscribe((preferences) => {
+          this.userPreferences = preferences;
+          this.hasLoadedSubject.next(true);
+        });
+      });
   }
 
   private getUserPreferencesRequest(): Observable<UserPreferenceOutput> {

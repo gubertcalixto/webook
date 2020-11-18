@@ -30,6 +30,7 @@ $background-page-spacing: 5%;
     border: $page-border;
     border-radius: $page-border-radius;
     background-color: $page-background-color;
+    user-select: none;
     .page-number {
       color: #000;
       font-weight: bold;

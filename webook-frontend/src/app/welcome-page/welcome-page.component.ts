@@ -2,6 +2,7 @@ import { Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OauthManagerService } from '@oath/services/oauth-manager.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -29,7 +30,8 @@ export class WelcomePageComponent implements OnDestroy {
     public oAuthManagerService: OauthManagerService,
     private contactFormService: ContactFormService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private notificationService: NzNotificationService
   ) {
     this.subs.push(this.oAuthManagerService.finishedLoadingSubject
       .pipe(switchMap(() => this.oAuthManagerService.hasValidToken()))
@@ -115,6 +117,10 @@ export class WelcomePageComponent implements OnDestroy {
     const message = this.form.get('message').value;
     this.subs.push(this.contactFormService.sendContactForm(userName, email, message, subject).subscribe(() => {
       this.contactFormSent = true;
+      this.notificationService.success(
+        'Mensagem enviada',
+        `Recebemos sua mensagem, ${userName}. Não se preocupe que assim que possível vamos te responder`
+      );
     }));
   }
 

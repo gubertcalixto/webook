@@ -1,5 +1,7 @@
 wb-editor-header {
   position: relative;
+  background: #fff;
+  z-index: 10;
   wb-editor-document-title {
     display: flex;
   }
@@ -28,6 +30,10 @@ wb-editor-header {
     .collapsed {
       display: none;
     }
+  }
+  .ant-page-header-back-button i.back-button.disabled {
+    color: rgba(0, 0, 0, 0.25);
+    cursor: not-allowed;
   }
 }
 

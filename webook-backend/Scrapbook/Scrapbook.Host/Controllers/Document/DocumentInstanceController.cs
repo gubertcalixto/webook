@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Scrapbook.Domain.Entities.Editor.Document;
@@ -31,6 +32,7 @@ namespace Scrapbook.Host.Controllers.Document
         }
 
         [HttpGet("/document/{documentId}/page/{pageNumber}")]
+        [AllowAnonymous]
         public async Task<DocumentPageOutput> GetPage(Guid documentId, int pageNumber)
         {
             var page = await _pageRepository
@@ -42,8 +44,8 @@ namespace Scrapbook.Host.Controllers.Document
                 : _mapper.Map<DocumentPageOutput>(page);
         }
 
-
         [HttpGet("/document/{documentId}/pages/thumbnails")]
+        [AllowAnonymous]
         public async Task<Dictionary<string, string>> GetPagesThumbnails(DocumentPagesThumbnailInput input)
         {
             var pagesThumbnails = await _pageRepository
@@ -95,6 +97,26 @@ namespace Scrapbook.Host.Controllers.Document
                 _pageRepository.Update(pageInDocument);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        [HttpDelete("/document/{documentId}/page/{pageNumber}")]
+        public async Task DeletePage(Guid documentId, int pageNumber)
+        {
+            var allDocumentPages = await _pageRepository
+                .Where(p => p.EditorDocumentId == documentId)
+                .ToListAsync();
+            var pageToDelete = allDocumentPages?.FirstOrDefault(p => p.PageNumber == pageNumber);
+            if(pageToDelete == null)
+                return;
+
+            var pagesToUpdate = allDocumentPages.Where(p => p.PageNumber > pageNumber).ToList();
+            foreach (var pageToUpdate in pagesToUpdate)
+                pageToUpdate.PageNumber -= 1;
+            
+            _pageRepository.Remove(pageToDelete);
+            if (pagesToUpdate.Any())
+                _pageRepository.UpdateRange(pagesToUpdate);
+            await _context.SaveChangesAsync();
         }
     }
 }

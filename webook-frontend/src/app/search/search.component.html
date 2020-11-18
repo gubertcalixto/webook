@@ -8,10 +8,10 @@
         <button nz-button nzType="primary" nzSize="large" nzSearch (click)="search()">
           <i fa="search"></i>
         </button>
-        <button nz-button nzType="secondary" nzSize="large" (click)="toggleSearchOrder()">
+        <button nz-button nzType="secondary" nzSize="large" (click)="toggleSearchOrder()" nz-tooltip [nzTooltipTitle]="order !== 'desc' ? 'Ordernação ascendente' : 'Ordernação descendente'">
           <i [fa]="order === 'desc' ? 'sort-alpha-down' : 'sort-alpha-up'"></i>
         </button>
-        <button nz-button nzType="secondary" [class.active]="hasCustomFilters" nzSize="large" (click)="filter()">
+        <button nz-button nzType="secondary" [class.active]="hasCustomFilters" nzSize="large" (click)="filter()" nz-tooltip nzTooltipTitle="Filtros Avançados">
           <i fa="filter"></i>
         </button>
       </ng-template>
@@ -24,7 +24,8 @@
         [nzNotFoundFooter]="myDocumentsEmptyFooter">
         <ng-template #myDocumentsEmptyContent>
           <span>Nenhum documento encontrado</span>
-          <p *ngIf="!oauthManagerService.isLogged">Por que você não experimenta criar um?</p>
+          <p *ngIf="oauthManagerService.isLogged">Por que você não experimenta criar um?</p>
+          <p *ngIf="!oauthManagerService.isLogged && hasSearchFilterActivated">Por que não tenta pesquisar algo diferente?</p>
         </ng-template>
         <ng-template #myDocumentsEmptyFooter>
           <button *ngIf="!hasSearchFilterActivated && oauthManagerService.isLogged" nz-button nzType="primary">

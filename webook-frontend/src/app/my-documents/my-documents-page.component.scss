@@ -1,7 +1,10 @@
 wb-my-documents-page {
   padding: 0 16px;
+  overflow-y: auto;
   .create-document-container {
     .ant-layout-header {
+      background-color: unset;
+      padding: 0 2.5% 0 1.5%;
       div[nz-row] {
         height: inherit;
         div[nz-col] {
@@ -22,16 +25,45 @@ wb-my-documents-page {
         }
       }
     }
-    nz-content {
+    nz-content.models-content {
       $max-model-number-size: 5;
-      padding: 2vw #{100% / $max-model-number-size / 2} 0;
+      $min-model-size: 125px;
+      $min-model-arrow-size: 50px;
+
+      display: flex;
+      align-items: center;
+      padding: 0 #{100% / $max-model-number-size / 2} 2vw;
+      div.models-arrow {
+        min-width: $min-model-arrow-size;
+        > button {
+          width: 100%;
+          &.hide {
+            opacity: 0;
+            visibility: hidden;
+            user-select: none;
+            cursor: context-menu;
+          }
+        }
+      }
       > nz-space {
         width: 100%;
-        overflow-x: auto;
+        overflow: auto;
+
+        &.expanded {
+          $models-expanded-max-height: 25vw;
+          display: flex;
+          flex-wrap: wrap;
+          max-height: $models-expanded-max-height;
+          > nz-space-item {
+            margin-bottom: 8px;
+          }
+        }
+
         > nz-space-item {
           display: flex;
           flex: auto;
           max-width: #{100% / $max-model-number-size};
+          min-width: $min-model-size;
           button {
             width: 100%;
             .document-creation-model {
