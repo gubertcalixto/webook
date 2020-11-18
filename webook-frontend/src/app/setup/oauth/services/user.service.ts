@@ -3,7 +3,7 @@ import { UserInfo } from 'angular-oauth2-oidc';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { AccountServiceProxy, SimplifiedUser, UserServiceProxy } from 'src/app/client/authentication';
+import { AccountServiceProxy, SimplifiedUser, UserImageInput, UserServiceProxy } from 'src/app/client/authentication';
 
 import { OAuthUser } from '../tokens/oauth-user';
 import { OauthManagerService } from './oauth-manager.service';
@@ -68,7 +68,10 @@ export class UserService {
   }
 
   public updateUserImage(base64Image: string): Observable<string> {
-    return this.userServiceProxy.userIdImagePut(base64Image);
+    const imageInput: UserImageInput = {
+      userImage: base64Image
+    };
+    return this.userServiceProxy.userImagePut(imageInput);
   }
 
   public deleteUser(customFn: () => Observable<any>): Promise<boolean> {
@@ -92,6 +95,6 @@ export class UserService {
           }, (e) => rej(e))
         },
       });
-    })
+    });
   }
 }

@@ -8,6 +8,7 @@ import { first } from 'rxjs/operators';
 import { EditorDocument } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
 import { ProfileService } from 'src/app/services/profile.service';
+import { base64Encode, getDecodedImage } from 'src/app/utils/base64-image-converter.const';
 
 @Component({
   selector: 'wb-user-profile',
@@ -171,21 +172,21 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     const reader = new FileReader();
     reader.readAsDataURL(imageToUpload);
     reader.onload = () => {
-      const base64Image = 'data:image/png;base64,' + reader.result.toString().split(',')[1];
+      const base64Image = 'data:image/png;base64,' + base64Encode(reader.result.toString().split(',')[1]);
       this.updateUserImage(base64Image);
     };
   }
 
   private getUserImage(): void {
     this.userService.getUserImage(this.userId).pipe(first()).subscribe(resultImage => {
-      this.userImage = resultImage;
+      this.userImage = getDecodedImage(resultImage);
       this.isUserImageLoading = false;
     });
   }
 
   private updateUserImage(image: string): void {
     this.userService.updateUserImage(image).pipe(first()).subscribe(resultImage => {
-      this.userImage = resultImage;
+      this.userImage = getDecodedImage(resultImage);
       this.isUserImageLoading = false;
       this.notificationService.success('Imagem de perfil atualizada', '');
     });

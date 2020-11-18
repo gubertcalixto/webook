@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { filter, first, switchMap } from 'rxjs/operators';
 
 import { NavigationService } from '../navigation/navigation.service';
+import { getDecodedImage } from '../utils/base64-image-converter.const';
 
 @Component({
   selector: 'wb-navigation-container',
@@ -47,8 +48,8 @@ export class NavigationContainerComponent implements OnDestroy {
 
   private getUserImage(): void {
     this.isLoadingUserImage = true;
-    this.userService.getUserImage().pipe(first()).subscribe(image => {
-      this.userImage = image;
+    this.userService.getUserImage().pipe(first()).subscribe((image) => {
+      this.userImage = getDecodedImage(image);
       this.isLoadingUserImage = false;
     });
   }
