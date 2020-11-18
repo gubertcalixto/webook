@@ -30,7 +30,9 @@ namespace Scrapbook.Infrastructure
         #region Interaction
         public DbSet<EditorComponentFavorite> EditorComponentFavorites { get; set; }
         public DbSet<EditorDocumentAccess> EditorDocumentAccesses { get; set; }
-        public DbSet<EditorInteraction> EditorInteractions { get; set; }
+        public DbSet<EditorInteractionComment> EditorInteractionComments { get; set; }
+        public DbSet<EditorInteractionLike> EditorInteractionLikes { get; set; }
+        public DbSet<EditorInteractionDislike> EditorInteractionDislikes { get; set; }
         public DbSet<UserFollow> UserFollows { get; set; }
         public DbSet<DenounceDocument> DocumentDenounces { get; set; }
         #endregion Interaction

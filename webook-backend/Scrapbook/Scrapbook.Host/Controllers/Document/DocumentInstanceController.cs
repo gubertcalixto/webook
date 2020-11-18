@@ -44,6 +44,26 @@ namespace Scrapbook.Host.Controllers.Document
                 : _mapper.Map<DocumentPageOutput>(page);
         }
 
+        [HttpGet("/document/{documentId}/page/{pageNumber}/image")]
+        public async Task<DocumentPageImageOutput> GetPageImage(Guid documentId, int pageNumber)
+        {
+            return await _pageRepository
+                .Where(p => p.EditorDocumentId == documentId)
+                .Where(p => p.PageNumber == pageNumber)
+                .Select(p => new DocumentPageImageOutput
+                {
+                    Image = p.PreviewImage,
+                    PageNumber = p.PageNumber,
+                    DocumentId = p.EditorDocumentId
+                }).FirstOrDefaultAsync();
+        }
+
+        [HttpGet("/PageCount")]
+        public async Task<int> GetPageCount([FromQuery] Guid id )
+        {
+            return await _pageRepository.CountAsync(p => p.EditorDocumentId == id);
+        }
+
         [HttpGet("/document/{documentId}/pages/thumbnails")]
         [AllowAnonymous]
         public async Task<Dictionary<string, string>> GetPagesThumbnails(DocumentPagesThumbnailInput input)
