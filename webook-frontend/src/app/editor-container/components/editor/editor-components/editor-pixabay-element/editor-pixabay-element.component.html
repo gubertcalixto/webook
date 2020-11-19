@@ -4,9 +4,52 @@
     [title]="currentPixabayHit.user"
     [alt]="currentPixabayHit.user"
     [src]="currentPixabayHit.previewURL"
+    nz-popover
+    [nzPopoverTrigger]="visualizeMode ? 'click' : null"
+    nzOverlayClassName="popover-action"
+    [nzPopoverContent]="contentTemplate"
+    (nzVisibleChange)="getHasLikeOrDislikeForInteractionsPopover($event)"
   />
   <nz-spin *ngIf="isLoading" class="image-loader" nzSimple nzSize="large"></nz-spin>
   <nz-empty *ngIf="!isLoading && !visualizeMode && !currentPixabayHit" nzNotFoundContent="Selecione uma imagem"></nz-empty>
+  <ng-template #contentTemplate>
+    <ul class="editor-element-actions-list">
+      <li>
+        <nz-spin [nzSpinning]="isLoadingLikeAndDislike">
+          <ng-container *ngIf="!isLoadingLikeAndDislike">
+            <!-- No Like / Dislike -->
+            <ng-container *ngIf="!doesComponentHasLike && !doesComponentHasDislike" >
+              <nz-button-group>
+                <button nz-button nzType="primary" (click)="likeComponent()">
+                  <i fa="thumbs-up"></i><span>Like</span>
+                </button>
+                <button nz-button nzType="danger" (click)="dislikeComponent()">
+                  <span>Deslike</span><i fa="thumbs-down"></i>
+                </button>
+              </nz-button-group>
+            </ng-container>
+            <!-- Has Like -->
+            <ng-container *ngIf="doesComponentHasLike && !doesComponentHasDislike" >
+              <button nz-button nzType="danger" (click)="removeLikeComponent()">
+                <span>Remover Like</span>
+              </button>
+            </ng-container>
+            <!-- Has Dislike -->
+            <ng-container *ngIf="doesComponentHasDislike && !doesComponentHasLike" >
+              <button nz-button nzType="danger" (click)="removeDislikeComponent()">
+                <span>Remover Deslike</span>
+              </button>
+            </ng-container>
+          </ng-container>
+        </nz-spin>
+      </li>
+      <li>
+        <button (click)=" editorInteractionService.openCommentPanel(2, elementId, 'Texto 1') " nz-button nzType="default">
+          Comentários <i fa="comment"></i>
+        </button>
+      </li>
+    </ul>
+  </ng-template>
   <ng-container *ngIf="elementRef">
     <ngx-moveable
         *ngIf="!visualizeMode"
