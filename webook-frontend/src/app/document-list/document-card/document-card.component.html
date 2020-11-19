@@ -1,4 +1,9 @@
 <ng-container *ngIf="document">
+  <nz-skeleton *ngIf="showUserInfo && !userInfo" class="user-info-container" [nzAvatar]="true" [nzParagraph]="{ rows: 0 }"></nz-skeleton>
+  <div *ngIf="showUserInfo && userInfo" nz-row class="user-info-container">
+    <nz-avatar nzSize="large" [nzText]="userInfo.image ? undefined : userService.getUserInitials()" [nzSrc]="userInfo.image"></nz-avatar>
+    <a class="username" nz-button nzType="link" (click)="redirectToUserPofile()">{{ userInfo.name }}</a>
+  </div>
   <nz-card [nzCover]="documentCoverTemplate" class="document-creation-model">
     <!-- TODO: Description fix -->
     <nz-card-meta [nzTitle]="documentTitleTemplate" [nzDescription]="document.description"></nz-card-meta>
@@ -30,9 +35,14 @@
     </div>
   </ng-template>
   <ng-template #documentCoverTemplate>
+    <button *ngIf="totalDocumentPages && totalDocumentPages > currentDocumentPage" tabindex="-1" class="no-button-style document-page-arrow left-arrow" (click)="goToNextDocumentPage()" nz-tooltip nzTooltipTitle="Visualizar Próxima Página" [nzMouseEnterDelay]="750">
+      <i fa="chevron-right"></i>
+    </button>
     <button class="no-button-style" (click)="openDocument(document.id)">
-      <img class="document-image" [src]="document.image ? document.image : defaultDocumentCover"
-        [alt]="document.title" />
+      <img class="document-image" [src]="document.image ? document.image : defaultDocumentCover" [alt]="document.title" />
+    </button>
+    <button *ngIf="totalDocumentPages && currentDocumentPage > 1" tabindex="-1" class="no-button-style document-page-arrow right-arrow" (click)="goToPreviousDocumentPage()" nz-tooltip nzTooltipTitle="Visualizar Página Anterior" [nzMouseEnterDelay]="750">
+      <i fa="chevron-left"></i>
     </button>
   </ng-template>
 </ng-container>

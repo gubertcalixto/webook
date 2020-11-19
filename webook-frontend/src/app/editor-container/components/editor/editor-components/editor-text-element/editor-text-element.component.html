@@ -1,32 +1,76 @@
 <ng-container *ngIf="hasFinishedDataEntry">
   <span *ngIf="!editing" (dblclick)="toggleEditMode()"
-  [style.font-size]="data.textSize ? data.textSize + 'px' : 'unset'"
-  [style.color]="data.textColor"
-  [style.background-color]="data.backgroundColor"
-  [style.font-weight]="data.textWeight"
-  [style.justify-content]="getTextHorizontalAlign(data.position)"
-  [style.align-items]="getTextVerticalAlign(data.position)"
+    nz-popover
+    [nzPopoverTrigger]="visualizeMode ? 'click' : null"
+    nzOverlayClassName="popover-action"
+    [nzPopoverContent]="contentTemplate"
+    (nzVisibleChange)="getHasLikeOrDislikeForInteractionsPopover($event)"
+    [style.font-size]="data.textSize ? data.textSize + 'px' : 'unset'"
+    [style.color]="data.textColor"
+    [style.background-color]="data.backgroundColor"
+    [style.font-weight]="data.textWeight"
+    [style.justify-content]="getTextHorizontalAlign(data.position)"
+    [style.align-items]="getTextVerticalAlign(data.position)"
   >
-  <ng-container [ngSwitch]="data.textType || 'text'">
-    <span *ngSwitchCase="'text'">{{text}}</span>
-    <h1 *ngSwitchCase="'h1'">{{text}}</h1>
-    <h2 *ngSwitchCase="'h2'">{{text}}</h2>
-    <h3 *ngSwitchCase="'h3'">{{text}}</h3>
-    <h4 *ngSwitchCase="'h4'">{{text}}</h4>
-    <h5 *ngSwitchCase="'h5'">{{text}}</h5>
-    <h6 *ngSwitchCase="'h6'">{{text}}</h6>
-  </ng-container>
-</span>
-  <ng-container *ngIf="editing && !visualizeMode">
-    <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-      <input #inputToSave type="text" nz-input placeholder="input search text" (keyup.enter)="saveEdit()"
-        (keyup.esc)="toggleEditMode()" />
-    </nz-input-group>
-    <ng-template #suffixIconButton>
-      <button nz-button nzType="primary" (click)="saveEdit()"><i fa="save"></i></button>
-      <button nz-button nzType="danger" (click)="toggleEditMode()"><i fa="times"></i></button>
-    </ng-template>
-  </ng-container>
+    <ng-container [ngSwitch]="data.textType || 'text'">
+      <span *ngSwitchCase="'text'">{{text}}</span>
+      <h1 *ngSwitchCase="'h1'">{{text}}</h1>
+      <h2 *ngSwitchCase="'h2'">{{text}}</h2>
+      <h3 *ngSwitchCase="'h3'">{{text}}</h3>
+      <h4 *ngSwitchCase="'h4'">{{text}}</h4>
+      <h5 *ngSwitchCase="'h5'">{{text}}</h5>
+      <h6 *ngSwitchCase="'h6'">{{text}}</h6>
+    </ng-container>
+  </span>
+    <ng-container *ngIf="editing && !visualizeMode">
+      <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+        <input #inputToSave type="text" nz-input placeholder="input search text" (keyup.enter)="saveEdit()"
+          (keyup.esc)="toggleEditMode()" />
+      </nz-input-group>
+      <ng-template #suffixIconButton>
+        <button nz-button nzType="primary" (click)="saveEdit()"><i fa="save"></i></button>
+        <button nz-button nzType="danger" (click)="toggleEditMode()"><i fa="times"></i></button>
+      </ng-template>
+    </ng-container>
+
+  <ng-template #contentTemplate>
+    <ul class="editor-element-actions-list">
+      <li>
+        <nz-spin [nzSpinning]="isLoadingLikeAndDislike">
+          <ng-container *ngIf="!isLoadingLikeAndDislike">
+            <!-- No Like / Dislike -->
+            <ng-container *ngIf="!doesComponentHasLike && !doesComponentHasDislike" >
+              <nz-button-group>
+                <button nz-button nzType="primary" (click)="likeComponent()">
+                  <i fa="thumbs-up"></i><span>Like</span>
+                </button>
+                <button nz-button nzType="danger" (click)="dislikeComponent()">
+                  <span>Deslike</span><i fa="thumbs-down"></i>
+                </button>
+              </nz-button-group>
+            </ng-container>
+            <!-- Has Like -->
+            <ng-container *ngIf="doesComponentHasLike && !doesComponentHasDislike" >
+              <button nz-button nzType="danger" (click)="removeLikeComponent()">
+                <span>Remover Like</span>
+              </button>
+            </ng-container>
+            <!-- Has Dislike -->
+            <ng-container *ngIf="doesComponentHasDislike && !doesComponentHasLike" >
+              <button nz-button nzType="danger" (click)="removeDislikeComponent()">
+                <span>Remover Deslike</span>
+              </button>
+            </ng-container>
+          </ng-container>
+        </nz-spin>
+      </li>
+      <li>
+        <button (click)=" editorInteractionService.openCommentPanel(2, elementId, 'Texto 1') " nz-button nzType="default">
+          Comentários <i fa="comment"></i>
+        </button>
+      </li>
+    </ul>
+  </ng-template>
 
   <ng-container *ngIf="elementRef">
     <ngx-moveable

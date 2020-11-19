@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserService } from '@oath/services/user.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -54,9 +55,9 @@ export class MyDocumentsPageComponent implements OnInit, AfterViewInit, OnDestro
     public navigationService: NavigationService,
     private documentService: DocumentService,
     private router: Router,
-    private notificationService: NzNotificationService
-  ) {
-  }
+    private notificationService: NzNotificationService,
+    private userService: UserService
+  ) { }
 
   ngOnInit(): void {
     this.shouldHaveCreateDocumentViewExpanded = documentCreationModels.length > this.maximumCreateDocumentModelSize;
@@ -84,8 +85,11 @@ export class MyDocumentsPageComponent implements OnInit, AfterViewInit, OnDestro
   private getMyDocuments(searchQuery?: string) {
     this.hasSearchFilterActivated = Boolean(searchQuery);
     this.subs.push(this.documentService.getMyDocuments(searchQuery).subscribe((res) => {
-      this.isLoadingMyDocuments = false;
       this.myDocuments = res;
+      this.myDocuments.forEach((document) => {
+        document.userId = this.userService.userId;
+      })
+      this.isLoadingMyDocuments = false;
     }, () => (this.isLoadingMyDocuments = false)));
   }
 

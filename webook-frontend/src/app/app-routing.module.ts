@@ -11,6 +11,7 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./feed/feed.module').then(m => m.FeedModule),
+    canActivate: [MustBeLoggedAuthGuard],
     data: { title: 'Feed', hasNavigation: true }
   },
   {

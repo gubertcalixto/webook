@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, Injector, ViewEncapsulation } from '@angular/core';
 
 import { EditorResizeBaseElement } from '../editor-element-base-classes/resize/editor-resize-base-element';
 
@@ -19,8 +19,11 @@ export class EditorElipseElementComponent extends EditorResizeBaseElement {
   public borderColor = this.initialColor;
   public borderStyle = 'solid';
 
-  constructor(public elementRef: ElementRef<HTMLElement>) {
-    super(elementRef);
+  constructor(
+    public elementRef: ElementRef<HTMLElement>,
+    injector: Injector
+  ) {
+    super(elementRef, injector);
   }
 
   protected setInitialSize(): void {

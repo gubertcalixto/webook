@@ -1,3 +1,5 @@
+export * from './commentServiceProxy';
+import { CommentServiceProxy } from './commentServiceProxy';
 export * from './contactFormServiceProxy';
 import { ContactFormServiceProxy } from './contactFormServiceProxy';
 export * from './denounceDocumentServiceProxy';
@@ -12,8 +14,10 @@ export * from './documentsServiceProxy';
 import { DocumentsServiceProxy } from './documentsServiceProxy';
 export * from './feedServiceProxy';
 import { FeedServiceProxy } from './feedServiceProxy';
+export * from './likeDislikeServiceProxy';
+import { LikeDislikeServiceProxy } from './likeDislikeServiceProxy';
 export * from './profileServiceProxy';
 import { ProfileServiceProxy } from './profileServiceProxy';
 export * from './userPreferencesServiceProxy';
 import { UserPreferencesServiceProxy } from './userPreferencesServiceProxy';
-export const APIS = [ContactFormServiceProxy, DenounceDocumentServiceProxy, DocumentServiceProxy, DocumentInstanceServiceProxy, DocumentTagServiceProxy, DocumentsServiceProxy, FeedServiceProxy, ProfileServiceProxy, UserPreferencesServiceProxy];
+export const APIS = [CommentServiceProxy, ContactFormServiceProxy, DenounceDocumentServiceProxy, DocumentServiceProxy, DocumentInstanceServiceProxy, DocumentTagServiceProxy, DocumentsServiceProxy, FeedServiceProxy, LikeDislikeServiceProxy, ProfileServiceProxy, UserPreferencesServiceProxy];

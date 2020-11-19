@@ -8,6 +8,7 @@ import {
   Output,
   ViewChild,
   ViewContainerRef,
+  ViewEncapsulation,
 } from '@angular/core';
 import { ShortcutEventOutput, ShortcutInput } from 'ng-keyboard-shortcuts';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -35,7 +36,8 @@ import { EditorContainerClipboardBaseComponent } from './editor-container-clipbo
 @Component({
   selector: 'wb-editor-container',
   templateUrl: './editor-container.component.html',
-  styleUrls: ['./editor-container.component.scss']
+  styleUrls: ['./editor-container.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class EditorContainerComponent extends EditorContainerClipboardBaseComponent implements AfterViewInit, OnDestroy {
   private _pageIndex = 1;

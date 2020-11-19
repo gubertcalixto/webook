@@ -1,4 +1,4 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, Injector } from '@angular/core';
 import { PixabayHit, PixabayResult, TccPixabayService } from 'projects/legacy-projects/tcc-pixabay/src/public-api';
 import { Observable } from 'rxjs';
 import { first, tap } from 'rxjs/operators';
@@ -19,9 +19,10 @@ export class EditorPixabayElementComponent extends EditorResizeBaseElement {
 
   constructor(
     public elementRef: ElementRef<HTMLElement>,
+    injector: Injector,
     private pixabayService: TccPixabayService
   ) {
-    super(elementRef);
+    super(elementRef, injector);
   }
 
   private getPixabayImage(imageId: string): Observable<any> {

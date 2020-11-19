@@ -327,13 +327,42 @@ namespace Scrapbook.Infrastructure.Migrations
                     b.ToTable("EditorDocumentAccesses");
                 });
 
-            modelBuilder.Entity("Scrapbook.Domain.Entities.Interactions.EditorInteraction", b =>
+            modelBuilder.Entity("Scrapbook.Domain.Entities.Interactions.EditorInteractionComment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("InteractionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("InteractionTypeEnum")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ObjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ObjectTypeEnum")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EditorInteractionComments");
+                });
+
+            modelBuilder.Entity("Scrapbook.Domain.Entities.Interactions.EditorInteractionDislike", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("InteractionTypeEnum")
@@ -350,7 +379,30 @@ namespace Scrapbook.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EditorInteractions");
+                    b.ToTable("EditorInteractionDislikes");
+                });
+
+            modelBuilder.Entity("Scrapbook.Domain.Entities.Interactions.EditorInteractionLike", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("InteractionTypeEnum")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ObjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ObjectTypeEnum")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EditorInteractionLikes");
                 });
 
             modelBuilder.Entity("Scrapbook.Domain.Entities.Interactions.UserFollow", b =>

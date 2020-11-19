@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 using AutoMapper;
+using IdentityServer.Controller.Dtos;
 using IdentityServer.Domain.Dtos;
 using IdentityServer.Infrastructure.EntityFrameworkCore;
 using IdentityServer.Services;
@@ -74,6 +75,20 @@ namespace IdentityServer.Controller
                 .Skip(skipCount)
                 .Take(pageSize)
                 .ToListAsync());
+        }
+        
+        [HttpGet("/user/{id}/basic-info")]
+        public async Task<InfosOutput> GetUserBasicInfo(Guid id)
+        {
+            if(id == Guid.Empty || id == null)
+                throw new ArgumentException(nameof(id));
+            return await _userContext.ApplicationUsers
+                .Where(u => u.Id == id)
+                .Select(u => new InfosOutput{
+                         Name = $"{u.FirstName} {u.SecondName}",
+                         Image = u.UrlImg
+                     })
+                .FirstOrDefaultAsync();
         }
     }
 }

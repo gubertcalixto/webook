@@ -66,20 +66,16 @@ export abstract class EditorBaseElement implements AfterViewInit, OnDestroy {
   @Input() public visualizeMode = false;
   @Output() public change = new EventEmitter<string>();
 
-  public get isSelected() {
-    if (this.visualizeMode) { return false; }
+  @HostBinding('class.selected') public get isSelected() {
     return this.editor?.currentSelectedElementIds?.includes(this.elementId);
   }
-  public get isOnlySelected() {
-    if (this.visualizeMode) { return false; }
+  @HostBinding('class.only-selected') public get isOnlySelected() {
     return this.editor?.currentSelectedElementIds?.length === 1 && this.isSelected;
   }
   public get hasSelectionEnded() {
-    if (this.visualizeMode) { return false; }
     return !this.editor?.isSelecting;
   }
   public get moveableClasses() {
-    if (this.visualizeMode) { return undefined; }
     if (!this.hasSelectionEnded) { return undefined; }
     if (this.isOnlySelected) { return 'only selected' }
     if (this.isSelected) { return 'selected'; }
