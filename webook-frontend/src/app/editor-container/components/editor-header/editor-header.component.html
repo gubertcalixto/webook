@@ -32,6 +32,29 @@
         </button>
       </ng-container>
       <ng-container *ngIf="visualizeMode">
+   
+        <ng-container *ngIf="!doesDocumentHasLike && !doesDocumentHasDislike && !isLoadingLikeAndDislike" >
+          <nz-button-group>
+            <button nz-button nzType="primary" (click)="likeDocument()">
+              <i fa="thumbs-up"></i><span>Like</span>
+            </button>
+            <button nz-button nzType="danger" (click)="dislikeDocument()">
+              <span>Deslike</span><i fa="thumbs-down"></i>
+            </button>
+          </nz-button-group>
+        </ng-container>
+        <!-- Has Like -->
+        <ng-container *ngIf="doesDocumentHasLike && !doesDocumentHasDislike" >
+          <button nz-button nzType="danger" (click)="removeLikeDocument()">
+            <span>Remover Like</span>
+          </button>
+        </ng-container>
+        <!-- Has Dislike -->
+        <ng-container *ngIf="doesDocumentHasDislike && !doesDocumentHasLike" >
+          <button nz-button nzType="danger" (click)="removeDislikeDocument()">
+            <span>Remover Deslike</span>
+          </button>
+        </ng-container>
         <button nz-button (click)="copyLinkToClipboard()" nzType="primary" nzShape="circle" nz-tooltip
           [nzTooltipTitle]="hasCopiedLink ? 'Link copiado' : 'Copiar Link'"><i fa="link"></i></button>
         <button nz-button (click)="openDenounceModal.next()" nzType="danger" nzShape="circle" nz-tooltip

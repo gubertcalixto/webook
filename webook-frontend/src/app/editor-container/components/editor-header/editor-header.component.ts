@@ -1,10 +1,14 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { DocumentOutput } from 'src/app/client/webook';
+import { DocumentOutput, EditorObjectTypeEnum, HasLikeOrDislikeOutputEnum } from 'src/app/client/webook';
 
 import { EditorDocumentPageService } from '../../services/document-page.service';
+import { LikeService } from '../../services/interactions/like.service';
 import { IEditorExternalEvent } from '../../tokens/classes/editor-external-event.interface';
+import {
+  EditorInteractionsBaseElement,
+} from '../editor/editor-components/editor-element-base-classes/editor-interactions-base-element';
 
 @Component({
   selector: 'wb-editor-header',
@@ -14,6 +18,7 @@ import { IEditorExternalEvent } from '../../tokens/classes/editor-external-event
 })
 export class EditorHeaderComponent implements OnDestroy {
   private subs: Subscription[] = [];
+  public editorInteractionsBaseElement: EditorInteractionsBaseElement;
   private _pageIndex = 1;
 
   public hasCopiedLink: boolean;
@@ -25,6 +30,10 @@ export class EditorHeaderComponent implements OnDestroy {
   ]);
 
   @Input() public document: DocumentOutput;
+  public doesDocumentHasLike: boolean;
+  public doesDocumentHasDislike: boolean;
+  public isLoadingLikeAndDislike = true;
+  private hasAlreadyDoneLikeOrDislikeRequest: boolean;
 
   @Input() public get pageIndex() { return this._pageIndex; }
   public set pageIndex(value) {
@@ -44,11 +53,16 @@ export class EditorHeaderComponent implements OnDestroy {
   }
 
   constructor(
-    public documentPageService: EditorDocumentPageService
+    public documentPageService: EditorDocumentPageService,
+    public likeService: LikeService
   ) { }
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
+
+  }
+  ngAfterViewInit(): void {
+    this.hasLikeOrDislikeForDocument();
   }
 
   public emitToAddPage(): void {
@@ -79,9 +93,66 @@ export class EditorHeaderComponent implements OnDestroy {
     this.hasCopiedLink = true;
     navigator.clipboard.writeText(`${location.origin}/document/${this.document.id}/view` );
     setTimeout(() => {
-      if(this?.hasCopiedLink){
+      if (this?.hasCopiedLink){
         this.hasCopiedLink = false;
       }
-    }, 3000)
+    }, 3000);
+  }
+
+
+  private hasLikeOrDislikeForDocument(): void {
+    this.hasAlreadyDoneLikeOrDislikeRequest = true;
+    this.likeService.hasLikeOrDislike(EditorObjectTypeEnum.NUMBER_0, this.document.id)
+      .pipe(first())
+      .subscribe(result => {
+        this.hasAlreadyDoneLikeOrDislikeRequest = true;
+        this.doesDocumentHasLike = result === HasLikeOrDislikeOutputEnum.NUMBER_0;
+        this.doesDocumentHasDislike = result === HasLikeOrDislikeOutputEnum.NUMBER_1;
+        this.isLoadingLikeAndDislike = false;
+      }, () => {
+        this.hasAlreadyDoneLikeOrDislikeRequest = false;
+        this.isLoadingLikeAndDislike = false;
+      });
+  }
+  elementId(NUMBER_0: EditorObjectTypeEnum, elementId: any) {
+    throw new Error('Method not implemented.');
+  }
+
+  public likeDocument(): void {
+    this.likeService.like({
+      objectTypeEnum: EditorObjectTypeEnum.NUMBER_0,
+      objectId: this.document.id
+    })
+      .pipe(first())
+      .subscribe(() => {
+        this.doesDocumentHasLike = true;
+      });
+  }
+
+  public dislikeDocument(): void {
+    this.likeService.dislike({
+      objectTypeEnum: EditorObjectTypeEnum.NUMBER_2,
+      objectId: this.document.id
+    })
+      .pipe(first())
+      .subscribe(() => {
+        this.doesDocumentHasDislike = true;
+      });
+  }
+
+  public removeLikeDocument(): void {
+    this.likeService.removeLike(EditorObjectTypeEnum.NUMBER_0, this.document.id)
+      .pipe(first())
+      .subscribe(() => {
+        this.doesDocumentHasLike = false;
+      });
+  }
+
+  public removeDislikeDocument(): void {
+    this.likeService.removeDislike(EditorObjectTypeEnum.NUMBER_0, this.document.id)
+      .pipe(first())
+      .subscribe(() => {
+        this.doesDocumentHasDislike = false;
+      });
   }
 }
