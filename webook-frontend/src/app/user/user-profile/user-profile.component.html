@@ -53,8 +53,8 @@
     </div>
     <nz-spin nz-col nzSpan="24" nzSize="large" [nzSpinning]="isLoadingUserDocuments">
       <div class="profile-documents" nz-row>
-        <div *ngFor="let document of userDocuments" nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="6">
-          <wb-document-card [document]="document" (openEvent)="openDocument($event)"
+        <div *ngFor="let document of userDocuments" nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="8">
+          <wb-document-card [document]="document" [showUserInfo]="false" (openEvent)="openDocument($event)"
             (deleteEvent)="deleteDocument($event)"></wb-document-card>
         </div>
         <nz-empty *ngIf="!isLoadingUserDocuments && !userDocuments.length" [nzNotFoundContent]="myDocumentsEmptyContent"

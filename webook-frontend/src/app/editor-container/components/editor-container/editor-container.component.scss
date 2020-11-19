@@ -1,4 +1,4 @@
-:host {
+wb-editor-container {
   overflow: auto;
   .content-wrapper {
     display: flex;
@@ -28,6 +28,39 @@
       overflow: auto;
       background-color: #fff;
       z-index: 10;
+    }
+  }
+}
+
+.popover-action {
+  .ant-popover-arrow {
+    display: none;
+  }
+  ul.editor-element-actions-list {
+    $button-icon-margin: 8px;
+    $actions-spacing: 4px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    li + li {
+      margin-top: $actions-spacing;
+    }
+    li {
+      button {
+        > i + span,
+        > span + i {
+          margin-left: $button-icon-margin;
+        }
+      }
+      > button {
+        width: 100%;
+      }
+      > nz-spin {
+        min-height: 32px;
+        button:only-child {
+          width: 100%;
+        }
+      }
     }
   }
 }

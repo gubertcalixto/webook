@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FaIconsModule } from '@shared/components';
 import { KeyboardShortcutsModule } from 'ng-keyboard-shortcuts';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NgxMoveableModule } from 'ngx-moveable';
@@ -13,6 +14,7 @@ import {
   EditorPropertiesContainerModule,
 } from './components/editor-container/editor-properties-container/editor-properties-container.module';
 import { EditorHeaderModule } from './components/editor-header/editor-header.module';
+import { EditorInteractionsModule } from './components/editor-interactions/editor-interactions.module';
 import { EditorPageComponent } from './components/editor-page/editor-page.component';
 import { EditorPageService } from './components/editor-page/editor-page.service';
 import { EditorToolboxComponent } from './components/editor-toolbox/editor-toolbox.component';
@@ -25,7 +27,9 @@ import {
   EditorElementsDefinitionManagerService,
 } from './services/element/definition/editor-elements-definition-manager.service';
 import { EditorElementsInstanceManagerService } from './services/element/instance/editor-elements-instance-manager.service';
+import { CommentService } from './services/interactions/comment.service';
 import { EditorInteractionService } from './services/interactions/editor-interaction.service';
+import { LikeService } from './services/interactions/like.service';
 
 @NgModule({
   declarations: [
@@ -40,6 +44,7 @@ import { EditorInteractionService } from './services/interactions/editor-interac
     FaIconsModule,
     EditorComponentsModule,
     EditorHeaderModule,
+    EditorInteractionsModule,
 
     KeyboardShortcutsModule,
     NgxMoveableModule,
@@ -47,6 +52,7 @@ import { EditorInteractionService } from './services/interactions/editor-interac
     EditorPropertiesContainerModule,
 
     NzToolTipModule,
+    NzDrawerModule,
     NzNotificationModule,
 
     EditorContainerRoutingModule
@@ -56,6 +62,9 @@ import { EditorInteractionService } from './services/interactions/editor-interac
     EditorElementsDefinitionManagerService,
     EditorElementsInstanceManagerService,
     EditorDocumentPageService,
+    EditorInteractionService,
+    LikeService,
+    CommentService,
     EditorDocumentPageInstanceService,
     EditorInteractionService
   ]

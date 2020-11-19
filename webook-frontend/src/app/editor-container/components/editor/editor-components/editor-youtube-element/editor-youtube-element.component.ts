@@ -23,6 +23,7 @@ export class EditorYoutubeElementComponent extends EditorResizeBaseElement {
   private currentPlayer: YT.PlayerEvent;
   private videoElement: YT.Player;
   private userPreferences: UserPreferenceOutput;
+  public showThumbnail = false
 
   constructor(
     public elementRef: ElementRef<HTMLElement>,
@@ -86,12 +87,12 @@ export class EditorYoutubeElementComponent extends EditorResizeBaseElement {
       this.videoElement = player.target;
       this.setupVideoUsingUserPreferences();
     }
-
   }
 
   public onVideoChanged(player: YT.PlayerEvent): void {
     if (!this.videoChanged || !this.url) {
       this.currentPlayer = player;
+      this.showThumbnail = true;
       return;
     }
     this.currentPlayer = player;
@@ -122,6 +123,7 @@ export class EditorYoutubeElementComponent extends EditorResizeBaseElement {
           this.currentPlayer.target.unMute();
           this.duringVideoValidation = false;
         }
+        this.showThumbnail = true;
       }, 100);
     }
     proceedWhenPlayerIsReady();

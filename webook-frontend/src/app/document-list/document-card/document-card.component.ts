@@ -21,6 +21,7 @@ export class DocumentCardComponent {
   public defaultDocumentCover = '/assets/document/default-document.svg';
   @Input() public allowActions = false;
   @Input() public document: EditorDocument;
+  @Input() public showUserInfo = true;
   @Output() public openEvent = new EventEmitter<string>();
   @Output() public deleteEvent = new EventEmitter<string>();
 
@@ -39,7 +40,9 @@ export class DocumentCardComponent {
   }
 
   ngOnInit(): void {
-    this.getUserImage();
+    if (this.showUserInfo) {
+      this.getUserBasicInfo();
+    }
     this.getDocumentTotalPages();
   }
 
@@ -49,7 +52,7 @@ export class DocumentCardComponent {
     });
   }
 
-  private getUserImage(): void {
+  private getUserBasicInfo(): void {
     this.userService.getUserBasicInfo(this.document.userId).pipe(first()).subscribe((userInfo: InfosOutput) => {
       this.userInfo = {
         name: userInfo.name,

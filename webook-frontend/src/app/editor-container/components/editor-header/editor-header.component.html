@@ -32,6 +32,8 @@
         </button>
       </ng-container>
       <ng-container *ngIf="visualizeMode">
+        <button nz-button (click)="copyLinkToClipboard()" nzType="primary" nzShape="circle" nz-tooltip
+          [nzTooltipTitle]="hasCopiedLink ? 'Link copiado' : 'Copiar Link'"><i fa="link"></i></button>
         <button nz-button (click)="openDenounceModal.next()" nzType="danger" nzShape="circle" nz-tooltip
           nzTooltipTitle="Denunciar"><i fa="exclamation-triangle"></i></button>
       </ng-container>

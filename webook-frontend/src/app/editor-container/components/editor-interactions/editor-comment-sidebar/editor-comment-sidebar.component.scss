@@ -1,0 +1,27 @@
+wb-editor-comment-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    nz-spin {
+        height: 40px;
+    }
+    .comments-container {
+        display: flex;
+        flex-direction: column;
+        flex: auto;
+        overflow: auto;
+    }
+    .comment-container {
+        margin-top: 12px;
+        .actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-top: 12px;
+        }
+    }
+}
+
+.editor-comment-container {
+    min-width: 350px;
+}

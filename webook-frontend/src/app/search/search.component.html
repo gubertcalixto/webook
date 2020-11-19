@@ -18,7 +18,7 @@
     </section>
 
     <div *ngIf="!isLoadingDocuments" class="documents" nz-row>
-      <wb-document-card *ngFor="let document of documents?.items" nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="6"
+      <wb-document-card *ngFor="let document of documents?.items" nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8"
         [document]="document" (openEvent)="openDocument($event)" (deleteEvent)="deleteDocument($event)"></wb-document-card>
       <nz-empty *ngIf="!documents?.items.length" [nzNotFoundContent]="myDocumentsEmptyContent"
         [nzNotFoundFooter]="myDocumentsEmptyFooter">

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { OauthManagerService } from '@oath/services/oauth-manager.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { delay, filter, switchMap } from 'rxjs/operators';
 
 import { ContactFormService } from './contact-form.service';
 
@@ -34,7 +34,11 @@ export class WelcomePageComponent implements OnDestroy {
     private notificationService: NzNotificationService
   ) {
     this.subs.push(this.oAuthManagerService.finishedLoadingSubject
-      .pipe(switchMap(() => this.oAuthManagerService.hasValidToken()))
+      .pipe(
+        filter((loaded) => Boolean(loaded)),
+        delay(200),
+        switchMap(() => this.oAuthManagerService.hasValidToken()),
+      )
       .subscribe((res) => {
         if (res) {
           this.router.navigateByUrl('/home');

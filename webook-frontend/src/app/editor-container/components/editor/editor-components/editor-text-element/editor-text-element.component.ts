@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, Injector, ViewChild } from '@angular/core';
+import { EditorInteractionService } from 'src/app/editor-container/services/interactions/editor-interaction.service';
 
 import { EditorResizeBaseElement } from '../editor-element-base-classes/resize/editor-resize-base-element';
 
@@ -8,6 +9,7 @@ import { EditorResizeBaseElement } from '../editor-element-base-classes/resize/e
   styleUrls: ['./editor-text-element.component.scss']
 })
 export class EditorTextElementComponent extends EditorResizeBaseElement {
+  public editorInteractionService: EditorInteractionService;
   public elementTypeId = 'wb-text';
   public editing = false;
   public text: string = 'Escreva aqui...';
@@ -20,6 +22,7 @@ export class EditorTextElementComponent extends EditorResizeBaseElement {
     injector: Injector
   ) {
     super(elementRef, injector);
+    this.editorInteractionService = injector.get(EditorInteractionService);
   }
 
   protected setInitialSize(): void {

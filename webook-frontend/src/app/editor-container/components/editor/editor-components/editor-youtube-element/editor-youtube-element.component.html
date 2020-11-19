@@ -1,8 +1,8 @@
 <ng-container *ngIf="hasFinishedDataEntry">
-  <div *ngIf="!visualizeMode" class="avoid-click"></div>
   <div *ngIf="!url" class="no-video-container">
     <i fa="youtube" faStyle="fab" faSize="5"></i>
   </div>
+  <img *ngIf="!visualizeMode && showThumbnail && url" class="youtube-player youtube-player-thubnail" [src]="'http://img.youtube.com/vi/' + url + '/mqdefault.jpg'">
   <youtube-player *ngIf="url"
     [style.display.none]="duringVideoValidation"
     class="youtube-player"
@@ -12,6 +12,7 @@
     (ready)="onVideoReady($event)"
     (stateChange)="onVideoChanged($event)"
   ></youtube-player>
+  <div *ngIf="!visualizeMode" class="avoid-click"></div>
 
   <ng-container *ngIf="elementRef">
     <ngx-moveable

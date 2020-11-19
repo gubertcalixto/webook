@@ -1,7 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { EditorObjectTypeEnum } from 'src/app/client/webook';
 
 import { EditorContainerComponent } from '../../components/editor-container/editor-container.component';
+import {
+  EditorCommentSidebarComponent,
+} from '../../components/editor-interactions/editor-comment-sidebar/editor-comment-sidebar.component';
 import {
   EditorBaseElement,
 } from '../../components/editor/editor-components/editor-element-base-classes/editor-base-element';
@@ -16,6 +21,8 @@ export class EditorInteractionService implements OnDestroy {
   private hasAlreadyStarted = false;
   public currentSelectedElementData: EditorInteractionSelectedElementData;
   public currentSelectedElementDataSubject = new BehaviorSubject<EditorInteractionSelectedElementData>(undefined);
+
+  constructor(private drawerService: NzDrawerService) { }
 
   ngOnDestroy(): void {
     this.destroyInstance();
@@ -40,6 +47,18 @@ export class EditorInteractionService implements OnDestroy {
     this.currentSelectedElementData = undefined;
     this.currentSelectedElementDataSubject = new BehaviorSubject<EditorInteractionSelectedElementData>(undefined);
     this.subs.forEach(s => s.unsubscribe());
+  }
+
+  public openCommentPanel(objectTypeEnum: EditorObjectTypeEnum, objectId: string, title?: string): NzDrawerRef<any> {
+    return this.drawerService.create<EditorCommentSidebarComponent>({
+      nzTitle: title || 'Comentários',
+      nzContent: EditorCommentSidebarComponent,
+      nzWrapClassName: 'editor-comment-container',
+      nzContentParams: {
+        objectTypeEnum,
+        objectId
+      }
+    });
   }
 
   private getEditorElementById(elementId: string): EditorBaseElement {

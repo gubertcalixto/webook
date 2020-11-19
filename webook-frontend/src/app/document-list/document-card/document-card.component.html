@@ -1,6 +1,6 @@
 <ng-container *ngIf="document">
-  <nz-skeleton *ngIf="!userInfo" class="user-info-container" [nzAvatar]="true" [nzParagraph]="{ rows: 0 }"></nz-skeleton>
-  <div *ngIf="userInfo" nz-row class="user-info-container">
+  <nz-skeleton *ngIf="showUserInfo && !userInfo" class="user-info-container" [nzAvatar]="true" [nzParagraph]="{ rows: 0 }"></nz-skeleton>
+  <div *ngIf="showUserInfo && userInfo" nz-row class="user-info-container">
     <nz-avatar nzSize="large" [nzText]="userInfo.image ? undefined : userService.getUserInitials()" [nzSrc]="userInfo.image"></nz-avatar>
     <a class="username" nz-button nzType="link" (click)="redirectToUserPofile()">{{ userInfo.name }}</a>
   </div>

@@ -11,6 +11,6 @@ namespace Scrapbook.Host.Controllers.Interactions.Dtos
         public EditorObjectTypeEnum ObjectTypeEnum { get; set; }
         public Guid InteractionId { get; set; }
         public string Message { get; set; }
-        public Guid ParentId { get; set; }
+        public Guid? ParentId { get; set; }
     }
 }

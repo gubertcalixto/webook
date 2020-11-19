@@ -88,6 +88,7 @@ export class EditorDocumentPageService {
     const editorContainerElement = document.querySelector('wb-editor') as HTMLElement;
     if (editorContainerElement == null) { return undefined; }
     return html2canvas(editorContainerElement, {
+      useCORS: true,
       ignoreElements: (el) => {
         let shouldIgnore = false;
         const elementsToIgnoreTags = ['ngx-selecto'];
@@ -103,7 +104,7 @@ export class EditorDocumentPageService {
       },
       logging: false
     }).then(result => {
-      return result.toDataURL();
+      return result.toDataURL('image/jpeg', 0.4);
     }).catch(error => {
       return undefined;
     })

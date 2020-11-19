@@ -40,6 +40,23 @@ export class UserService {
       (lastName || this.user?.lastName)?.substr(0, 1)?.toUpperCase();
   }
 
+  public getUserNameInitials(name: string): string {
+    if (!name) {
+      return '';
+    }
+    const parts = name.split(' ');
+    if (parts.length === 1) {
+      return name;
+    }
+    let initials = '';
+    parts.forEach((part) => {
+      if (part && part[0]) {
+        initials += part[0];
+      }
+    })
+    return initials;
+  }
+
   private getUserInfoAfterLogin(): void {
     this.authManagerService.finishedLoadingSubject.subscribe(res => {
       if (!res) {
@@ -75,7 +92,7 @@ export class UserService {
   }
 
   public getUserBasicInfo(userId: string): Observable<InfosOutput> {
-    if(this.userInfoList.has(userId)){
+    if (this.userInfoList.has(userId)) {
       return of(this.userInfoList.get(userId));
     }
     return this.userServiceProxy.userIdBasicInfoGet(userId).pipe(tap(result => {

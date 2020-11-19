@@ -1,0 +1,75 @@
+<h3>Comentários</h3>
+
+<nz-spin *ngIf="isLoadingComments" nzSize="large"></nz-spin>
+<div *ngIf="!isLoadingComments && comments.length > 0" class="comments-container">
+  <ng-container>
+    <ng-container *ngFor="let comment of comments">
+      <ng-container *ngIf="comment">
+        <ng-template [ngTemplateOutlet]="commentTemplateRef" [ngTemplateOutletContext]="{ comment: comment }">
+        </ng-template>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #commentTemplateRef let-comment="comment">
+    <nz-comment *ngIf="getUserInfo(comment.userId) | async; let usuario" [nzAuthor]="usuario.nome">
+      <nz-avatar nz-comment-avatar [nzSrc]="usuario.imagem"
+        [nzText]="usuario.imagem ? '' : userService.getUserNameInitials(usuario.nome)"></nz-avatar>
+      <nz-comment-content>
+        <p>{{ comment.message }}</p>
+      </nz-comment-content>
+      <nz-comment-action *ngIf="!comment.parentId && userService.userId">
+        <a (click)="toggleReplyComment(comment)">Responder</a>
+      </nz-comment-action>
+      <nz-comment-action *ngIf="comment.userId == userService.userId">
+        <a (click)="removeComment(comment)">Excluir</a>
+      </nz-comment-action>
+
+      <ng-container *ngIf="comment['allowReply']">
+        <ng-template [ngTemplateOutlet]="commentReplyTemplateRef"
+          [ngTemplateOutletContext]="{ parentComment: comment }">
+        </ng-template>
+      </ng-container>
+      <ng-container *ngIf="comment.children?.length">
+        <ng-template *ngFor="let child of comment.children">
+          <ng-container *ngIf="child">
+            <ng-template [ngTemplateOutlet]="commentTemplateRef" [ngTemplateOutletContext]="{ comment: child }">
+            </ng-template>
+          </ng-container>
+        </ng-template>
+      </ng-container>
+    </nz-comment>
+  </ng-template>
+
+  <ng-template #commentReplyTemplateRef let-parentComment="parentComment">
+    <nz-comment *ngIf="!parentComment.parentId && getUserInfo(parentComment.userId) | async; let usuario"
+      [nzAuthor]="usuario.nome">
+      <nz-avatar nz-comment-avatar [nzSrc]="usuario.imagem"
+        [nzText]="usuario.imagem ? '' : userService.getUserNameInitials(usuario.nome)"></nz-avatar>
+      <nz-comment-content>
+        <nz-form-item>
+          <textarea #replyCommentInput nz-input [disabled]="!userService.userId" placeholder="Responda o comentário"
+            (keyup.control.enter)="sendCommentChild(replyCommentInput.value, parentComment); replyCommentInput.value = ''"></textarea>
+        </nz-form-item>
+        <nz-form-item nz-tooltip [nzTooltipTitle]="!userService.userId ? 'Faça login para interagir' : undefined">
+          <button [disabled]="!userService.userId || isSendingComment || !replyCommentInput.value" nz-button
+            nzType="primary"
+            (click)="sendCommentChild(replyCommentInput.value, parentComment); replyCommentInput.value = ''">
+            Responder
+          </button>
+        </nz-form-item>
+      </nz-comment-content>
+    </nz-comment>
+  </ng-template>
+</div>
+<div class="comment-container">
+  <h4 *ngIf="!comments">Seja o primeiro a comentar por aqui</h4>
+  <textarea #commentInput nz-input placeholder="Faça um comentário" [disabled]="!userService.userId"
+    (keyup.control.enter)="sendComment(commentInput.value); commentInput.value = ''"></textarea>
+  <div class="actions" nz-tooltip [nzTooltipTitle]="!userService.userId ? 'Faça login para interagir' : undefined">
+    <button [disabled]="!userService.userId || isSendingComment || !commentInput.value" nz-button nzType="primary"
+      (click)="sendComment(commentInput.value); commentInput.value = ''">
+      Comentar
+    </button>
+  </div>
+</div>

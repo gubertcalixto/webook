@@ -16,6 +16,7 @@ export class EditorHeaderComponent implements OnDestroy {
   private subs: Subscription[] = [];
   private _pageIndex = 1;
 
+  public hasCopiedLink: boolean;
   public pageSelectionExpanded = false;
   public pageSaveStatusLabel = new Map([
     ['saved', 'Documento salvo'],
@@ -72,5 +73,15 @@ export class EditorHeaderComponent implements OnDestroy {
       }
       this.document.pageNumber -= 1;
     });
+  }
+
+  public copyLinkToClipboard(): void {
+    this.hasCopiedLink = true;
+    navigator.clipboard.writeText(`${location.origin}/document/${this.document.id}/view` );
+    setTimeout(() => {
+      if(this?.hasCopiedLink){
+        this.hasCopiedLink = false;
+      }
+    }, 3000)
   }
 }
