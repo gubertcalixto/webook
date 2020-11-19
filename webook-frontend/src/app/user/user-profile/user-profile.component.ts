@@ -5,7 +5,7 @@ import { OAuthUser } from '@oath/tokens/oauth-user';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { EditorDocument } from 'src/app/client/webook';
+import { EditorDocument, NotificationTypeEnum } from 'src/app/client/webook';
 import { DocumentService } from 'src/app/services/document.service';
 import { ProfileService } from 'src/app/services/profile.service';
 import { base64Encode, getDecodedImage } from 'src/app/utils/base64-image-converter.const';
@@ -152,6 +152,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.isFollowingUser = true;
       this.notificationService.success('Você está seguindo este usuário', '');
       this.getFollowersNumber();
+      this.profileService.saveNotification({
+        userId: this.userId,
+        notificationType: NotificationTypeEnum.NUMBER_4
+      })
+        .pipe(first())
+        .subscribe();
     }));
   }
 

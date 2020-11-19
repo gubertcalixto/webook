@@ -3,8 +3,14 @@ import { UserService } from '@oath/services/user.service';
 import { Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { InfosOutput } from 'src/app/client/authentication';
-import { CreateCommentInput, EditorInteractionComment, EditorObjectTypeEnum } from 'src/app/client/webook';
+import {
+  CreateCommentInput,
+  EditorInteractionComment,
+  EditorObjectTypeEnum,
+  NotificationTypeEnum,
+} from 'src/app/client/webook';
 import { CommentService } from 'src/app/editor-container/services/interactions/comment.service';
+import { ProfileService } from 'src/app/services/profile.service';
 import { getDecodedImage } from 'src/app/utils/base64-image-converter.const';
 import { v4 as uuid } from 'uuid';
 
@@ -21,14 +27,18 @@ export class EditorCommentSidebarComponent implements OnInit {
   public isLoadingComments = true;
   public comment_return: EditorInteractionComment;
   public isSendingComment: boolean;
+  public documentId: string;
 
   constructor(
     private commentService: CommentService,
+    private profileService: ProfileService,
     public userService: UserService
   ) { }
 
   ngOnInit(): void {
     this.getComments();
+    const pathArray = window.location.pathname.split('/');
+    this.documentId = pathArray[2];
   }
 
   private getComments(): void {
@@ -52,6 +62,12 @@ export class EditorCommentSidebarComponent implements OnInit {
     }
     this.commentService.comment(input).pipe(first()).subscribe(() => {
       this.getComments();
+      this.profileService.saveNotification({
+        notificationType: NotificationTypeEnum.NUMBER_0,
+        documentId: this.documentId,
+      })
+        .pipe(first())
+        .subscribe();
       this.isSendingComment = false;
     }, () => {
       this.isSendingComment = false;
@@ -84,6 +100,13 @@ export class EditorCommentSidebarComponent implements OnInit {
     }
     this.commentService.comment(input).pipe(first()).subscribe(() => {
       this.getComments();
+      this.profileService
+        .saveNotification({
+          notificationType: NotificationTypeEnum.NUMBER_0,
+          documentId: this.documentId,
+        })
+        .pipe(first())
+        .subscribe();
       this.isSendingComment = false;
     }, () => {
       this.isSendingComment = false;

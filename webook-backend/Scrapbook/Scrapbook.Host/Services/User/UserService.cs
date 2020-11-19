@@ -28,5 +28,17 @@ namespace Scrapbook.Host.Services.User
             var users = JsonSerializer.Deserialize<List<SimplifiedUser>>(responseResult);
             return users;
         }
+
+        public async Task<SimplifiedUser> GetUserById(Guid id)
+        {
+            if (id == Guid.Empty)
+                return new SimplifiedUser();
+            var response = await _client.GetAsync($"http://localhost:5000/user/{id}");
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Could not get from: http://localhost:5000/user/{id}");
+            var responseResult = await response.Content.ReadAsStringAsync();
+            var user = JsonSerializer.Deserialize<SimplifiedUser>(responseResult);
+            return user;
+        }
     }
 }

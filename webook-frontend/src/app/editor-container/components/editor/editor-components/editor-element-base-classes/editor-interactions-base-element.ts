@@ -1,16 +1,21 @@
 import { ElementRef, Injector } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { LikeService } from 'src/app/editor-container/services/interactions/like.service';
+import { ProfileService } from 'src/app/services/profile.service';
 
-import { EditorObjectTypeEnum, HasLikeOrDislikeOutputEnum } from '../../../../../client/webook';
+import { EditorObjectTypeEnum, HasLikeOrDislikeOutputEnum, NotificationTypeEnum } from '../../../../../client/webook';
 import { EditorBaseElement } from './editor-base-element';
 
 export abstract class EditorInteractionsBaseElement extends EditorBaseElement {
   public doesComponentHasLike: boolean;
   public doesComponentHasDislike: boolean;
   public isLoadingLikeAndDislike = true;
+  public documentId: string;
   private hasAlreadyDoneLikeOrDislikeRequest: boolean;
   private likeService: LikeService;
+  private profileService: ProfileService;
+  private activatedRoute: ActivatedRoute;
 
   constructor(
     public elementRef: ElementRef<HTMLElement>,
@@ -18,6 +23,14 @@ export abstract class EditorInteractionsBaseElement extends EditorBaseElement {
   ) {
     super(elementRef);
     this.likeService = injector.get(LikeService);
+    this.profileService = injector.get(ProfileService);
+    this.activatedRoute = injector.get(ActivatedRoute);
+  }
+
+  ngOnInit(): void {
+    this.activatedRoute.params.pipe(first()).subscribe((params) => {
+      this.documentId = params.id;
+    });
   }
 
   public getHasLikeOrDislikeForInteractionsPopover(isOpened: boolean) {
@@ -49,6 +62,12 @@ export abstract class EditorInteractionsBaseElement extends EditorBaseElement {
       .pipe(first())
       .subscribe(() => {
         this.doesComponentHasLike = true;
+        this.profileService.saveNotification({
+          notificationType: NotificationTypeEnum.NUMBER_1,
+          documentId: this.documentId,
+        })
+          .pipe(first())
+          .subscribe();
       });
   }
 
@@ -60,6 +79,13 @@ export abstract class EditorInteractionsBaseElement extends EditorBaseElement {
       .pipe(first())
       .subscribe(() => {
         this.doesComponentHasDislike = true;
+        this.profileService
+          .saveNotification({
+            notificationType: NotificationTypeEnum.NUMBER_2,
+            documentId: this.documentId,
+          })
+          .pipe(first())
+          .subscribe();
       });
   }
 

@@ -9,14 +9,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { EditorObjectTypeEnum } from './editorObjectTypeEnum';
+import { NotificationTypeEnum } from './notificationTypeEnum';
 
 
-export interface CreateCommentInput { 
-    objectId?: string;
-    objectTypeEnum?: EditorObjectTypeEnum;
-    interactionId?: string;
+export interface Notification { 
+    userId?: string;
     message?: string | null;
-    parentId?: string | null;
+    notificationType?: NotificationTypeEnum;
+    wasRead?: boolean;
+    linkId?: string | null;
+    id?: string;
 }
 
