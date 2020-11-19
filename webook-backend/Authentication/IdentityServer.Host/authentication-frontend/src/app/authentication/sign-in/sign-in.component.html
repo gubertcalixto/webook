@@ -2,9 +2,9 @@
   <div id="sign-in-content" nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="10" nzXl="8">
     <app-logo></app-logo>
     <h2 nz-title>Entre na sua Conta</h2>
-    <app-authentication-social-media (authSocialMediaSelected)="onAuthSocialMediaSelected($event)">
-    </app-authentication-social-media>
-    <nz-divider nzText="ou use seu email"></nz-divider>
+    <!-- <app-authentication-social-media (authSocialMediaSelected)="onAuthSocialMediaSelected($event)">
+    </app-authentication-social-media> -->
+    <!-- <nz-divider nzText="ou use seu email"></nz-divider> -->
     <form nz-form [formGroup]="form" (submit)="submitForm()">
       <nz-form-item>
         <nz-form-control nzErrorTip="Nome de Usuário deve ser preenchido!">
