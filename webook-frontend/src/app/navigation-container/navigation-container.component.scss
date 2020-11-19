@@ -115,6 +115,10 @@ wb-navigation-container {
   text-align: end;
 }
 
+.notification-list {
+  border: none;
+}
+
 @media(max-width: 500px) {
   wb-navigation-container {
     nz-sider {

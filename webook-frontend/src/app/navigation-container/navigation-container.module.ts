@@ -15,6 +15,7 @@ import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
+import { ProfileService } from '../services/profile.service';
 import { NavigationContainerComponent } from './navigation-container.component';
 
 @NgModule({
@@ -37,6 +38,7 @@ import { NavigationContainerComponent } from './navigation-container.component';
     NzPopoverModule,
     NzToolTipModule
   ],
+  providers: [ProfileService],
   exports: [NavigationContainerComponent],
 })
 export class NavigationContainerModule { }

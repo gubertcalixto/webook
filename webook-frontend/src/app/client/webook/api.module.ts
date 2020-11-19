@@ -12,6 +12,7 @@ import { DocumentTagServiceProxy } from './api/documentTagServiceProxy';
 import { DocumentsServiceProxy } from './api/documentsServiceProxy';
 import { FeedServiceProxy } from './api/feedServiceProxy';
 import { LikeDislikeServiceProxy } from './api/likeDislikeServiceProxy';
+import { NotificationServiceProxy } from './api/notificationServiceProxy';
 import { ProfileServiceProxy } from './api/profileServiceProxy';
 import { UserPreferencesServiceProxy } from './api/userPreferencesServiceProxy';
 
@@ -29,6 +30,7 @@ import { UserPreferencesServiceProxy } from './api/userPreferencesServiceProxy';
     DocumentsServiceProxy,
     FeedServiceProxy,
     LikeDislikeServiceProxy,
+    NotificationServiceProxy,
     ProfileServiceProxy,
     UserPreferencesServiceProxy ]
 })

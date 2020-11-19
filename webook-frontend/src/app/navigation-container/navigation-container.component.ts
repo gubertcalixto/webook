@@ -2,10 +2,12 @@ import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { OauthManagerService } from '@oath/services/oauth-manager.service';
 import { UserService } from '@oath/services/user.service';
-import { Subscription } from 'rxjs';
-import { filter, first, switchMap } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { filter, first, switchMap, tap } from 'rxjs/operators';
 
+import { Notification } from '../client/webook';
 import { NavigationService } from '../navigation/navigation.service';
+import { ProfileService } from '../services/profile.service';
 import { getDecodedImage } from '../utils/base64-image-converter.const';
 
 @Component({
@@ -16,8 +18,11 @@ import { getDecodedImage } from '../utils/base64-image-converter.const';
 })
 export class NavigationContainerComponent implements OnDestroy {
   private subs: Subscription[] = [];
+  private notificationInterval: any;
   public isCollapsed = false;
-  public hasNotification = true;
+  public hasNotification = false;
+  public notificationsReaded: Notification[] = [];
+  public notificationsNotReaded: Notification[] = [];
   public routeHasNavigation = false;
   public userImage: string;
   public isLoadingUserImage: boolean;
@@ -25,6 +30,7 @@ export class NavigationContainerComponent implements OnDestroy {
   constructor(
     public oAuthManagerService: OauthManagerService,
     public userService: UserService,
+    public profileService: ProfileService,
     public navigationService: NavigationService,
     public router: Router
   ) {
@@ -35,6 +41,7 @@ export class NavigationContainerComponent implements OnDestroy {
         if (res) {
           userService.userSubject.pipe(filter(u => Boolean(u)), first()).subscribe(() => {
             this.getUserImage();
+            this.startGettingNotifications();
           });
         } else {
           this.isLoadingUserImage = false;
@@ -44,6 +51,9 @@ export class NavigationContainerComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
+    if (this.notificationInterval) {
+      clearInterval(this.notificationInterval);
+    }
   }
 
   private getUserImage(): void {
@@ -52,6 +62,30 @@ export class NavigationContainerComponent implements OnDestroy {
       this.userImage = getDecodedImage(image);
       this.isLoadingUserImage = false;
     });
+  }
+
+  private startGettingNotifications(): void {
+    this.getUserNotification().subscribe(() => {
+      this.notificationInterval = setInterval(() => {
+        this.getUserNotification().subscribe();
+      }, 30000)
+    });
+  }
+
+  private getUserNotification(): Observable<Notification[]> {
+    return this.profileService
+      .getNotifications()
+      .pipe(
+        first(),
+        tap(result => {
+          if (result) {
+            this.notificationsReaded = result.filter(n => n.wasRead);
+            this.notificationsNotReaded = result.filter(n => !n.wasRead);
+          }
+          const hasNotReaded = Boolean(this.notificationsNotReaded.length);
+          this.hasNotification = hasNotReaded;
+        })
+      );
   }
 
   public startNavigationResolver(): void {
@@ -78,6 +112,7 @@ export class NavigationContainerComponent implements OnDestroy {
 
   public notificationClicked(): void {
     if (this.hasNotification) {
+      this.profileService.markNotificationsAsRead().pipe(first()).subscribe();
       this.hasNotification = false;
     }
   }

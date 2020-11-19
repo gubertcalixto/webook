@@ -6,6 +6,7 @@ using Scrapbook.Domain.Entities.Editor.EditorArea;
 using Scrapbook.Domain.Entities.Editor.Plugin;
 using Scrapbook.Domain.Entities.Editor.Plugin.Component;
 using Scrapbook.Domain.Entities.Interactions;
+using Scrapbook.Domain.Entities.Notifications;
 using Scrapbook.Domain.Entities.User;
 
 namespace Scrapbook.Infrastructure
@@ -35,6 +36,7 @@ namespace Scrapbook.Infrastructure
         public DbSet<EditorInteractionDislike> EditorInteractionDislikes { get; set; }
         public DbSet<UserFollow> UserFollows { get; set; }
         public DbSet<DenounceDocument> DocumentDenounces { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         #endregion Interaction
 
         #region Editor

@@ -12,6 +12,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { ProfileService } from 'src/app/services/profile.service';
 
 import { CommentService } from '../../services/interactions/comment.service';
 import { EditorCommentSidebarComponent } from './editor-comment-sidebar/editor-comment-sidebar.component';
@@ -34,6 +35,6 @@ import { EditorCommentSidebarComponent } from './editor-comment-sidebar/editor-c
     NzTypographyModule,
   ],
   exports: [EditorCommentSidebarComponent],
-  providers: [UserService, CommentService],
+  providers: [UserService, CommentService, ProfileService],
 })
 export class EditorInteractionsModule {}

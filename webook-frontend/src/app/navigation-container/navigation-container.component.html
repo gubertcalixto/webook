@@ -8,18 +8,19 @@
         </a>
         <ul class="sidenav-menu" nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed"
           [nzMode]="isCollapsed ? 'vertical' : 'inline'">
-          <li (keyup.enter)="router.navigateByUrl('/home')" nz-menu-item routerLink="/home" [nzMatchRouter]="true" nz-tooltip
-            [nzTooltipTitle]="isCollapsed ? 'Feed' : ''" nzTooltipPlacement="right">
+          <li (keyup.enter)="router.navigateByUrl('/home')" nz-menu-item routerLink="/home" [nzMatchRouter]="true"
+            nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Feed' : ''" nzTooltipPlacement="right">
             <i fa="newspaper"></i>
             <span *ngIf="!isCollapsed">Feed</span>
           </li>
-          <li (keyup.enter)="router.navigateByUrl('/my-documents')" nz-menu-item routerLink="/my-documents" [nzMatchRouter]="true" nz-tooltip
-            [nzTooltipTitle]="isCollapsed ? 'Documentos' : ''" nzTooltipPlacement="right">
+          <li (keyup.enter)="router.navigateByUrl('/my-documents')" nz-menu-item routerLink="/my-documents"
+            [nzMatchRouter]="true" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Documentos' : ''"
+            nzTooltipPlacement="right">
             <i fa="book"></i>
             <span *ngIf="!isCollapsed">Documentos</span>
           </li>
-          <li (keyup.enter)="router.navigateByUrl('/search')" nz-menu-item routerLink="/search" [nzMatchRouter]="true" nz-tooltip
-            [nzTooltipTitle]="isCollapsed ? 'Explorar' : ''" nzTooltipPlacement="right">
+          <li (keyup.enter)="router.navigateByUrl('/search')" nz-menu-item routerLink="/search" [nzMatchRouter]="true"
+            nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Explorar' : ''" nzTooltipPlacement="right">
             <i fa="search"></i>
             <span *ngIf="!isCollapsed">Explorar</span>
           </li>
@@ -51,16 +52,45 @@
           </ng-container>
           <ng-container *ngTemplateOutlet="navigationService.navigationActionsTemplate | async"></ng-container>
           <ng-container *ngIf="oAuthManagerService.isLogged">
-            <button nz-button nzType="link" (click)="notificationClicked()">
+            <button class="no-button-style" nz-popover [nzPopoverTitle]="notificationsHeaderTemplate"
+              [nzPopoverContent]="notificationsTemplate" nzPopoverTrigger="click" nzPopoverPlacement="bottomRight"
+              (click)="notificationClicked()">
               <nz-badge [nzDot]="hasNotification">
                 <i fa="bell"></i>
               </nz-badge>
             </button>
-            <button *ngIf="!isLoadingUserImage" class="avatar-btn" nz-popover [nzPopoverTitle]="avatarMenuHeaderTemplate"
-              [nzPopoverContent]="avatarMenuContentTemplate" nzPopoverPlacement="bottomRight">
-              <nz-avatar nzSize="large" [nzText]="userImage ? undefined : userService.getUserInitials()" [nzSrc]="userImage"></nz-avatar>
+            <ng-template #notificationsHeaderTemplate>
+              <h4 nz-typography>Notificações</h4>
+            </ng-template>
+            <ng-template #notificationsTemplate>
+              <p *ngIf="!notificationsReaded.length && !notificationsNotReaded.length">Sem Notificações</p>
+              <ng-container *ngIf="notificationsNotReaded.length">
+                <ul class="notification-list not-readed" nz-menu>
+                  <div *ngFor="let currentNotification of notificationsNotReaded">
+                    <li nz-menu-item [routerLink]="currentNotification.linkId">
+                      {{ currentNotification.message }}
+                    </li>
+                  </div>
+                </ul>
+              </ng-container>
+              <div *ngIf="notificationsReaded.length && notificationsNotReaded.length" nz-menu-divider></div>
+              <ng-container *ngIf="notificationsReaded.length">
+                <p>Notificações Antigas</p>
+                <ul class="notification-list readed" nz-menu>
+                  <div *ngFor="let currentNotification of notificationsReaded" [routerLink]="currentNotification.linkId">
+                    <li nz-menu-item>{{ currentNotification.message }}</li>
+                  </div>
+                </ul>
+              </ng-container>
+            </ng-template>
+            <button *ngIf="!isLoadingUserImage" class="avatar-btn" nz-popover
+              [nzPopoverTitle]="avatarMenuHeaderTemplate" [nzPopoverContent]="avatarMenuContentTemplate"
+              nzPopoverPlacement="bottomRight">
+              <nz-avatar nzSize="large" [nzText]="userImage ? undefined : userService.getUserInitials()"
+                [nzSrc]="userImage"></nz-avatar>
             </button>
-            <nz-skeleton-element *ngIf="isLoadingUserImage" nzType="avatar" [nzActive]="true" nzShape="circle"></nz-skeleton-element>
+            <nz-skeleton-element *ngIf="isLoadingUserImage" nzType="avatar" [nzActive]="true" nzShape="circle">
+            </nz-skeleton-element>
             <ng-template #avatarMenuHeaderTemplate>
               <h4 nz-typography>Olá, {{userService?.user?.userName}}</h4>
             </ng-template>

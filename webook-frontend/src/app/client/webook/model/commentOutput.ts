@@ -19,7 +19,7 @@ export interface CommentOutput {
     objectTypeEnum?: EditorObjectTypeEnum;
     interactionId?: string;
     message?: string | null;
-    parentId?: string;
+    parentId?: string | null;
     userId?: string;
     children?: Array<EditorInteractionComment> | null;
 }

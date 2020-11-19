@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { UserService } from '@oath/services/user.service';
 import { Observable } from 'rxjs';
 
+import { Notification, NotificationInput, NotificationServiceProxy } from '../client/webook';
 import { ProfileServiceProxy } from '../client/webook/api/profileServiceProxy';
 
 @Injectable()
@@ -9,6 +10,7 @@ export class ProfileService {
 
   constructor(
     private profileServiceProxy: ProfileServiceProxy,
+    private notificationServiceProxy: NotificationServiceProxy,
     private userService: UserService
   ) { }
 
@@ -38,5 +40,17 @@ export class ProfileService {
 
   public unfollowUser(userId: string): Observable<void> {
     return this.profileServiceProxy.userUserIdUnfollowPost(userId);
+  }
+
+  public saveNotification(notification: NotificationInput): Observable<void> {
+    return this.notificationServiceProxy.notificationPost(notification);
+  }
+
+  public getNotifications(): Observable<Notification[]> {
+    return this.notificationServiceProxy.notificationGet();
+  }
+
+  public markNotificationsAsRead(): Observable<void> {
+    return this.notificationServiceProxy.notificationReadPost();
   }
 }
