@@ -1,6 +1,7 @@
 import { ElementRef, Injector } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
+import { EditorInteractionService } from 'src/app/editor-container/services/interactions/editor-interaction.service';
 import { LikeService } from 'src/app/editor-container/services/interactions/like.service';
 import { ProfileService } from 'src/app/services/profile.service';
 
@@ -16,8 +17,10 @@ export abstract class EditorInteractionsBaseElement extends EditorBaseElement {
   private likeService: LikeService;
   private profileService: ProfileService;
   private activatedRoute: ActivatedRoute;
+  public editorInteractionService: EditorInteractionService;
 
   constructor(
+
     public elementRef: ElementRef<HTMLElement>,
     injector: Injector
   ) {
@@ -25,6 +28,7 @@ export abstract class EditorInteractionsBaseElement extends EditorBaseElement {
     this.likeService = injector.get(LikeService);
     this.profileService = injector.get(ProfileService);
     this.activatedRoute = injector.get(ActivatedRoute);
+    this.editorInteractionService = injector.get(EditorInteractionService);
   }
 
   ngOnInit(): void {

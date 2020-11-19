@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, ElementRef, Injector, ViewChild } from '@angular/core';
-import { EditorInteractionService } from 'src/app/editor-container/services/interactions/editor-interaction.service';
 
 import { EditorResizeBaseElement } from '../editor-element-base-classes/resize/editor-resize-base-element';
 
@@ -9,10 +8,9 @@ import { EditorResizeBaseElement } from '../editor-element-base-classes/resize/e
   styleUrls: ['./editor-text-element.component.scss']
 })
 export class EditorTextElementComponent extends EditorResizeBaseElement {
-  public editorInteractionService: EditorInteractionService;
   public elementTypeId = 'wb-text';
   public editing = false;
-  public text: string = 'Escreva aqui...';
+  public text = 'Escreva aqui...';
 
   @ViewChild('inputToSave') inputToSave: ElementRef<HTMLInputElement>;
 
@@ -22,7 +20,7 @@ export class EditorTextElementComponent extends EditorResizeBaseElement {
     injector: Injector
   ) {
     super(elementRef, injector);
-    this.editorInteractionService = injector.get(EditorInteractionService);
+
   }
 
   protected setInitialSize(): void {
@@ -38,16 +36,16 @@ export class EditorTextElementComponent extends EditorResizeBaseElement {
   }
 
   public getTextVerticalAlign(position: string): string {
-    if(position?.startsWith('T')) { return 'flex-start'; }
-    if(position?.startsWith('C')) { return 'center'; }
-    if(position?.startsWith('B')) { return 'flex-end'; }
+    if (position?.startsWith('T')) { return 'flex-start'; }
+    if (position?.startsWith('C')) { return 'center'; }
+    if (position?.startsWith('B')) { return 'flex-end'; }
     return 'unset';
   }
-  
+
   public getTextHorizontalAlign(position: string): string {
-    if(position?.endsWith('E')) { return 'flex-start'; }
-    if(position?.endsWith('C')) { return 'center'; }
-    if(position?.endsWith('D')) { return 'flex-end'; }
+    if (position?.endsWith('E')) { return 'flex-start'; }
+    if (position?.endsWith('C')) { return 'center'; }
+    if (position?.endsWith('D')) { return 'flex-end'; }
     return 'unset';
   }
 
